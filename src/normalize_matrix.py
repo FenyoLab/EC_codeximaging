@@ -1,0 +1,151 @@
+import os
+import time
+
+import numpy as np
+import pandas as pd
+
+def get_normalized_matrix(save_path, cell_marker_matrix_dir, channel_names, filtered_channel_names, output_suffix = 'normalized_matrix'):
+    start_time = time.time()
+
+    output_path = f'{save_path}/{output_suffix}'
+    os.makedirs(output_path, exist_ok = True)
+
+    #skip function if normalized and filtered matrix already exists
+    matrix_normal_filtered_path = os.path.join(output_path, 'matrix_normal_filtered_markers.npy') #if matrix already exists, skip
+    if os.path.exists(matrix_normal_filtered_path):
+        print('Filtered and normalized matrix already exists, skipping')
+        return
+    
+    matrix_filtered, dapi_filter = filter_matrix_rows(output_path, cell_marker_matrix_dir)
+    
+    #dapi_filter = filter_matrix_rows(output_path, cell_marker_matrix_dir)
+    #if dapi_filter is None:
+    #    print("Skipping filtering and normalization as matrix already exists.")
+    #    return
+    
+    filter_metadata(dapi_filter, cell_marker_matrix_dir, output_path)
+    normalize_matrix(output_path, matrix_filtered, channel_names)
+    #normalize_matrix(output_path, filtered_channel_names)
+    filter_matrix_columns(output_path, channel_names, filtered_channel_names)
+
+    end_time = time.time()  # Record the end time
+    elapsed_time = end_time - start_time
+    
+    print("Matrix filtered and normalized")
+    print(f"Time elapsed: {elapsed_time:.2f} seconds")
+
+def filter_matrix_rows(output_path, cell_marker_matrix_dir): #, channel_names):
+
+    #matrix_filtered_path = os.path.join(output_path, 'matrix_filtered.npy') #if matrix already exists, skip
+    #if os.path.exists(matrix_filtered_path):
+    #    print('Filtered matrix already exists, skipping')
+    #    return None, None
+    
+    raw_matrix_path = os.path.join(cell_marker_matrix_dir, 'matrix.npy')
+    
+    #new way where only DAPI (and doublets) are filtered
+    from src.normalization.filter_matrix import filter_by_dapi_threshold
+    matrix_filtered, dapi_filter = filter_by_dapi_threshold(raw_matrix_path, output_path)
+
+    '''old way where biomarkers were filtered first'''
+    #from src.normalization.filter_matrix import filter_by_biomarker
+    #matrix_filtered = filter_by_biomarker(os.path.join(cell_marker_matrix_dir, 'matrix.npy'), channel_names, filtered_channel_names)
+
+    #from src.normalization.filter_matrix import filter_by_dapi_threshold
+    #matrix_filtered, dapi_filter = filter_by_dapi_threshold(matrix_filtered, output_path)
+
+    #from src.normalization.filter_matrix import filter_by_doublets
+    #filtered_matrix = filter_by_doublets(filtered_matrix_b)
+
+    #np.save(matrix_filtered_path, matrix_filtered)
+    return matrix_filtered, dapi_filter #, channels_filtered
+
+def filter_metadata(dapi_filter, cell_marker_matrix_dir, output_path): 
+
+    #load data 
+    cell_sample_names = np.load(os.path.join(cell_marker_matrix_dir, 'cell_sample_names.npy'))
+    metadata = pd.read_csv(os.path.join(cell_marker_matrix_dir, 'metadata.csv'))
+
+    #filter data by dapi threshold
+    cell_sample_names_filtered = cell_sample_names[dapi_filter]
+    filtered_metadata = metadata[dapi_filter]
+
+    print("Metadata filtered shape:", filtered_metadata.shape)
+    print("Cell sample names filtered shape:", cell_sample_names_filtered.shape)
+    
+    #save filtered data 
+    np.save(os.path.join(output_path, 'cell_sample_names_filtered.npy'), cell_sample_names_filtered)
+    filtered_metadata.to_csv(os.path.join(output_path, 'metadata_filtered.npy'), index=False)
+    print("Filtered metadata saved")
+
+def normalize_matrix(output_path, matrix_filtered, channel_names):
+
+    print("Matrix filtered by rows shape:", matrix_filtered.shape)
+
+    #cap matrix to 99th percentile values per biomarker
+    matrix_capped = np.clip(matrix_filtered, 0, np.percentile(matrix_filtered, 99, axis=0))
+
+    #appy zscore and arcsinh transformation
+    cell_sample_names_filtered = np.load(os.path.join(output_path, 'cell_sample_names_filtered.npy'))
+    unique_sample_names, indices = np.unique(cell_sample_names_filtered, return_index=True)
+    unique_sample_names = unique_sample_names[np.argsort(indices)]#sort them in order of when they show up
+
+    num_channels = len(channel_names)
+    normalized_matrix = np.empty((0, num_channels))
+
+    for sample_name in unique_sample_names:
+        #get indices were sample_ids == sample_id
+        #get the same matrix rows
+        sample_filter = cell_sample_names_filtered == sample_name
+        sample_matrix = matrix_capped[sample_filter]
+        print(sample_name, sample_matrix.shape)
+
+        for col in range(num_channels):
+            array = sample_matrix[:, col]
+            mean = np.mean(array)
+            std = np.std(array)
+            array_zscore = (array - mean) / std
+            array_arcsinh = np.arcsinh(array_zscore)
+
+            sample_matrix[:, col] = array_arcsinh
+        
+        normalized_matrix = np.concatenate((normalized_matrix, sample_matrix), axis=0)
+
+    print("Matrix normalized per patient shape:", normalized_matrix.shape)
+    np.save(os.path.join(output_path, 'matrix_normal.npy'), normalized_matrix)
+    print("Normalized matrix saved")
+
+def filter_matrix_columns(output_path, channel_names, filtered_channel_names):
+    matrix_normal_path = os.path.join(output_path, 'matrix_normal.npy') 
+
+    from src.normalization.filter_matrix import filter_by_biomarker
+    filtered_matrix = filter_by_biomarker(matrix_normal_path, channel_names, filtered_channel_names)
+
+    np.save(os.path.join(output_path, 'matrix_normal_filtered_markers.npy'), filtered_matrix)
+    print("Normal matrix filtered by biomarkers saved")
+
+if __name__ == '__main__':
+    main()
+
+
+
+'''def main(data_path, tile_size, batch_size, save_path, cell_marker_matrix_dir):
+    # Load the dataset
+    from cell_segmentation import load_dataset
+    dataloader = load_dataset(data_path=data_path, tile_size=tile_size, batch_size=batch_size)
+    
+    # Call the function to get the normalized matrix
+    get_normalized_matrix(
+        save_path=save_path,
+        cell_marker_matrix_dir=cell_marker_matrix_dir,
+        dataloader=dataloader
+    )
+
+if __name__ == '__main__':
+    main(
+        data_path='/media/ssd02/mh6486/Endometrial/CANVAS_v2/canvas/out_256/data',
+        tile_size=256,
+        batch_size=64,
+        save_path='/media/ssd02/mh6486/Endometrial/as18894/cell_segmentation/out_test',
+        cell_marker_matrix_dir='/media/ssd02/mh6486/Endometrial/as18894/cell_segmentation/out_test/cell_marker_matrix'
+    )'''
