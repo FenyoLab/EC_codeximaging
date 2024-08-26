@@ -8,12 +8,16 @@ filtered_channel_names: ['DAPI', 'MPO', 'E-cadherin', 'PD-L1', 'CD163', 'PD-1', 
 slides: ["3P", "3K", "3H-1", "1J-1", "1O", "3S", "1P", "3D", "6H", "1H", "2G", "1T", "4I", "1I", "1E", "4C-1", "4G"]
 
 #base paths
-out_dir: /media/ssd02/mh6486/Endometrial/as18894/cell_segmentation/out
-data_dir: /media/ssd02/mh6486/Endometrial/CANVAS_v2/canvas/out_256/data
+out_dir: /gpfs/home/as18894/projects/as18894/FenyoLab/Endometrial/EC_codeximaging/out_test
+data_dir: /gpfs/data/proteomics/data/Endometrial_mIF/out_256
 
 #specific paths
 cell_marker_matrix_dir: cell_marker_matrix
+clustering_dir: clustering
+label_images_dir: label_images
 matrix_normal_path: normalized_matrix/matrix_normal.npy
+matrix_normal_filtered_path: normalized_matrix/matrix_normal_filtered_markers.npy
 umap_coord_path: umap/coord.npy
 kmeans_labels_path: clustering/kmeans_labels.npy
 figures_dir: analysis_figures
+metadata_filtered_path: normalized_matrix/metadata_filtered.csv

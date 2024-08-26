@@ -26,7 +26,7 @@ def gen_cluster_centroid_matrix(matrix_path, labels_path, plot_dir, channel_name
     cluster_centroids.to_csv(f'{plot_dir}/cluster_centroids_df.csv', index=True)
     return cluster_centroids
 
-def plot_cluster_matrix_as_heatmap(cluster_centroids_df_path, plot_dir, n_clusters):
+def plot_cluster_matrix_as_heatmap(cluster_centroids_df_path, plot_dir, n_clusters, filtered_channel_names=None):
     cluster_centroids_df = pd.read_csv(cluster_centroids_df_path, index_col=0)
     if n_clusters >= 35:
         plt.figure(figsize=(25, 10))
@@ -34,13 +34,29 @@ def plot_cluster_matrix_as_heatmap(cluster_centroids_df_path, plot_dir, n_cluste
         plt.figure(figsize=(20, 10))
     #plt.figure(figsize=(35, 15))
     sns.heatmap(cluster_centroids_df, annot=True, fmt=".2f", cmap='coolwarm', cbar=True)
-    plt.title(f'Centroid Heatmap of {n_clusters} KMeans Clusters')
+    plt.title(f'All Biomakers - Mean Expression Across {n_clusters} KMeans Clusters')
     plt.xlabel('Clusters')
     plt.ylabel('Channel Names')
     plt.tight_layout()
-    plt.savefig(f'{plot_dir}/cluster_centroids_heatmap.png')
+    plt.savefig(f'{plot_dir}/all_biomarkers_heatmap.png')
     print(f"expression per cluster fig saved ")
     plt.clf()
+
+    # Filtered heatmap
+    if filtered_channel_names is not None:
+        filtered_df = cluster_centroids_df.loc[filtered_channel_names]
+        if n_clusters >= 35:
+            plt.figure(figsize=(25, 10))
+        else:
+            plt.figure(figsize=(20, 10))
+        sns.heatmap(filtered_df, annot=True, fmt=".2f", cmap='coolwarm', cbar=True)
+        plt.title(f'Cell Lineage Biomarkers - Mean Expression Across {n_clusters} KMeans Clusters')
+        plt.xlabel('Clusters')
+        plt.ylabel('Channel Names')
+        plt.tight_layout()
+        plt.savefig(f'{plot_dir}/lineage_biomarkers_heatmap.png')
+        print(f"expression per cluster fig saved for filtered biomarkers")
+        plt.clf()
 
 def plot_heatmap_for_poster(mean_df_path, save_path):
     mean_df = pd.read_csv(mean_df_path)

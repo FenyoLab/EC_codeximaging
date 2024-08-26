@@ -1,6 +1,7 @@
 import os
 import sys
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -39,6 +40,24 @@ def clustering(emb_path, umap_path, n_clusters, save_path, output_suffix = 'clus
     plt.legend(bbox_to_anchor=(1.1, 1.05))
     plt.savefig(labels_path.replace('.npy', '.png'))
     plt.clf()
+
+def add_labels_to_metadata(labels_path, metadata_path, save_path, output_suffix = 'clustering'):
+
+    output_path = f'{save_path}/{output_suffix}'
+    metadata_with_clusters_path = os.path.join(output_path, 'metadata_with_cluster_labels.csv')
+    if os.path.exists(metadata_with_clusters_path):  #if clustering already exists, skip
+        print('Cluster labels already added to metadata, skipping')
+        return
+    
+    cluster_labels = np.load(labels_path)
+    metadata = np.load(metadata_path)
+    print("Metadata shape before clusters added: ", metadata.shape)
+
+    metadata['cluster_labels'] = cluster_labels
+    print("Metadata shape after clusters added: ", metadata.shape)
+
+    metadata.to_csv(metadata_with_clusters_path, index = False)
+    print('Cluster labels added to metadata')
 
 if __name__ == '__main__':
     main()
