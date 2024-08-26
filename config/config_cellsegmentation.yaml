@@ -8,7 +8,7 @@ filtered_channel_names: ['DAPI', 'MPO', 'E-cadherin', 'PD-L1', 'CD163', 'PD-1', 
 slides: ["3P", "3K", "3H-1", "1J-1", "1O", "3S", "1P", "3D", "6H", "1H", "2G", "1T", "4I", "1I", "1E", "4C-1", "4G"]
 
 #base paths
-out_dir: /gpfs/home/as18894/projects/as18894/FenyoLab/Endometrial/EC_codeximaging/out_test
+out_dir: /gpfs/home/as18894/projects/as18894/FenyoLab/Endometrial/EC_codeximaging/out
 data_dir: /gpfs/data/proteomics/data/Endometrial_mIF/out_256
 
 #specific paths
