@@ -75,7 +75,7 @@ def filter_metadata(dapi_filter, cell_marker_matrix_dir, output_path):
     
     #save filtered data 
     np.save(os.path.join(output_path, 'cell_sample_names_filtered.npy'), cell_sample_names_filtered)
-    filtered_metadata.to_csv(os.path.join(output_path, 'metadata_filtered.npy'), index=False)
+    filtered_metadata.to_csv(os.path.join(output_path, 'metadata_filtered.csv'), index=False)
     print("Filtered metadata saved")
 
 def normalize_matrix(output_path, matrix_filtered, channel_names):
