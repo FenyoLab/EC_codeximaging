@@ -14,15 +14,6 @@ from src.normalize_matrix import get_normalized_matrix
 from src.umap_reduction import gen_umap_embedding 
 from src.clustering import kmeans
 
-#define input parameters
-#tile_size = 256
-#batch_size = 64
-#num_channels = 36
-#n_clusters = 20
-
-#define input paths 
-#save_path = '/media/ssd02/mh6486/Endometrial/as18894/cell_segmentation/out'
-#data_path = '/media/ssd02/mh6486/Endometrial/CANVAS_v2/canvas/out_256/data'
 cell_marker_matrix_dir = os.path.join(config.out_dir, config.cell_marker_matrix_dir)
 normal_matrix_filtered_path = os.path.join(config.out_dir, config.matrix_normal_filtered_path)
 umap_coord_path = os.path.join(config.out_dir, config.umap_coord_path)
