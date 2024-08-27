@@ -172,6 +172,6 @@ cython_debug/
 *.qptiff
 *.out
 
-EC_codeximaging/out*
-EC_codeximaging/logs
-EC_codeximaging/bash_scripts
+out*/
+logs/
+bash_scripts/
