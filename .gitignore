@@ -174,3 +174,4 @@ cython_debug/
 
 cell_segmentation/out*
 cell_segmentation/logs
+cell_segmentation/bash_scripts
