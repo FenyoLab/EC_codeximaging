@@ -14,11 +14,11 @@ kerberosid: as18894
 research_drive_dir: 'EC_codeximaging/cell_segmentation'
 
 #base paths
-out_dir: /gpfs/home/as18894/projects/as18894/FenyoLab/Endometrial/EC_codeximaging/out
+segementation_data_dir: /gpfs/home/as18894/projects/as18894/FenyoLab/Endometrial/EC_codeximaging/raw_segmentation_data
+out_dir: /gpfs/home/as18894/projects/as18894/FenyoLab/Endometrial/EC_codeximaging/out_8-26-24
 data_dir: /gpfs/data/proteomics/data/Endometrial_mIF/out_256/data
 
 #specific paths
-cell_marker_matrix_dir: cell_marker_matrix
 clustering_dir: clustering
 label_images_dir: label_images
 matrix_normal_path: normalized_matrix/matrix_normal.npy

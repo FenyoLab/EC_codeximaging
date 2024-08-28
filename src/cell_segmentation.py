@@ -8,19 +8,18 @@ import pandas as pd
 import torch
 from deepcell.applications import Mesmer
 
-def get_cell_segmentations(data_path, tile_size, batch_size, save_path, num_biomarkers, output_suffix = 'cell_marker_matrix'):
+def get_cell_segmentations(data_path, tile_size, batch_size, save_path, num_biomarkers):
     start_time = time.time()
 
-    output_path = f'{save_path}/{output_suffix}' #create output directory 
-    os.makedirs(output_path, exist_ok = True)
+    os.makedirs(save_path, exist_ok = True) #create output directory
 
-    matrix_path = os.path.join(output_path, 'matrix.npy') #if matrix already exists, skip
+    matrix_path = os.path.join(save_path, 'matrix.npy') #if matrix already exists, skip
     if os.path.exists(matrix_path):
         print('Matrix already exists, skipping')
         return
 
     dataloader = load_dataset(data_path, tile_size, batch_size)
-    get_matrix(dataloader, output_path, num_biomarkers)
+    get_matrix(dataloader, save_path, num_biomarkers)
 
     end_time = time.time()  # Record the end time
     elapsed_time = end_time - start_time
@@ -55,7 +54,7 @@ def load_model():
     model = Mesmer(model=None)
     return model
 
-def get_matrix(dataloader, output_path, num_biomarkers, output_suffix = 'cell_marker_matrix'): 
+def get_matrix(dataloader, output_path, num_biomarkers): 
     ''''loops through the dataloader to extract:
             1. matrix with intensity values for each biomarker in each cell [shape: (num_cells, num_biomarkers)]
             2. metadata csv with additional cell information [shape: (num_cells, num_features)]
@@ -162,11 +161,3 @@ def get_tile_intensity(image, prediction, num_biomarkers, slide_id, tile_x, tile
         metadata.append(cell_metadata)
     
     return intensity_matrix, metadata
-
-if __name__ == '__main__':
-    get_cell_segmentations(
-        data_path='/media/ssd02/mh6486/Endometrial/CANVAS_v2/canvas/out_256/data',
-        save_path='/media/ssd02/mh6486/Endometrial/as18894/cell_segmentation/out',
-        tile_size=256,
-        batch_size=64
-    )

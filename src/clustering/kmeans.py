@@ -50,7 +50,7 @@ def add_labels_to_metadata(labels_path, metadata_path, save_path, output_suffix 
         return
     
     cluster_labels = np.load(labels_path)
-    metadata = np.load(metadata_path)
+    metadata = pd.read_csv(metadata_path)
     print("Metadata shape before clusters added: ", metadata.shape)
 
     metadata['cluster_labels'] = cluster_labels
