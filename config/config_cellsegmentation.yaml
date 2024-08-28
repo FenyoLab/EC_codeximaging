@@ -15,7 +15,7 @@ research_drive_dir: 'EC_codeximaging/cell_segmentation'
 
 #base paths
 out_dir: /gpfs/home/as18894/projects/as18894/FenyoLab/Endometrial/EC_codeximaging/out
-data_dir: /gpfs/data/proteomics/data/Endometrial_mIF/out_256
+data_dir: /gpfs/data/proteomics/data/Endometrial_mIF/out_256/data
 
 #specific paths
 cell_marker_matrix_dir: cell_marker_matrix
