@@ -5,11 +5,17 @@ num_channels: 36
 n_clusters: 20
 channel_names: ['DAPI', 'MPO', 'pJAK1', 'E-cadherin', 'PD-L1', 'CD163', 'PD-1', 'CD56', 'CD47', 'MAL', 'GAL3', 'PARP1', 'LAG3', 'Her2', 'CD4', 'PI3KCA', 'TIM3', 'CD68', 'ER', 'PR', 'MSH2', 'CD8', 'STAT1', 'MSH6', 'b-Catenin1', 'HLA-ABC', 'MLH1', 'Ki67', 'CD20', 'ARID1A', 'IFNG', 'CD31', 'PMS', 'CD44', 'Pan-Cytokeratin', 'CD3e']
 filtered_channel_names: ['DAPI', 'MPO', 'E-cadherin', 'PD-L1', 'CD163', 'PD-1', 'CD4', 'CD68', 'CD8', 'HLA-ABC', 'Ki67', 'CD20', 'CD31', 'Pan-Cytokeratin', 'CD3e']
-slides: ["3P", "3K", "3H-1", "1J-1", "1O", "3S", "1P", "3D", "6H", "1H", "2G", "1T", "4I", "1I", "1E", "4C-1", "4G"]
+slides: ["3P", "3K", "3H-1", "1J-1", "1O", "3S", "1P", "3D", "6H", "1H", "2G", "1T", "4I", "1I", "1E", "4C-1", "4G"] #might have to change order of this 
+
+
+# for research drive 
+mount_lab: fenyolab
+kerberosid: as18894
+base_dir: EC_codeximaging/cell_segmentation
 
 #base paths
 out_dir: /gpfs/home/as18894/projects/as18894/FenyoLab/Endometrial/EC_codeximaging/out
-data_dir: /gpfs/data/proteomics/data/Endometrial_mIF/out_256
+data_dir: /gpfs/data/proteomics/data/Endometrial_mIF/out_256/data
 
 #specific paths
 cell_marker_matrix_dir: cell_marker_matrix
