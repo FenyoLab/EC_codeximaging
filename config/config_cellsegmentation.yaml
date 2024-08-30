@@ -27,24 +27,58 @@ metadata_filtered_path: normalized_matrix/metadata_filtered.csv
 #research drive
 mount_lab: fenyolab
 kerberosid: as18894
-research_drive_dir: 'EC_codeximaging/cell_segmentation'
+research_drive_dir: 'fenyolab/EC_codeximaging/cell_segmentation'
 
 #omero
-omero_image_id_dict:
-  20230805_Fenyo_4G_Scan3: 600713
-  20230908-1872-4C-1_Scan2: 611987
-  20230922-3869-1O_Scan1: 614300
-  20231003-1160-3S_Scan1: 617515
-  20231012-3535-1T_Scan2: 619802
-  20231019-0413-3D_Scan1: 620931
-  20230806_Fenyo_2G_Scan2: 600221
-  20230908-6103-1J-1_Scan2: 612242
-  20230922-5689-1P_Scan1: 615142
-  20231003-2630-3P_Scan1: 617353
-  20231012-9390-1I_Scan1: 619234
-  20231019-4475-1E_Scan2: 620498
-  20230810_0488_3K_Scan1: 601969
-  20230908-8710-3H-1_Scan1: 611002
-  20230922-7331-1H_Scan1: 615004
-  20231003-5988-4I_Scan1: 616589
-  20231012-9784-6H_Scan1: 618713
+omero_image_info_dict:
+  20230805_Fenyo_4G_Scan3: 
+    image_id: 600713
+    roi_id: n/a
+  20230908-1872-4C-1_Scan2: 
+    image_id: 611987
+    roi_id: 1227069
+  20230922-3869-1O_Scan1: 
+    image_id: 614300
+    roi_id: 1227063
+  20231003-1160-3S_Scan1: 
+    image_id: 617515
+    roi_id: 1227071
+  20231012-3535-1T_Scan2: 
+    image_id: 619802
+    roi_id: n/a
+  20231019-0413-3D_Scan1: 
+    image_id: 620931
+    roi_id: 1227070
+  20230806_Fenyo_2G_Scan2: 
+    image_id: 600221
+    roi_id: n/a
+  20230908-6103-1J-1_Scan2: 
+    image_id: 612242
+    roi_id: 1227066
+  20230922-5689-1P_Scan1: 
+    image_id: 615142
+    roi_id: 1227065
+  20231003-2630-3P_Scan1: 
+    image_id: 617353
+    roi_id: 1227068
+  20231012-9390-1I_Scan1: 
+    image_id: 619234
+    roi_id: 1227074
+  20231019-4475-1E_Scan2: 
+    image_id: 620498
+    roi_id: n/a
+  20230810_0488_3K_Scan1: 
+    image_id: 601969
+    roi_id: n/a
+  20230908-8710-3H-1_Scan1: 
+    image_id: 611002
+    roi_id: 1227072
+  20230922-7331-1H_Scan1: 
+    image_id: 615004
+    roi_id: 1227073
+  20231003-5988-4I_Scan1: 
+    image_id: 616589
+    roi_id: 1227067
+  20231012-9784-6H_Scan1: 
+    image_id: 1227064
+    roi_id: n/a
