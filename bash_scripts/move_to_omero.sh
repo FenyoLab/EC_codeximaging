@@ -8,8 +8,9 @@
 #SBATCH --time=4:00:00
 #SBATCH --partition=data_mover
 
-cd /gpfs/home/as18894/projects/as18894/FenyoLab/Endometrial/EC_codeximaging/src/omero_analysis
 source ~/.bashrc
+conda activate omero
 
-conda activate omero 
-python /gpfs/home/as18894/projects/as18894/FenyoLab/Endometrial/EC_codeximaging/src/omero_analysis/move_to_research_drive.py
+export YOUR_PASSWORD='535b9cpQ!'
+cd /gpfs/home/as18894/projects/as18894/FenyoLab/Endometrial/EC_codeximaging/src/omero_analysis
+python move_to_omero.py
