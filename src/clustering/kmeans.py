@@ -14,7 +14,7 @@ def clustering(emb_path, umap_path, n_clusters, save_path, output_suffix = 'clus
     
     labels_path = os.path.join(output_path, 'kmeans_labels.npy')
     if os.path.exists(labels_path):  #if clustering already exists, skip
-        print('UMAP already exists, skipping')
+        print('Kmeans labels already exist, skipping')
         return
 
     embedding = np.load(emb_path)
