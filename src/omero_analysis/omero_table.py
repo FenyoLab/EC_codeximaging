@@ -151,7 +151,11 @@ def link_table_to_roi(gateway, table_id, roi_id):
     #breakpoint()
     params.addId(table_id)
     gateway.SERVICE_OPTS.setOmeroGroup("-1")
-    file_ann = gateway.getQueryService().projection(query, params, gateway.SERVICE_OPTS)[0][0].val
+    file_ann = gateway.getQueryService().projection(query, params, gateway.SERVICE_OPTS)[0][0].val ##### ERROR LINE
+    
+    #THE ERROR IS HERE!!!
+    #*** IndexError: list index out of range
+    #its because fil_ann is empty, this query is not getting anything 
 
     link = RoiAnnotationLinkI()
     link.parent = RoiI(roi_id, False)
