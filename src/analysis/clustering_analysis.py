@@ -3,7 +3,7 @@ import os
 from src.analysis import color_by_sample, color_by_marker, color_by_cluster, sample_per_cluster, expression_per_cluster
 
 
-def clustering_analysis(save_path, n_clusters, channel_names, filtered_channel_names, slide_names, out_suffix = 'figures_dir'):
+def clustering_analysis(save_path, n_clusters, channel_names, filtered_channel_names, slide_names, out_suffix = 'analysis_figures'):
 
     output_path = f'{save_path}/{out_suffix}/{n_clusters}_clusters'
     os.makedirs(output_path, exist_ok = True)
@@ -11,7 +11,7 @@ def clustering_analysis(save_path, n_clusters, channel_names, filtered_channel_n
     umap_coord_path = os.path.join(save_path, 'umap/coord.npy')
     sample_names_path = os.path.join(save_path, 'normalized_matrix/cell_sample_names_filtered.npy')
     normal_matrix_path = os.path.join(save_path, 'normalized_matrix/matrix_normal.npy')
-    kmeans_labels_path = os.path.join(save_path, 'clustering/kmeans_labels.npy')
+    kmeans_labels_path = os.path.join(save_path, f'clustering/{n_clusters}_clusters/kmeans_labels.npy')
     cluster_centroids_df_path = os.path.join(output_path, 'cluster_centroids_df.csv')
 
     color_by_sample.umap_by_sample(umap_coord_path, sample_names_path, output_path)

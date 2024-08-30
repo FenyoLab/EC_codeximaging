@@ -17,8 +17,9 @@ from src.analysis import clustering_analysis
 
 normal_matrix_filtered_path = os.path.join(config.out_dir, config.matrix_normal_filtered_path)
 umap_coord_path = os.path.join(config.out_dir, config.umap_coord_path)
-kmeans_labels_path = os.path.join(config.out_dir, config.kmeans_labels_path)
+kmeans_labels_path = os.path.join(config.out_dir, config.clustering_dir, f'{config.n_clusters}_clusters', 'kmeans_labels.npy')
 metadata_filtered_path = os.path.join(config.out_dir, config.metadata_filtered_path)
+raw_metadata_path = os.path.join(config.segementation_data_dir, 'metadata.csv')
 
 #call segmentation function 
 get_cell_segmentations(data_path = config.data_dir, tile_size = config.tile_size, batch_size = config.batch_size, 
@@ -29,6 +30,6 @@ get_normalized_matrix(save_path = config.out_dir, raw_data_dir = config.segement
 gen_umap_embedding.plot_umap(emb_path = normal_matrix_filtered_path, umap_emb_path = umap_coord_path, save_path = config.out_dir)
 #call kmeans function 
 kmeans.clustering(emb_path = normal_matrix_filtered_path, umap_path = umap_coord_path, n_clusters = config.n_clusters, save_path = config.out_dir)
-kmeans.add_labels_to_metadata(labels_path = kmeans_labels_path, metadata_path = metadata_filtered_path, save_path=config.out_dir, n_clusters = config.n_clusters)
+kmeans.add_labels_to_metadata(labels_path = kmeans_labels_path, raw_metadata_path = raw_metadata_path, filtered_metadata_path = metadata_filtered_path, save_path=config.out_dir, n_clusters = config.n_clusters)
 #analyze results 
-clustering_analysis(save_path = config.out_dir, n_clusters = config.n_clusters, channel_names = config.channel_names, filtered_channel_names = config.filtered_channel_names, slide_names = config.slides)
+clustering_analysis.clustering_analysis(save_path = config.out_dir, n_clusters = config.n_clusters, channel_names = config.channel_names, filtered_channel_names = config.filtered_channel_names, slide_names = config.slides)
