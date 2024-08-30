@@ -116,7 +116,7 @@ def get_matrix(dataloader, output_path, num_biomarkers):
     cell_sample_names = metadata_df['slide_id'].values
     print("cell_sample_names length: ", len(cell_sample_names))
 
-    metadata_df.to_csv(os.path.join(output_path, 'metadata.csv'), index=False)
+    metadata_df.to_csv(os.path.join(output_path, 'metadata.csv'), index=True)
     np.save(os.path.join(output_path, 'tile_positions.npy'), np.array(tile_positions))
     np.save(os.path.join(output_path, 'tile_sample_names.npy'), np.array(tile_sample_names))
     np.save(os.path.join(output_path, 'segmentation_masks.npy'), np.array(segmentation_masks))

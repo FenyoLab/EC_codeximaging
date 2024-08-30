@@ -4,7 +4,7 @@ import time
 import numpy as np
 import pandas as pd
 
-def get_normalized_matrix(save_path, cell_marker_matrix_dir, channel_names, filtered_channel_names, output_suffix = 'normalized_matrix'):
+def get_normalized_matrix(save_path, raw_data_dir, channel_names, filtered_channel_names, output_suffix = 'normalized_matrix', samples_to_remove = None):
     start_time = time.time()
 
     output_path = f'{save_path}/{output_suffix}'
@@ -15,17 +15,20 @@ def get_normalized_matrix(save_path, cell_marker_matrix_dir, channel_names, filt
     if os.path.exists(matrix_normal_filtered_path):
         print('Filtered and normalized matrix already exists, skipping')
         return
+
+    if samples_to_remove is not None:
+        matrix_dir = os.path.join(save_path, 'matrix_filtered_samples')
+        os.makedirs(matrix_dir, exist_ok = True)
+        from src.normalization.filter_matrix import filter_by_sample
+        filter_by_sample(raw_data_dir, matrix_dir, samples_to_remove)
+        matrix_filtered, dapi_filter = filter_matrix_rows(output_path, matrix_dir)
+        filter_metadata(dapi_filter, matrix_dir, output_path)
     
-    matrix_filtered, dapi_filter = filter_matrix_rows(output_path, cell_marker_matrix_dir)
-    
-    #dapi_filter = filter_matrix_rows(output_path, cell_marker_matrix_dir)
-    #if dapi_filter is None:
-    #    print("Skipping filtering and normalization as matrix already exists.")
-    #    return
-    
-    filter_metadata(dapi_filter, cell_marker_matrix_dir, output_path)
+    else:
+        matrix_filtered, dapi_filter = filter_matrix_rows(output_path, raw_data_dir)
+        filter_metadata(dapi_filter, raw_data_dir, output_path)
+
     normalize_matrix(output_path, matrix_filtered, channel_names)
-    #normalize_matrix(output_path, filtered_channel_names)
     filter_matrix_columns(output_path, channel_names, filtered_channel_names)
 
     end_time = time.time()  # Record the end time
@@ -34,14 +37,14 @@ def get_normalized_matrix(save_path, cell_marker_matrix_dir, channel_names, filt
     print("Matrix filtered and normalized")
     print(f"Time elapsed: {elapsed_time:.2f} seconds")
 
-def filter_matrix_rows(output_path, cell_marker_matrix_dir): #, channel_names):
+def filter_matrix_rows(output_path, matrix_dir): #, channel_names):
 
     #matrix_filtered_path = os.path.join(output_path, 'matrix_filtered.npy') #if matrix already exists, skip
     #if os.path.exists(matrix_filtered_path):
     #    print('Filtered matrix already exists, skipping')
     #    return None, None
     
-    raw_matrix_path = os.path.join(cell_marker_matrix_dir, 'matrix.npy')
+    raw_matrix_path = os.path.join(matrix_dir, 'matrix.npy')
     
     #new way where only DAPI (and doublets) are filtered
     from src.normalization.filter_matrix import filter_by_dapi_threshold
@@ -60,11 +63,11 @@ def filter_matrix_rows(output_path, cell_marker_matrix_dir): #, channel_names):
     #np.save(matrix_filtered_path, matrix_filtered)
     return matrix_filtered, dapi_filter #, channels_filtered
 
-def filter_metadata(dapi_filter, cell_marker_matrix_dir, output_path): 
+def filter_metadata(dapi_filter, matrix_dir, output_path): 
 
     #load data 
-    cell_sample_names = np.load(os.path.join(cell_marker_matrix_dir, 'cell_sample_names.npy'))
-    metadata = pd.read_csv(os.path.join(cell_marker_matrix_dir, 'metadata.csv'))
+    cell_sample_names = np.load(os.path.join(matrix_dir, 'cell_sample_names.npy'))
+    metadata = pd.read_csv(os.path.join(matrix_dir, 'metadata.csv'), index_col = 0)
 
     #filter data by dapi threshold
     cell_sample_names_filtered = cell_sample_names[dapi_filter]
@@ -75,7 +78,7 @@ def filter_metadata(dapi_filter, cell_marker_matrix_dir, output_path):
     
     #save filtered data 
     np.save(os.path.join(output_path, 'cell_sample_names_filtered.npy'), cell_sample_names_filtered)
-    filtered_metadata.to_csv(os.path.join(output_path, 'metadata_filtered.csv'), index=False)
+    filtered_metadata.to_csv(os.path.join(output_path, 'metadata_filtered.csv'), index=True)
     print("Filtered metadata saved")
 
 def normalize_matrix(output_path, matrix_filtered, channel_names):
@@ -124,28 +127,8 @@ def filter_matrix_columns(output_path, channel_names, filtered_channel_names):
     np.save(os.path.join(output_path, 'matrix_normal_filtered_markers.npy'), filtered_matrix)
     print("Normal matrix filtered by biomarkers saved")
 
-if __name__ == '__main__':
-    main()
 
-
-
-'''def main(data_path, tile_size, batch_size, save_path, cell_marker_matrix_dir):
-    # Load the dataset
-    from cell_segmentation import load_dataset
-    dataloader = load_dataset(data_path=data_path, tile_size=tile_size, batch_size=batch_size)
-    
-    # Call the function to get the normalized matrix
-    get_normalized_matrix(
-        save_path=save_path,
-        cell_marker_matrix_dir=cell_marker_matrix_dir,
-        dataloader=dataloader
-    )
-
-if __name__ == '__main__':
-    main(
-        data_path='/media/ssd02/mh6486/Endometrial/CANVAS_v2/canvas/out_256/data',
-        tile_size=256,
-        batch_size=64,
-        save_path='/media/ssd02/mh6486/Endometrial/as18894/cell_segmentation/out_test',
-        cell_marker_matrix_dir='/media/ssd02/mh6486/Endometrial/as18894/cell_segmentation/out_test/cell_marker_matrix'
-    )'''
+#matrix_dir = '/gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging/out_8-26-24/matrix_filtered_samples'
+#output_path = '/gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging/out_8-26-24/matrix_filtered_samples/normalized_matrix_new'
+#matrix_filtered, dapi_filter = filter_matrix_rows(output_path, matrix_dir)
+#ilter_metadata(dapi_filter, matrix_dir, output_path)

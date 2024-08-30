@@ -9,7 +9,7 @@ import sklearn.cluster as cluster
 
 def clustering(emb_path, umap_path, n_clusters, save_path, output_suffix = 'clustering'):
 
-    output_path = f'{save_path}/{output_suffix}' #create output directory 
+    output_path = f'{save_path}/{output_suffix}/{n_clusters}_clusters' #create output directory 
     os.makedirs(output_path, exist_ok = True)
     
     labels_path = os.path.join(output_path, 'kmeans_labels.npy')
@@ -41,23 +41,32 @@ def clustering(emb_path, umap_path, n_clusters, save_path, output_suffix = 'clus
     plt.savefig(labels_path.replace('.npy', '.png'))
     plt.clf()
 
-def add_labels_to_metadata(labels_path, metadata_path, save_path, output_suffix = 'clustering'):
+def add_labels_to_metadata(labels_path, raw_metadata_path, filtered_metadata_path, save_path, n_clusters, output_suffix = 'clustering'):
 
-    output_path = f'{save_path}/{output_suffix}'
+    output_path = f'{save_path}/{output_suffix}/{n_clusters}_clusters'
     metadata_with_clusters_path = os.path.join(output_path, 'metadata_with_cluster_labels.csv')
     if os.path.exists(metadata_with_clusters_path):  #if clustering already exists, skip
         print('Cluster labels already added to metadata, skipping')
         return
     
     cluster_labels = np.load(labels_path)
-    metadata = pd.read_csv(metadata_path)
-    print("Metadata shape before clusters added: ", metadata.shape)
+    raw_metadata = pd.read_csv(raw_metadata_path, index_col = 0)
+    filtered_metadata = pd.read_csv(filtered_metadata_path, index_col = 0)
 
-    metadata['cluster_labels'] = cluster_labels
-    print("Metadata shape after clusters added: ", metadata.shape)
+    print("Raw metadata shape before clusters added: ", raw_metadata.shape)
 
-    metadata.to_csv(metadata_with_clusters_path, index = False)
-    print('Cluster labels added to metadata')
+    # Create a mapping of filtered indices to cluster labels
+    index_to_cluster = pd.Series(cluster_labels, index=filtered_metadata.index).to_dict()
+    # Add the cluster label column to raw_metadata with default value 0
+    raw_metadata['cluster_label'] = raw_metadata.index.map(index_to_cluster).fillna(0).astype(int)
 
-if __name__ == '__main__':
-    main()
+    print("Raw metadata shape after clusters added: ", raw_metadata.shape)
+    raw_metadata.to_csv(metadata_with_clusters_path, index = True)
+
+
+#labels_path = '/gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging/out_8-26-24/clustering/kmeans_labels.npy'
+#raw_metadata_path = '/gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging/raw_segmentation_data/metadata.csv'
+#filtered_metadata_path = '/gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging/out_8-26-24/normalized_matrix/metadata_filtered.csv'
+#save_path = '/gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging/out_8-26-24'
+
+#add_labels_to_metadata(labels_path, raw_metadata_path, filtered_metadata_path, save_path, n_clusters=20)

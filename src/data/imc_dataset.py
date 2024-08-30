@@ -191,7 +191,7 @@ class SlidesDataset(data.Dataset): #this is inheriting data.Dataset from torch!!
         from tqdm import tqdm
         mean = 0
         std = 0
-        stats_path = f'{self.slides_root_path}/../stats_blank'
+        stats_path = f'{self.slides_root_path}/../stats'
         # Load mean and std if exists
         if os.path.exists(f'{stats_path}/mean.npy') and os.path.exists(f'{stats_path}/std.npy'):
             print("using previously generated mean and std numpy files")
