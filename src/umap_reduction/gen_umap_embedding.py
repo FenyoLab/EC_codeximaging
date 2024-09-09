@@ -1,7 +1,7 @@
 import sys
 import os
 import numpy as np
-import umap
+import umap.umap_ as umap
 import matplotlib.pyplot as plt
 
 def plot_umap(emb_path, umap_emb_path, save_path, output_suffix = 'umap'):

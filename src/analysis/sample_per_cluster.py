@@ -6,6 +6,11 @@ import matplotlib.pyplot as plt
 import pdb
 
 def proportion_per_cluster(sample_names_path, labels_path, plot_dir, n_clusters, slides = None):
+    if os.path.exists(f'{plot_dir}/sample_per_cluster.pdf'):  #if clustering already exists, skip
+        print('sample_per_cluster plot already exists, skipping')
+        return
+
+    print("generating sample_per_cluster plot")
 
     sample_names = np.load(sample_names_path)
     unique_samples = np.unique(sample_names)

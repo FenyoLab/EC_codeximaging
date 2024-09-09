@@ -7,6 +7,11 @@ import pandas as pd
 from matplotlib.colors import LinearSegmentedColormap
 
 def umap_by_marker(umap_path, marker_path, plot_dir, channel_names = None, cols = 5):
+    
+    if os.path.exists(f'{plot_dir}/umap_by_marker.png'):  #if clustering already exists, skip
+        print('umap_by_marker plot already exists, skipping')
+        return
+    
     umap_embedding = np.load(umap_path)
     markers = np.load(marker_path)
     
