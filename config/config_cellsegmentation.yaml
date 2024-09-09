@@ -15,10 +15,11 @@ samples_to_skip: [20230805_Fenyo_4G_Scan3, 20230806_Fenyo_2G_Scan2, 20230810_048
 segementation_data_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging/raw_segmentation_data
 out_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging/out_8-26-24
 data_dir: /gpfs/data/proteomics/data/Endometrial_mIF/out_256/data
+label_images_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging/label_images
 
 #specific paths
 clustering_dir: clustering
-label_images_dir: label_images
+sample_metadata_dir: metadata_per_sample
 matrix_normal_filtered_path: normalized_matrix/matrix_normal_filtered_markers.npy
 umap_coord_path: umap/coord.npy
 figures_dir: analysis_figures
