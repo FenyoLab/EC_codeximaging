@@ -2,8 +2,13 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
+import pdb
 
-def umap_by_sample(umap_path, sample_names_path, plot_dir, cols = 4):
+def umap_by_sample(umap_path, sample_names_path, plot_dir, n_clusters, cols = 4):
+
+    if os.path.exists(f'{plot_dir}/umap_by_sample.png'):  #if clustering already exists, skip
+        print('umap_by_sample plot already exists, skipping')
+        return
 
     os.makedirs(plot_dir, exist_ok = True)
 
