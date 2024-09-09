@@ -5,8 +5,16 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy.stats import zscore
+import pdb
 
-def gen_cluster_centroid_matrix(matrix_path, labels_path, plot_dir, channel_names=None):
+def gen_cluster_centroid_matrix(matrix_path, labels_path, plot_dir, n_clusters, channel_names=None):
+    
+    if os.path.exists(f'{plot_dir}/cluster_centroids_df.csv'):  #if clustering already exists, skip
+        print('cluster_centroids_df already exists, skipping')
+        return
+    
+    print("generating cluster_centroids_df")
+
     # Load data
     matrix = np.load(matrix_path)
     print(matrix.shape)
@@ -27,6 +35,11 @@ def gen_cluster_centroid_matrix(matrix_path, labels_path, plot_dir, channel_name
     return cluster_centroids
 
 def plot_cluster_matrix_as_heatmap(cluster_centroids_df_path, plot_dir, n_clusters, filtered_channel_names=None):
+    
+    if os.path.exists(f'{plot_dir}/all_biomarkers_heatmap.png'):  #if clustering already exists, skip
+        print('all_biomarkers_heatmap already exists, skipping')
+        return
+    
     cluster_centroids_df = pd.read_csv(cluster_centroids_df_path, index_col=0)
     if n_clusters >= 35:
         plt.figure(figsize=(25, 10))
