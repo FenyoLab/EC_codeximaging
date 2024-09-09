@@ -5,6 +5,13 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 def umap_by_cluster(umap_path, labels_path, plot_dir, n_clusters, cols = 5):
+   
+    if os.path.exists(f'{plot_dir}/color_by_cluster.png'):  #if clustering already exists, skip
+        print('color_by_cluster plot already exists, skipping')
+        return
+    
+    print("generating color_by_cluster plot")
+
     umap_embedding = np.load(umap_path)
     print(umap_embedding.shape)
     cluster_labels = np.load(labels_path)
