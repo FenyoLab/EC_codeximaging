@@ -21,7 +21,7 @@ def create_label_image(data_dir, label_images_dir):
         label_image_path = os.path.join(sample_dir, 'label_image.tiff') #if matrix already exists, skip
         if os.path.exists(label_image_path):
             print('Label image already exists, skipping')
-            return
+            continue
 
         create_label_tiles(sample_dir)
         create_label_slide(sample_dir,image_dir)

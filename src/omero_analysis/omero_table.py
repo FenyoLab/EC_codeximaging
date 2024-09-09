@@ -24,20 +24,20 @@ def main():
     run_config = helper.load_yaml_file(config_yaml)
     config = SimpleNamespace(**run_config)
 
-    label_images_dir = os.path.join(config.out_dir, config.label_images_dir)
+    metadata_per_sample_path = os.path.join(config.out_dir, config.sample_metadata_dir)
     out_suffix = os.path.basename(config.out_dir)
 
-    omero_table(label_images_dir = label_images_dir, base_dir = config.research_drive_dir, 
-                    omero_info_dict = config.omero_image_info_dict, kerberosid = config.kerberosid, out_suffix = out_suffix)
+    omero_table(metadata_dir = metadata_per_sample_path, base_dir = config.research_drive_dir, 
+                    omero_info_dict = config.omero_image_info_dict, kerberosid = config.kerberosid) #, out_suffix = out_suffix)
 
 
-def omero_table(label_images_dir, base_dir, omero_info_dict, kerberosid = None, out_suffix = None):
+def omero_table(metadata_dir, base_dir, omero_info_dict, kerberosid = None): #, out_suffix = None):
     
     #navigate to correct dir on research drive 
-    research_drive_dir = f'/mnt/{kerberosid}/{base_dir}/{out_suffix}'
+    research_drive_dir = f'/mnt/{kerberosid}/{base_dir}/label_images'
     os.chdir(research_drive_dir)
-    os.makedirs(out_suffix, exist_ok =True)
-    os.chdir(out_suffix)
+    #os.makedirs(out_suffix, exist_ok =True)
+    #os.chdir(out_suffix)
     print(f"Current directory: {os.getcwd()}")
     
     #to save tables with date of run 
@@ -62,19 +62,22 @@ def omero_table(label_images_dir, base_dir, omero_info_dict, kerberosid = None, 
         print(f"Current directory: {os.getcwd()}")
 
         table_path = os.path.join(research_drive_dir, sample, f'metatable_{date}.csv')
+        print(table_path)
         if os.path.exists(table_path):
             print('Metatable already generated')
 
         else:
             roi_value = omero_info_dict.get(sample, {}).get('roi_id')
-            create_omero_table(label_images_dir, table_path, sample, roi_value)
+            create_omero_table(metadata_dir, table_path, sample, roi_value)
             print("omero table created")
-            
+        
+        #breakpoint()
         image_id = omero_info_dict.get(sample, {}).get('image_id')
         table_name = f'table_{date}'
         ann_id = upload_omero_table(table_path, sample, table_name, image_id, kerberosid, password)
         print("omero table uploaded")
         print(ann_id)
+
 
         conn = connect(hostname='omero.nyumc.org', username= kerberosid, password = password)
         link_table_to_roi(conn, ann_id, roi_value)
@@ -84,9 +87,9 @@ def omero_table(label_images_dir, base_dir, omero_info_dict, kerberosid = None, 
     
 
 
-def create_omero_table(label_image_dir, table_path, sample, roi_value):
+def create_omero_table(metadata_dir, table_path, sample, roi_value):
 
-    metadata = pd.read_csv(f'{label_image_dir}/{sample}/sample_metadata.csv', index_col = 0)
+    metadata = pd.read_csv(f'{metadata_dir}/{n_clusters}_clusters/{sample}/sample_metadata.csv', index_col = 0)
     print("Metadata shape:", metadata.shape)
     print(sample, roi_value)
 
