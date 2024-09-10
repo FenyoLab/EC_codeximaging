@@ -34,7 +34,7 @@ research_drive_dir: 'fenyolab/EC_codeximaging/cell_segmentation'
 omero_image_info_dict:
   20230805_Fenyo_4G_Scan3: 
     image_id: 600713
-    roi_id: n/a
+    roi_id: 1227164
   20230908-1872-4C-1_Scan2: 
     image_id: 611987
     roi_id: 1227069
@@ -46,13 +46,13 @@ omero_image_info_dict:
     roi_id: 1227071
   20231012-3535-1T_Scan2: 
     image_id: 619802
-    roi_id: n/a
+    roi_id: 1227163
   20231019-0413-3D_Scan1: 
     image_id: 620931
     roi_id: 1227070
   20230806_Fenyo_2G_Scan2: 
     image_id: 600221
-    roi_id: n/a
+    roi_id: 1227165
   20230908-6103-1J-1_Scan2: 
     image_id: 612242
     roi_id: 1227066
@@ -67,10 +67,10 @@ omero_image_info_dict:
     roi_id: 1227074
   20231019-4475-1E_Scan2: 
     image_id: 620498
-    roi_id: n/a
+    roi_id: 1227166
   20230810_0488_3K_Scan1: 
     image_id: 601969
-    roi_id: n/a
+    roi_id: 1227162
   20230908-8710-3H-1_Scan1: 
     image_id: 611002
     roi_id: 1227072
@@ -81,5 +81,5 @@ omero_image_info_dict:
     image_id: 616589
     roi_id: 1227067
   20231012-9784-6H_Scan1: 
-    image_id: 1227064
-    roi_id: n/a
+    image_id: 618713
+    roi_id: 1227064
