@@ -8,6 +8,7 @@ def clustering_analysis(save_path, n_clusters, channel_names, filtered_channel_n
     output_path = f'{save_path}/{out_suffix}'
     output_path_bycluster = f'{save_path}/{out_suffix}/{n_clusters}_clusters'
     os.makedirs(output_path, exist_ok = True)
+    os.makedirs(output_path_bycluster, exist_ok = True)
 
     umap_coord_path = os.path.join(save_path, 'umap/coord.npy')
     sample_names_path = os.path.join(save_path, 'normalized_matrix/cell_sample_names_filtered.npy')
