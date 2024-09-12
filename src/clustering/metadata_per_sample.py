@@ -15,8 +15,6 @@ def split_metadata_by_sample(metadata_path, save_path, data_dir, n_clusters, sam
             continue
         if sample == 'common_channels.txt':
             continue
-    
-        print(f"Processing sample: {sample}")
         
         sample_dir = os.path.join(save_path, f'{n_clusters}_clusters', sample)
         os.makedirs(sample_dir, exist_ok=True)
@@ -25,6 +23,8 @@ def split_metadata_by_sample(metadata_path, save_path, data_dir, n_clusters, sam
         if os.path.exists(sample_metadata_path):
             print('Metadata already exists for this sample, skipping')
             continue
+
+        print(f"Processing sample: {sample}")
         
         sample_metadata = metadata[metadata['slide_id'] == sample]
         sample_metadata = sample_metadata.reset_index(drop=True)
