@@ -45,6 +45,7 @@ def omero_table(metadata_dir, base_dir, omero_info_dict, n_clusters, samples_to_
     if password is None:
         raise ValueError('No password provided in environment variable YOUR_PASSWORD')
     print(password)
+    breakpoint()
 
     sample_names = os.listdir(research_drive_dir) 
     for sample in sample_names:
@@ -61,7 +62,7 @@ def omero_table(metadata_dir, base_dir, omero_info_dict, n_clusters, samples_to_
         print(f"Current directory: {os.getcwd()}")
 
         roi_value = omero_info_dict.get(sample, {}).get('roi_id')
-        table_path = os.path.join(research_drive_dir, sample, f'metatable_{date}.csv')
+        table_path = os.path.join(research_drive_dir, sample, f'metatable_{n_clusters}_{date}.csv')
         print(table_path)
         if os.path.exists(table_path):
             print('Metatable already generated')
@@ -74,6 +75,7 @@ def omero_table(metadata_dir, base_dir, omero_info_dict, n_clusters, samples_to_
         table_name = f'table_{n_clusters}_{date}'
         ann_id = upload_omero_table(table_path, sample, table_name, image_id, roi_value, kerberosid, password)
         print(f"OMERO table uploaded for {sample}")
+        breakpoint()
     
         os.chdir('..')
     
