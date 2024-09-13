@@ -10,12 +10,14 @@ config = SimpleNamespace(**run_config)
 
 #import python files
 from src.cell_segmentation import get_cell_segmentations
+from src.threshold_markers import threshold_markers
 from src.normalize_matrix import get_normalized_matrix
 from src.umap_reduction import gen_umap_embedding 
 from src.clustering import kmeans
 from src.clustering import metadata_per_sample
 from src.analysis import clustering_analysis
 
+thresholded_dir = os.path.join(config.out_dir, config.thresholded_dir)
 normal_matrix_filtered_path = os.path.join(config.out_dir, config.matrix_normal_filtered_path)
 umap_coord_path = os.path.join(config.out_dir, config.umap_coord_path)
 kmeans_labels_path = os.path.join(config.out_dir, config.clustering_dir, f'{config.n_clusters}_clusters', 'kmeans_labels.npy')
@@ -27,8 +29,10 @@ metadata_per_sample_path = os.path.join(config.out_dir, config.sample_metadata_d
 #call segmentation function 
 get_cell_segmentations(data_path = config.data_dir, tile_size = config.tile_size, batch_size = config.batch_size, 
                        save_path = config.segementation_data_dir, num_biomarkers = config.num_channels)
+#threshold raw_matrix
+threshold_markers(data_dir = config.segementation_data_dir, channel_names = config.channel_names, threshold_dict = config.thesholding_biomarkers_dict, save_path = config.out_dir)
 #call normalization function 
-get_normalized_matrix(save_path = config.out_dir, raw_data_dir = config.segementation_data_dir, channel_names = config.channel_names, filtered_channel_names = config.filtered_channel_names, samples_to_remove = config.samples_to_skip) 
+get_normalized_matrix(save_path = config.out_dir, raw_data_dir = config.segementation_data_dir, thresholded_dir = thresholded_dir, channel_names = config.channel_names, filtered_channel_names = config.filtered_channel_names, samples_to_remove = config.samples_to_skip) 
 #call umap function 
 gen_umap_embedding.plot_umap(emb_path = normal_matrix_filtered_path, umap_emb_path = umap_coord_path, save_path = config.out_dir)
 #call kmeans function 
