@@ -4,7 +4,7 @@ import time
 import numpy as np
 import pandas as pd
 
-def get_normalized_matrix(save_path, raw_data_dir, channel_names, filtered_channel_names, output_suffix = 'normalized_matrix', samples_to_remove = None):
+def get_normalized_matrix(save_path, raw_data_dir, thresholded_dir, channel_names, filtered_channel_names, output_suffix = 'normalized_matrix', samples_to_remove = None):
     start_time = time.time()
 
     output_path = f'{save_path}/{output_suffix}'
@@ -20,12 +20,12 @@ def get_normalized_matrix(save_path, raw_data_dir, channel_names, filtered_chann
         matrix_dir = os.path.join(save_path, 'matrix_filtered_samples')
         os.makedirs(matrix_dir, exist_ok = True)
         from src.normalization.filter_matrix import filter_by_sample
-        filter_by_sample(raw_data_dir, matrix_dir, samples_to_remove)
+        filter_by_sample(raw_data_dir, matrix_dir, thresholded_dir, samples_to_remove)
         matrix_filtered, dapi_filter = filter_matrix_rows(output_path, matrix_dir)
         filter_metadata(dapi_filter, matrix_dir, output_path)
     
     else:
-        matrix_filtered, dapi_filter = filter_matrix_rows(output_path, raw_data_dir)
+        matrix_filtered, dapi_filter = filter_matrix_rows(output_path, thresholded_dir)
         filter_metadata(dapi_filter, raw_data_dir, output_path)
 
     normalize_matrix(output_path, matrix_filtered, channel_names)
@@ -38,15 +38,8 @@ def get_normalized_matrix(save_path, raw_data_dir, channel_names, filtered_chann
     print(f"Time elapsed: {elapsed_time:.2f} seconds")
 
 def filter_matrix_rows(output_path, matrix_dir): #, channel_names):
-
-    #matrix_filtered_path = os.path.join(output_path, 'matrix_filtered.npy') #if matrix already exists, skip
-    #if os.path.exists(matrix_filtered_path):
-    #    print('Filtered matrix already exists, skipping')
-    #    return None, None
-    
+ 
     raw_matrix_path = os.path.join(matrix_dir, 'matrix.npy')
-    
-    #new way where only DAPI (and doublets) are filtered
     from src.normalization.filter_matrix import filter_by_dapi_threshold
     matrix_filtered, dapi_filter = filter_by_dapi_threshold(raw_matrix_path, output_path)
 
@@ -107,6 +100,7 @@ def normalize_matrix(output_path, matrix_filtered, channel_names):
             array = sample_matrix[:, col]
             mean = np.mean(array)
             std = np.std(array)
+            print(col, std)
             array_zscore = (array - mean) / std
             array_arcsinh = np.arcsinh(array_zscore)
 
