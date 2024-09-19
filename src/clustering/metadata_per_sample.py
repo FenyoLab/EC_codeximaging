@@ -9,10 +9,12 @@ def split_metadata_by_sample(metadata_path, save_path, data_dir, n_clusters, sam
     os.makedirs(save_path, exist_ok=True)
     unique_sample_names = os.listdir(data_dir)
     
+
     for sample in unique_sample_names:
-        if sample in samples_to_remove:
-            print(f"Skipping sample: {sample}")
-            continue
+        if samples_to_remove is not None:
+            if sample in samples_to_remove:
+                print(f"Skipping sample: {sample}")
+                continue
         if sample == 'common_channels.txt':
             continue
         

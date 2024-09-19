@@ -14,7 +14,7 @@ samples_to_skip: [20230805_Fenyo_4G_Scan3, 20230806_Fenyo_2G_Scan2, 20230810_048
 
 #base paths
 segementation_data_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging/raw_segmentation_data
-out_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging/out_9-13-24
+out_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging/out_9-13-24b
 data_dir: /gpfs/data/proteomics/data/Endometrial_mIF/out_256/data
 label_images_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging/label_images
 
@@ -48,7 +48,7 @@ omero_image_info_dict:
     roi_id: 1227071
   20231012-3535-1T_Scan2: 
     image_id: 619802
-    roi_id: 1227219
+    roi_id: 1227385
   20231019-0413-3D_Scan1: 
     image_id: 620931
     roi_id: 1227070

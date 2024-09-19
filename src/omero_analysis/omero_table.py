@@ -72,7 +72,7 @@ def omero_table(metadata_dir, base_dir, omero_info_dict, n_clusters, samples_to_
             print("omero table created")
         
         image_id = omero_info_dict.get(sample, {}).get('image_id')
-        table_name = f'table_{n_clusters}_{date}'
+        table_name = f'cluster_celltype_{n_clusters}_{date}'
         ann_id = upload_omero_table(table_path, sample, table_name, image_id, roi_value, kerberosid, password)
         print(f"OMERO table uploaded for {sample}")
         breakpoint()

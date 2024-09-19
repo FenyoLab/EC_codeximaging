@@ -79,7 +79,19 @@ def normalize_matrix(output_path, matrix_filtered, channel_names):
     print("Matrix filtered by rows shape:", matrix_filtered.shape)
 
     #cap matrix to 99th percentile values per biomarker
-    matrix_capped = np.clip(matrix_filtered, 0, np.percentile(matrix_filtered, 99, axis=0))
+    matrix_capped = np.clip(matrix_filtered, 0, np.percentile(matrix_filtered, 99.9, axis=0))
+    
+    # Create a copy of the matrix to avoid modifying the original
+    #matrix_capped = np.copy(matrix_filtered)
+    
+    # Apply np.clip to all columns except column 28
+    #for i in range(matrix_filtered.shape[1]):
+    #    if i != 28:
+    #        matrix_capped[:, i] = np.clip(matrix_filtered[:, i], 0, np.percentile(matrix_filtered[:, i], 99))
+
+    # Cap column 28 to 99.9 directly
+    #matrix_capped[:, 28] = np.clip(matrix_filtered[:, 28], 0, 99.9)
+
 
     #appy zscore and arcsinh transformation
     cell_sample_names_filtered = np.load(os.path.join(output_path, 'cell_sample_names_filtered.npy'))
