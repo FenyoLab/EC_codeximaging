@@ -5,7 +5,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import pdb
 
-def proportion_per_cluster(sample_names_path, labels_path, plot_dir, n_clusters, slides = None):
+def proportion_per_cluster(sample_names_path, labels_path, plot_dir, n_clusters):
     if os.path.exists(f'{plot_dir}/sample_per_cluster.pdf'):  #if clustering already exists, skip
         print('sample_per_cluster plot already exists, skipping')
         return
@@ -14,6 +14,7 @@ def proportion_per_cluster(sample_names_path, labels_path, plot_dir, n_clusters,
 
     sample_names = np.load(sample_names_path)
     unique_samples = np.unique(sample_names)
+    slide_names = [sample[14:16] for sample in unique_samples]
     
     labels = np.load(labels_path) 
     unique_labels = np.unique(labels) 
@@ -31,11 +32,11 @@ def proportion_per_cluster(sample_names_path, labels_path, plot_dir, n_clusters,
         plt.figure(figsize=(25, 10))
     else:
         plt.figure(figsize=(20, 10))
-    sns.heatmap(proportion_matrix, cmap='Blues', annot=False, fmt=".2f", cbar_kws={'label': 'Proportion'}, vmin = 0, vmax = 1)
+    sns.heatmap(proportion_matrix, cmap='Blues', annot=True, fmt=".2f", cbar_kws={'label': 'Proportion'}, vmin = 0, vmax = 1)
     plt.xlabel('Cluster', fontsize=18)
     plt.ylabel('Sample', fontsize=18)
     plt.xticks(ticks=np.arange(len(unique_labels)) + 0.5, labels=np.arange(1, len(unique_labels) + 1))
-    plt.yticks(ticks=[i + 0.5 for i in range(len(slides))], labels=slides)
+    plt.yticks(ticks=[i + 0.5 for i in range(len(unique_samples))], labels=slide_names)
     plt.title('Proportion of Samples in Each Cluster')
     plt.tight_layout()
     plt.savefig(f'{plot_dir}/sample_per_cluster.png')
