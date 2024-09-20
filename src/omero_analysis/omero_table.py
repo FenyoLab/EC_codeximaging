@@ -28,10 +28,11 @@ def main():
     out_suffix = os.path.basename(config.out_dir)
 
     omero_table(metadata_dir = metadata_per_sample_path, base_dir = config.research_drive_dir, 
-                    omero_info_dict = config.omero_image_info_dict, n_clusters = config.n_clusters, samples_to_remove = config.samples_to_skip, kerberosid = config.kerberosid, out_suffix = out_suffix) #, out_suffix = out_suffix)
+                omero_info_dict = config.omero_image_info_dict, n_clusters = config.n_clusters, 
+                samples_to_remove = None, kerberosid = config.kerberosid, out_suffix = out_suffix)
 
 
-def omero_table(metadata_dir, base_dir, omero_info_dict, n_clusters, samples_to_remove = None, kerberosid = None, out_suffix = None): #, out_suffix = None):
+def omero_table(metadata_dir, base_dir, omero_info_dict, n_clusters, samples_to_remove = None, kerberosid = None, out_suffix = None): 
     
     #navigate to correct dir on research drive 
     research_drive_dir = f'/mnt/{kerberosid}/{base_dir}/label_images'
@@ -45,15 +46,13 @@ def omero_table(metadata_dir, base_dir, omero_info_dict, n_clusters, samples_to_
     if password is None:
         raise ValueError('No password provided in environment variable YOUR_PASSWORD')
     print(password)
-    breakpoint()
 
     sample_names = os.listdir(research_drive_dir) 
     for sample in sample_names:
-        
-        #for testing purposes
-        if sample in samples_to_remove:
-            print(f"Skipping sample: {sample}")
-            continue
+        if samples_to_remove is not None:
+            if sample in samples_to_remove:
+                print(f"Skipping sample: {sample}")
+                continue
         
         print(f'Processing sample {sample}')
 
@@ -75,7 +74,6 @@ def omero_table(metadata_dir, base_dir, omero_info_dict, n_clusters, samples_to_
         table_name = f'cluster_celltype_{n_clusters}_{date}'
         ann_id = upload_omero_table(table_path, sample, table_name, image_id, roi_value, kerberosid, password)
         print(f"OMERO table uploaded for {sample}")
-        breakpoint()
     
         os.chdir('..')
     
