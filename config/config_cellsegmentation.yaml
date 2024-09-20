@@ -13,10 +13,10 @@ slides: ["3P", "3H-1", "1J-1", "1O", "3S", "1P", "3D", "6H", "1H", "1T", "4I", "
 samples_to_skip: [20230805_Fenyo_4G_Scan3, 20230806_Fenyo_2G_Scan2, 20230810_0488_3K_Scan1]
 
 #base paths
-segementation_data_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging/raw_segmentation_data
-out_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging/out_9-13-24b
+segementation_data_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/raw_segmentation_data
+out_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_9-13-24b
 data_dir: /gpfs/data/proteomics/data/Endometrial_mIF/out_256/data
-label_images_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging/label_images
+label_images_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/label_images
 
 #specific paths
 clustering_dir: clustering
@@ -26,6 +26,7 @@ umap_coord_path: umap/coord.npy
 figures_dir: analysis_figures
 metadata_filtered_path: normalized_matrix/metadata_filtered.csv
 thresholded_dir: thresholded_matrix
+preprocessing: preprocessing
 
 #research drive
 mount_lab: fenyolab

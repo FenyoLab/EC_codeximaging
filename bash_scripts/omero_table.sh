@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=create omero table
+#SBATCH --job-name=create_omero_table
 #SBATCH --mail-type=FAIL # Mail events (NONE, BEGIN, END, FAIL, ALL)
 #SBATCH --ntasks=2
 #SBATCH --output=../logs/create_omero_table_%j.txt
