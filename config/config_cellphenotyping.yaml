@@ -1,0 +1,22 @@
+#cluster phenotypes 
+cluster_celltype_labels:
+  1: endothelial_cell 
+  2: tumor_cell
+  3: macrophage
+  4: undefined 
+  5: helper_Tcell
+  6: cytotoxic_Tcell 
+  7: undefined 
+  8: tumor
+  9: macrophage
+  10: tumor_cell
+  11: macrophage
+  12: neutrophil 
+  13: tumor_cell 
+  14: cytotoxic_Tcell 
+  15: immune_cell 
+  16: neutrophil 
+  17: Bcell 
+  18: tumor 
+  19: immune_cell
+  20: undefined
