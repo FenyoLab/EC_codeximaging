@@ -1,3 +1,20 @@
 out_8_26_24:
     - removed samples: 4G, 3K, 1E, 2G, 1T
     - removed channels (from lineage markers): HLA-ABC, PanCK (PD-1, PD-L1, Ki67)
+
+out_9_13_24:
+    - removed samples: 4G, 3K, 2G,
+    - lineage markers: DAPI, MPO, E-cadherin, CD163, CD4, CD68, CD8, CD20, CD31, CD3e
+    - thresholded markers: CD20
+    - matrix capped at 99% value except cd20 - capped at 99.9
+
+out_9_13_24b:
+    - removed samples: None
+    - lineage markers: DAPI, MPO, E-cadherin, CD163, CD4, CD68, CD8, CD20, CD31, CD3e
+    - thresholded markers: CD20
+
+out_9-13-24c:
+    - removed samples: 4G, 3K, 2G,
+    - lineage markers: DAPI, MPO, E-cadherin, CD163, CD4, CD68, CD8, CD20, CD31, CD3e
+    - thresholded markers: CD20
+    - matrix capped at 99.9% value 

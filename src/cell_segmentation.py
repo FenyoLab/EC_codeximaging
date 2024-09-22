@@ -8,6 +8,8 @@ import pandas as pd
 import torch
 from deepcell.applications import Mesmer
 
+os.environ.update({"DEEPCELL_ACCESS_TOKEN": "<token-from-users.deepcell.org>"})
+
 def get_cell_segmentations(data_path, tile_size, batch_size, save_path, num_biomarkers):
     start_time = time.time()
 
@@ -27,7 +29,7 @@ def get_cell_segmentations(data_path, tile_size, batch_size, save_path, num_biom
     print("Cell segmentation complete")
     print(f"Time elapsed: {elapsed_time:.2f} seconds")
 
-def load_dataset(data_path, tile_size, batch_size, num_workers = 8):
+def load_dataset(data_path, tile_size, batch_size, num_workers = 1):
     '''loads dataset into a dataloader'''
     input_size = 224
     from torchvision import transforms

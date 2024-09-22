@@ -32,11 +32,16 @@ def filter_by_biomarker(normal_matrix_path, channel_names, filtered_channel_name
 
     return filtered_matrix
 
-def filter_by_sample(raw_data_dir, output_dir, samples_to_remove):
+def filter_by_sample(raw_data_dir, output_dir, thresholded_dir, samples_to_remove):
     # Load the data
     cell_sample_names = np.load(os.path.join(raw_data_dir, 'cell_sample_names.npy'))
     metadata_df = pd.read_csv(os.path.join(raw_data_dir, 'metadata.csv'), index_col=0)
-    matrix = np.load(os.path.join(raw_data_dir, 'matrix.npy'))
+    matrix = np.load(os.path.join(thresholded_dir, 'matrix.npy'))
+
+    matrix_filtered_by_sample_path = os.path.join(output_dir, 'matrix.npy')
+    if os.path.exists(matrix_filtered_by_sample_path):
+        print('Matrix filtered by sample already exists, skipping')
+        return
 
     # Find indices to remove
     indices_to_remove = []
@@ -60,6 +65,6 @@ def filter_by_sample(raw_data_dir, output_dir, samples_to_remove):
     print("Metadata shape after:", metadata_df.shape)
 
     # Save the filtered data
+    np.save(matrix_filtered_by_sample_path, matrix)
     np.save(os.path.join(output_dir, 'cell_sample_names.npy'), cell_sample_names)
-    np.save(os.path.join(output_dir, 'matrix.npy'), matrix)
     metadata_df.to_csv(os.path.join(output_dir, 'metadata.csv'), index=True)
