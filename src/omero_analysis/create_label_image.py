@@ -19,9 +19,15 @@ def create_label_image(data_dir, label_images_dir):
         image_dir = os.path.join(data_dir, sample)
         
         label_image_path = os.path.join(sample_dir, 'label_image.tiff') #if matrix already exists, skip
+        
         if os.path.exists(label_image_path):
+<<<<<<< Updated upstream
             print('Label image already exists, skipping')
             continue
+=======
+            print('Label image tiff already exists, skipping')
+            return
+>>>>>>> Stashed changes
 
         create_label_tiles(sample_dir)
         create_label_slide(sample_dir,image_dir)

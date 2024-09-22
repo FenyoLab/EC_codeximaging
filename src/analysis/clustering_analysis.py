@@ -2,7 +2,6 @@ import os
 
 from src.analysis import color_by_sample, color_by_marker, color_by_cluster, sample_per_cluster, expression_per_cluster
 
-
 def clustering_analysis(save_path, n_clusters, channel_names, filtered_channel_names, slide_names, out_suffix = 'analysis_figures'):
 
     output_path = f'{save_path}/{out_suffix}'
