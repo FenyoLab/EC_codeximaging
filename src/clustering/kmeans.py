@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import pdb
 
 import sklearn.cluster as cluster
 
@@ -63,10 +64,15 @@ def add_labels_to_metadata(labels_path, raw_metadata_path, filtered_metadata_pat
     print("Raw metadata shape after clusters added: ", raw_metadata.shape)
     raw_metadata.to_csv(metadata_with_clusters_path, index = True)
 
+def assign_cellphenotype(clustering_results_dir, n_clusters, cluster_labels):
+    metadata_with_cluster_labels_path = os.path.join(clustering_results_dir, 'clustering', f'{n_clusters}_clusters', 'metadata_with_cluster_labels.csv')
+    metadata_with_cluster_labels = pd.read_csv(metadata_with_cluster_labels_path)
 
-#labels_path = '/gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging/out_8-26-24/clustering/kmeans_labels.npy'
-#raw_metadata_path = '/gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging/raw_segmentation_data/metadata.csv'
-#filtered_metadata_path = '/gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging/out_8-26-24/normalized_matrix/metadata_filtered.csv'
-#save_path = '/gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging/out_8-26-24'
+    #add a column to the metadata file assigning cluster labels cell types
+    #map(): The map() function in pandas is used to map values from a dictionary to a DataFrame column.
+    metadata_with_cluster_labels['cell_type'] = metadata_with_cluster_labels['cluster_label'].map(cluster_labels)
+    metadata_with_cluster_labels.to_csv(metadata_with_cluster_labels_path, index=False)
 
-#add_labels_to_metadata(labels_path, raw_metadata_path, filtered_metadata_path, save_path, n_clusters=20)
+
+    
+    
