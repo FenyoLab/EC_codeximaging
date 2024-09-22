@@ -50,25 +50,38 @@ def move_label_images_to_omero(label_images_dir, base_dir, image_id_dict, kerber
         os.chdir(sample)
         print(f"Current directory: {os.getcwd()}")
 
-        copied_label_image_path = os.path.join(research_drive_dir, out_suffix, sample, 'label_image.zarr')
-        if os.path.exists(copied_label_image_path):
-            print('Label image already exists, skipping')
-            continue
-        
         original_label_image_path = os.path.join(label_images_dir, sample, 'label_image.zarr')
+        copied_label_image_path = os.path.join(research_drive_dir, out_suffix, sample, 'label_image.zarr')
         backup_path = os.path.join(research_drive_dir, out_suffix, sample, 'backup.zarr')
+        
+        if os.path.exists(backup_path):
+            print('Label image already exists, skipping')
+        else:
+            copy_directory(original_label_image_path, copied_label_image_path)
+            copy_directory(copied_label_image_path, backup_path)
+            print(f"Label image successfully copied with backup for {sample}")
 
-        copy_directory(original_label_image_path, copied_label_image_path)
-        copy_directory(copied_label_image_path, backup_path)
-        print(f"Label image successfully copied with backup for {sample}")
+        labels_path = os.path.join('label_image.zarr', '0', 'labels')
+        zero_path = os.path.join('label_image.zarr', '0', '0')
 
-        image_name = f'raw_cell_label_image'
-        image_id = image_id_dict.get(sample, {}).get('image_id')
-        print(sample, image_id)
-        server_directory = os.path.join('/omero', base_dir, out_suffix, sample)
-        print(server_directory)
-        run_roi_converter_ngff(image_id, image_name, kerberosid, password, server_directory)
-        print(f"Label image for sample {sample} has been succesfully imported into omero")
+        # Check which directory exists and perform actions accordingly
+        if os.path.isdir(labels_path):
+            print(f"Label image already uploaded to omero with roi_converter_ngff")
+        
+        elif os.path.isdir(zero_path):
+            print(f"Uploading label image with roi_converter_ngff")
+            image_name = f'raw_cell_label_image'
+            image_id = image_id_dict.get(sample, {}).get('image_id')
+            print(sample, image_id)
+            server_directory = os.path.join('/omero', base_dir, out_suffix, sample)
+            print(server_directory)
+
+            try:
+                run_roi_converter_ngff(image_id, image_name, kerberosid, password, server_directory)
+                print(f"Label image for sample {sample} has been successfully imported into OMERO")
+            except Exception as e:
+                print(f"Error: {e}")
+                sys.exit(1)
 
         os.chdir('..')
 

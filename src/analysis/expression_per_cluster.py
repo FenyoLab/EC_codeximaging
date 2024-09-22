@@ -42,7 +42,7 @@ def plot_cluster_matrix_as_heatmap(cluster_centroids_df_path, plot_dir, n_cluste
     
     cluster_centroids_df = pd.read_csv(cluster_centroids_df_path, index_col=0)
     if n_clusters >= 35:
-        plt.figure(figsize=(25, 10))
+        plt.figure(figsize=(30, 10))
     else:
         plt.figure(figsize=(20, 10))
     #plt.figure(figsize=(35, 15))
@@ -59,7 +59,7 @@ def plot_cluster_matrix_as_heatmap(cluster_centroids_df_path, plot_dir, n_cluste
     if filtered_channel_names is not None:
         filtered_df = cluster_centroids_df.loc[filtered_channel_names]
         if n_clusters >= 35:
-            plt.figure(figsize=(25, 10))
+            plt.figure(figsize=(30, 6))
         else:
             plt.figure(figsize=(20, 10))
         sns.heatmap(filtered_df, annot=True, fmt=".2f", cmap='coolwarm', cbar=True)
