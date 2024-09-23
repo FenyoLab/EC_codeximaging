@@ -45,8 +45,8 @@ def clustering(emb_path, umap_path, n_clusters, save_path, output_suffix = 'clus
 def add_labels_to_metadata(labels_path, raw_metadata_path, filtered_metadata_path, save_path, n_clusters, output_suffix = 'clustering'):
 
     output_path = f'{save_path}/{output_suffix}/{n_clusters}_clusters'
-    metadata_with_clusters_path = os.path.join(output_path, 'metadata_with_cluster_labels.csv')
-    if os.path.exists(metadata_with_clusters_path):  #if clustering already exists, skip
+    phenotype_clusters_df_path = os.path.join(output_path, 'phenotype_clusters.csv')
+    if os.path.exists(phenotype_clusters_df_path):  #if clustering already exists, skip
         print('Cluster labels already added to metadata, skipping')
         return
     
@@ -54,24 +54,28 @@ def add_labels_to_metadata(labels_path, raw_metadata_path, filtered_metadata_pat
     raw_metadata = pd.read_csv(raw_metadata_path, index_col = 0)
     filtered_metadata = pd.read_csv(filtered_metadata_path, index_col = 0)
 
-    print("Raw metadata shape before clusters added: ", raw_metadata.shape)
+    print("Raw metadata shape: ", raw_metadata.shape)
 
     # Create a mapping of filtered indices to cluster labels
     index_to_cluster = pd.Series(cluster_labels, index=filtered_metadata.index).to_dict()
     # Add the cluster label column to raw_metadata with default value 0
     raw_metadata['cluster_label'] = raw_metadata.index.map(index_to_cluster).fillna(0).astype(int)
+    phenotype_clusters_df = raw_metadata[['slide_id', 'cluster_label']]
+    phenotype_clusters_df.index = phenotype_clusters_df.index + 1
 
-    print("Raw metadata shape after clusters added: ", raw_metadata.shape)
-    raw_metadata.to_csv(metadata_with_clusters_path, index = True)
+    print("Phenotype clusters df shape: ", phenotype_clusters_df.shape)
+    assert raw_metadata.shape[0] == phenotype_clusters_df.shape[0], "Number of rows do not match!"
+
+    phenotype_clusters_df.to_csv(phenotype_clusters_df_path, index = True)
 
 def assign_cellphenotype(clustering_results_dir, n_clusters, cluster_labels):
-    metadata_with_cluster_labels_path = os.path.join(clustering_results_dir, 'clustering', f'{n_clusters}_clusters', 'metadata_with_cluster_labels.csv')
-    metadata_with_cluster_labels = pd.read_csv(metadata_with_cluster_labels_path)
+    phenotype_clusters_df_path = os.path.join(clustering_results_dir, 'clustering', f'{n_clusters}_clusters', 'phenotype_clusters.csv')
+    phenotype_clusters_df = pd.read_csv(phenotype_clusters_df_path)
 
     #add a column to the metadata file assigning cluster labels cell types
     #map(): The map() function in pandas is used to map values from a dictionary to a DataFrame column.
-    metadata_with_cluster_labels['cell_type'] = metadata_with_cluster_labels['cluster_label'].map(cluster_labels)
-    metadata_with_cluster_labels.to_csv(metadata_with_cluster_labels_path, index=False)
+    phenotype_clusters_df['cell_type'] = phenotype_clusters_df['cluster_label'].map(cluster_labels)
+    phenotype_clusters_df.to_csv(phenotype_clusters_df_path, index=False)
 
 
     
