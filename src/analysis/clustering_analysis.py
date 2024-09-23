@@ -3,7 +3,7 @@ import os
 from src.analysis import color_by_sample, color_by_marker, color_by_cluster, sample_per_cluster, expression_per_cluster
 
 
-def clustering_analysis(save_path, n_clusters, channel_names, filtered_channel_names, slide_names, out_suffix = 'analysis_figures'):
+def clustering_analysis(save_path, n_clusters, channel_names, filtered_channel_names, out_suffix = 'analysis_figures'):
 
     output_path = f'{save_path}/{out_suffix}'
     output_path_bycluster = f'{save_path}/{out_suffix}/{n_clusters}_clusters'
@@ -21,4 +21,4 @@ def clustering_analysis(save_path, n_clusters, channel_names, filtered_channel_n
     color_by_cluster.umap_by_cluster(umap_coord_path, kmeans_labels_path, output_path_bycluster, n_clusters)
     expression_per_cluster.gen_cluster_centroid_matrix(normal_matrix_path, kmeans_labels_path, output_path_bycluster, n_clusters, channel_names)
     expression_per_cluster.plot_cluster_matrix_as_heatmap(cluster_centroids_df_path, output_path_bycluster, n_clusters, filtered_channel_names)
-    sample_per_cluster.proportion_per_cluster(sample_names_path, kmeans_labels_path, output_path_bycluster, n_clusters, slide_names)
+    sample_per_cluster.proportion_per_cluster(sample_names_path, kmeans_labels_path, output_path_bycluster, n_clusters)
