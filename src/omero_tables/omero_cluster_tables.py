@@ -33,7 +33,7 @@ def celltype_clusters_omero_df(metadata_path, save_path, data_dir, omero_info_di
         
         sample_omero_df_path = os.path.join(sample_dir, 'omero_df_celltype_clusters.csv')
         if os.path.exists(sample_omero_df_path):
-            print('Cluster information already exists for this sample, skipping')
+            print(f'Cluster information already exists for this {sample}, skipping')
             continue
 
         print(f"Processing sample: {sample}")
@@ -67,9 +67,6 @@ def upload_omero_table(table_dir, omero_info_dict, n_clusters, kerberosid = None
 
     sample_names = os.listdir(table_dir) 
     for sample in sample_names:
-        if samples_to_remove is not None and sample in samples_to_remove:
-            print(f"Skipping sample: {sample}")
-            continue
 
         print(f'Processing sample {sample}')
 
@@ -82,6 +79,7 @@ def upload_omero_table(table_dir, omero_info_dict, n_clusters, kerberosid = None
                 links=[("Image", image_id), ("Roi", roi_value)], server="omero.nyumc.org", 
                 port=4064, username=kerberosid, password=password)
         print(f"OMERO table uploaded for {sample}")
+        breakpoint()
 
 if __name__ == "__main__":
     main()
