@@ -9,10 +9,6 @@ def create_label_image(data_dir, label_images_dir):
     sample_names = os.listdir(label_images_dir)
 
     for sample in sample_names:
-        #if sample in samples_to_remove:
-        #    print(f"Skipping sample: {sample}")
-        #    continue
-
         print(f"Processing sample: {sample}")
 
         sample_dir = os.path.join(label_images_dir, sample)
