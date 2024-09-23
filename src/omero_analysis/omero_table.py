@@ -29,7 +29,7 @@ def main():
 
     omero_table(metadata_dir = metadata_per_sample_path, base_dir = config.research_drive_dir, 
                 omero_info_dict = config.omero_image_info_dict, n_clusters = config.n_clusters, 
-                samples_to_remove = None, kerberosid = config.kerberosid, out_suffix = out_suffix)
+                samples_to_remove = config.samples_to_remove, kerberosid = config.kerberosid, out_suffix = out_suffix)
 
 
 def omero_table(metadata_dir, base_dir, omero_info_dict, n_clusters, samples_to_remove = None, kerberosid = None, out_suffix = None): 
