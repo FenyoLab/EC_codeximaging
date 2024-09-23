@@ -10,7 +10,7 @@ exclude_channel_names: ['pJAK1', 'CD56', 'MAL', 'Her2', 'STAT1']
 
 #slides: ["3P", "3K", "3H-1", "1J-1", "1O", "3S", "1P", "3D", "6H", "1H", "2G", "1T", "4I", "1I", "1E", "4C-1", "4G"]
 slides: ["3P", "3H-1", "1J-1", "1O", "3S", "1P", "3D", "6H", "1H", "1T", "4I", "1I", "1E", "4C-1"] #make these 2 lines more consistent
-samples_to_skip: [20230805_Fenyo_4G_Scan3, 20230806_Fenyo_2G_Scan2, 20230810_0488_3K_Scan1]
+samples_to_remove: None
 
 #base paths
 segementation_data_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/raw_segmentation_data
