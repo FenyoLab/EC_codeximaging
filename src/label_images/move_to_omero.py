@@ -4,28 +4,6 @@ import shutil
 import subprocess
 import sys
 import getpass
-import pdb
-
-from types import SimpleNamespace
-
-sys.path.append('../..')
-from utils import helper
-#sys.path.append('src/omero_analysis')
-
-'''this script must be run from datamover node with omero conda environment activated'''
-'''first mount the research drive directly in terminal and then run the script (from sbatch)'''
-
-def main():
-    #load in config 
-    config_yaml= '/gpfs/home/mh6486/projects/mh6486/FenyoLab/Endometrial/EC_codeximaging/config/config_cellsegmentation_test.yaml'
-    run_config = helper.load_yaml_file(config_yaml)
-    config = SimpleNamespace(**run_config)
-
-    label_images_dir = os.path.join(config.out_dir, config.label_images_dir)
-    out_suffix = os.path.basename(config.out_dir)
-
-    move_label_images_to_omero(label_images_dir = label_images_dir, base_dir = config.research_drive_dir, 
-                            image_id_dict = config.omero_image_info_dict, kerberosid = config.kerberosid)
 
 def move_label_images_to_omero(label_images_dir, base_dir, image_id_dict, kerberosid = None, out_suffix = "label_images"):
     research_drive_dir = f'/mnt/{kerberosid}/{base_dir}'
