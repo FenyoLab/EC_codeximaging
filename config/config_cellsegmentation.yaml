@@ -15,6 +15,7 @@ segementation_data_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codexi
 out_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_9-13-24b
 data_dir: /gpfs/data/proteomics/data/Endometrial_mIF/out_256/data
 label_images_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/label_images
+qptiff_data_dir: /gpfs/data/proteomics/data/Endometrial_mIF/qptiff_dat
 
 #specific paths
 clustering_dir: clustering
@@ -47,7 +48,7 @@ omero_image_info_dict:
     roi_id: 1227071
   20231012-3535-1T_Scan2: 
     image_id: 619802
-    roi_id: 1227385
+    roi_id: 1227219
   20231019-0413-3D_Scan1: 
     image_id: 620931
     roi_id: 1227070
@@ -84,39 +85,3 @@ omero_image_info_dict:
   20231012-9784-6H_Scan1: 
     image_id: 618713
     roi_id: 1227064
-
-thesholding_biomarkers_dict:
-  20230805_Fenyo_4G_Scan3: 
-    CD20: 35
-  20230908-1872-4C-1_Scan2: 
-    CD20: 7
-  20230922-3869-1O_Scan1: 
-    CD20: 5
-  20231003-1160-3S_Scan1: 
-    CD20: 4
-  20231012-3535-1T_Scan2: 
-    CD20: 4
-  20231019-0413-3D_Scan1: 
-    CD20: 4
-  20230806_Fenyo_2G_Scan2: 
-    CD20: 45
-  20230908-6103-1J-1_Scan2: 
-    CD20: 5
-  20230922-5689-1P_Scan1: 
-    CD20: 6
-  20231003-2630-3P_Scan1: 
-    CD20: 7
-  20231012-9390-1I_Scan1: 
-    CD20: 5 
-  20231019-4475-1E_Scan2: 
-    CD20: 5
-  20230810_0488_3K_Scan1: 
-    CD20: 24
-  20230908-8710-3H-1_Scan1: 
-    CD20: 5
-  20230922-7331-1H_Scan1: 
-    CD20: 3
-  20231003-5988-4I_Scan1: 
-    CD20: 5
-  20231012-9784-6H_Scan1: 
-    CD20: 4
