@@ -77,12 +77,20 @@ def get_matrix(dataloader, output_path, num_biomarkers):
         #    break
         #print("Batch number: ", idx)
         img, (labels, locations) = batch
+        #if labels[0] != '20231019-0413-3D_Scan1':
+        #    continue
         tile_sample_names.extend(labels)
         tile_positions.extend([loc.numpy() for loc in locations]) 
         
         img_transposed = img.permute(0, 2, 3, 1).numpy()
         img_filtered = img_transposed[:, :, :, [0, 3]] 
-        segmentation_prediction = model.predict(img_filtered, image_mpp=0.5)  
+        
+        #whole cell segmentation
+        segmentation_prediction = model.predict(img_filtered, image_mpp=0.5) 
+        
+        #nuclear segmentation
+        #segmentation_prediction = model.predict(img_filtered, image_mpp=0.5, compartment='nuclear', 
+        #                                           postprocess_kwargs_nuclear = {'pixel_expansion': 2}) 
         #print("segmentation_prediction shape: ", segmentation_prediction.shape)
 
         segmentation_prediction = np.squeeze(segmentation_prediction, axis=-1)
