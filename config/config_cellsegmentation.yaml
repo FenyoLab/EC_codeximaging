@@ -3,7 +3,7 @@ tile_size: 256
 batch_size: 64
 num_channels: 36
 n_clusters: 20
-n_clusters_preprocessing: 3
+n_clusters_preprocessing: 2
 
 channel_names: ['DAPI', 'MPO', 'pJAK1', 'Ecadherin', 'PDL1', 'CD163', 'PD1', 'CD56', 'CD47', 'MAL', 'GAL3', 'PARP1', 'LAG3', 'Her2', 'CD4', 'PI3KCA', 'TIM3', 'CD68', 'ER', 'PR', 'MSH2', 'CD8', 'STAT1', 'MSH6', 'bCatenin1', 'HLAABC', 'MLH1', 'Ki67', 'CD20', 'ARID1A', 'IFNG', 'CD31', 'PMS', 'CD44', 'PanCytokeratin', 'CD3e']
 filtered_channel_names: ['DAPI', 'MPO', 'Ecadherin', 'CD163', 'CD4', 'CD68', 'CD8', 'CD20', 'CD31', 'CD3e'] #change name to cell lineage markers
@@ -14,8 +14,9 @@ samples_to_remove: None
 segementation_data_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/raw_segmentation_data
 out_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_9-13-24b
 data_dir: /gpfs/data/proteomics/data/Endometrial_mIF/out_256/data
-label_images_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/label_images
 qptiff_data_dir: /gpfs/data/proteomics/data/Endometrial_mIF/qptiff_dat
+label_images_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/label_images
+preprocessing_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/preprocessing
 
 #specific paths
 clustering_dir: clustering
