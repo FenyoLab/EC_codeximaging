@@ -9,8 +9,8 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --partition=cpu_short
 
-cd /gpfs/home/as18894/projects/as18894/FenyoLab/Endometrial/EC_codeximaging
 source ~/.bashrc
+conda activate omero
 
-conda activate omero 
+cd ../
 python main_label_images.py

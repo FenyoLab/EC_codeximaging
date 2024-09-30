@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import sys
 from matplotlib.colors import LinearSegmentedColormap
 
-def umap_by_marker_indiv(umap_path, marker_path, plot_dir, n_clusters, channel_names=None):
+def umap_by_marker_indiv(umap_path, marker_path, plot_dir, channel_names=None):
     umap_embedding = np.load(umap_path)
     markers = np.load(marker_path)
 
