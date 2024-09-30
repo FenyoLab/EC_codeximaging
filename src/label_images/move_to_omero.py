@@ -6,8 +6,9 @@ import sys
 import getpass
 
 def move_label_images_to_omero(label_images_dir, base_dir, image_id_dict, kerberosid = None, out_suffix = "label_images"):
-    
     research_drive_dir = f'/mnt/{kerberosid}/{base_dir}'
+    print(research_drive_dir)
+    
     os.chdir(research_drive_dir)
 
     os.makedirs(out_suffix, exist_ok =True)
