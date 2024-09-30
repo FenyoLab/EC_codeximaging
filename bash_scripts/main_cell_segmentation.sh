@@ -9,7 +9,7 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --partition=cpu_medium
 
-cd /gpfs/home/as18894/projects/as18894/FenyoLab/Endometrial/EC_codeximaging
-
 module load condaenvs/new/deepcell
+
+cd ../
 python main_cell_segmentation_analysis.py

@@ -4,7 +4,7 @@ from types import SimpleNamespace
 from utils import helper
 
 #import config
-config_yaml= '/gpfs/data/proteomics/projects/mh6486/FenyoLab/Endometrial/EC_codeximaging/config/config_cellsegmentation_test.yaml'
+config_yaml= '/gpfs/home/as18894/projects/as18894/FenyoLab/Endometrial/EC_codeximaging/config/config_cellsegmentation.yaml'
 run_config = helper.load_yaml_file(config_yaml)
 config = SimpleNamespace(**run_config)
 
@@ -24,14 +24,10 @@ metadata_filtered_path = os.path.join(config.out_dir, config.metadata_filtered_p
 raw_metadata_path = os.path.join(config.segementation_data_dir, 'metadata.csv')
 
 #call segmentation function 
-<<<<<<< Updated upstream
 get_cell_segmentations(data_path = config.data_dir, tile_size = config.tile_size, batch_size = config.batch_size, 
                        save_path = config.segementation_data_dir, num_biomarkers = config.num_channels)
 #threshold raw_matrix
 threshold_markers(data_dir = config.segementation_data_dir, channel_names = config.channel_names, threshold_dict = config.thesholding_biomarkers_dict, save_path = config.out_dir)
-=======
-get_cell_segmentations(data_path = config.data_dir, tile_size = config.tile_size, batch_size = config.batch_size, save_path = config.segementation_data_dir, num_biomarkers = config.num_channels)
->>>>>>> Stashed changes
 #call normalization function 
 get_normalized_matrix(save_path = config.out_dir, raw_data_dir = config.segementation_data_dir, thresholded_dir = thresholded_dir, channel_names = config.channel_names, filtered_channel_names = config.filtered_channel_names, samples_to_remove = config.samples_to_remove) 
 #call umap function 

@@ -11,6 +11,8 @@
 source ~/.bashrc
 conda activate omero
 
-export YOUR_PASSWORD='your_password'
-cd /gpfs/home/as18894/projects/as18894/FenyoLab/Endometrial/EC_codeximaging/src/omero_analysis
+source .env
+export YOUR_PASSWORD=$PASSWORD
+
+cd src/omero_analysis
 python omero_table.py
