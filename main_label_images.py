@@ -4,11 +4,11 @@ from types import SimpleNamespace
 from utils import helper
 
 #import config
-config_yaml= '/gpfs/home/as18894/projects/as18894/FenyoLab/Endometrial/EC_codeximaging/config/config_cellsegmentation.yaml'
+config_yaml= '/gpfs/data/proteomics/projects/mh6486/FenyoLab/Endometrial/EC_codeximaging/config/config_cellsegmentation_test.yaml'
 run_config = helper.load_yaml_file(config_yaml)
 config = SimpleNamespace(**run_config)
 
-from src.omero_analysis import create_label_image, split_data_by_sample, convert_tiff_to_zarr
+from src.omero_analysis import split_data_by_sample, create_label_image, convert_tiff_to_zarr
 
 metadata_path = os.path.join(config.segementation_data_dir, 'metadata.csv')
 
