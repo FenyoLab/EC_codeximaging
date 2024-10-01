@@ -171,6 +171,7 @@ cython_debug/
 *.tiff
 *.qptiff
 *.out
+*.code-workspace
 
 out*/
 logs/
