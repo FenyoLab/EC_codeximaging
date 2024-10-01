@@ -2,15 +2,15 @@ import os
 import numpy as np
 import pandas as pd
 
-def split_by_sample(tile_dir, metadata_path, label_images_dir, data_dir):
+def split_by_sample(segmentation_data_dir, label_images_dir, data_dir):
 
     os.makedirs(label_images_dir, exist_ok=True)
 
     #load in tile info 
-    segmentation_masks = np.load(os.path.join(tile_dir, 'segmentation_masks.npy'))
-    tile_positions = np.load(os.path.join(tile_dir, 'tile_positions.npy'))
-    tile_sample_names = np.load(os.path.join(tile_dir, 'tile_sample_names.npy'))
-    metadata = pd.read_csv(metadata_path)
+    segmentation_masks = np.load(os.path.join(segmentation_data_dir, 'segmentation_masks.npy'))
+    tile_positions = np.load(os.path.join(segmentation_data_dir, 'tile_positions.npy'))
+    tile_sample_names = np.load(os.path.join(segmentation_data_dir, 'tile_sample_names.npy'))
+    metadata = pd.read_csv(os.path.join(segmentation_data_dir, 'metadata.csv'), index_col = 0)
     print("Tile data loaded")
 
     print("Mask shape before swapping axes:", segmentation_masks.shape)

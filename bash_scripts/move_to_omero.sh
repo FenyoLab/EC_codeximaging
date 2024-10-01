@@ -12,7 +12,6 @@ source ~/.bashrc
 conda activate omero
 
 source .env
-export YOUR_PASSWORD=$PASSWORD
 
 cd ../
 python main_label_imgs_to_omero.py
