@@ -1,0 +1,14 @@
+#registration of H&E ROIs to mIF ROIs
+#set the singularity location to the proteomics directory!!
+data_path: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/registration_test
+
+#preprocessing
+output_path: /gpfs/data/proteomics/data/Endometrial_mIF/out_256
+#common_channel_file: /gpfs/data/proteomics/projects/mh6486/FenyoLab/Endometrial/CANVAS_v2/canvas/out_256/data/common_channels.txt
+input_path: /gpfs/data/proteomics/data/Endometrial_mIF/qptiff_dat
+input_ext: qptiff
+inference_window_um: 2
+input_pixel_per_um: 64
+selected_region: endometrium
+ROI_path: /gpfs/data/proteomics/data/Endometrial_mIF/ROI_coordinates
+common_channel_file: /gpfs/data/proteomics/projects/mh6486/FenyoLab/Endometrial/CANVAS_v2/canvas/out_256/data/common_channels.txt
