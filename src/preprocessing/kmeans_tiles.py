@@ -8,14 +8,7 @@ import zarr
 from skimage.transform import resize
 from skimage.io import imsave
 
-def main():
-    n_clusters = 2
-    mean_data_dir = '/gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/raw_segmentation_data/preprocessing'
-    save_path = os.path.join(mean_data_dir, '2_clusters')
-
-    cluster_tiles(mean_data_dir, n_clusters, save_path)
-
-def cluster_tiles(mean_data_dir, n_clusters, save_path):
+def cluster_tiles(mean_data_dir, n_clusters, clusters_dir):
 
     top5_means = np.load(os.path.join(mean_data_dir, 'top5percent_means.npy'))
     top5_means_reshaped = top5_means.reshape(-1, 1)
