@@ -5,19 +5,23 @@ import subprocess
 import sys
 import getpass
 
-def move_label_images_to_omero(label_images_dir, base_dir, image_id_dict, kerberosid = None, out_suffix = "label_images"):
+def move_label_images_to_omero(label_images_dir, base_dir, image_id_dict, out_suffix = "label_images"):
+
+    password = os.getenv('PASSWORD')
+    kerberosid = os.getenv('KERBEROSID')
+
+    if password is None:
+        raise ValueError('No password provided in environment variable PASSWORD')
+    elif kerberosid is None:
+        raise ValueError('No kerberos provided in environment variable KERBEROSID')
+    
     research_drive_dir = f'/mnt/{kerberosid}/{base_dir}'
     print(research_drive_dir)
-    
     os.chdir(research_drive_dir)
 
     os.makedirs(out_suffix, exist_ok =True)
     os.chdir(out_suffix)
     print(f"Current directory: {os.getcwd()}")
-
-    password = os.getenv('YOUR_PASSWORD')
-    if password is None:
-        raise ValueError('No password provided in environment variable YOUR_PASSWORD')
 
     print("Logging into omero")
     omero_login(kerberosid, password)
