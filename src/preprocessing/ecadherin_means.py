@@ -20,7 +20,7 @@ def main():
                             channel_names = config.channel_names, save_path = save_path)
 
 
-def get_top5_means_ecadherin(data_path, tile_size, batch_size, channel_names, save_path):
+def get_top5_means_ecadherin(data_path, tile_size, batch_size, channel_names, mean_data_dir):
 
     top5_mean_data_path=os.path.join(save_path, 'top5percent_means.npy')
     if os.path.exists(top5_mean_data_path):
