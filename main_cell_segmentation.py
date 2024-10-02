@@ -10,7 +10,7 @@ config = SimpleNamespace(**run_config)
 
 #import python files
 from src.split_tiles import ecadherin_means, kmeans_tiles, assign_tissue_identity
-from src.cell_segmentation_v2 import get_cell_segmentations
+from src.cell_segmentation import get_cell_segmentations
 #from src.cell_segmentation import get_cell_segmentations
 
 segmentation_tile_positions_dir = os.path.join(config.segementation_data_dir, config.tiles_split_dir)

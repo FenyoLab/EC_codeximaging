@@ -5,7 +5,7 @@
 #SBATCH --output=../logs/cell_segmentation_%j.txt
 #SBATCH --error=../logs/cell_segmentation_err_%j.txt
 #SBATCH --mem=200G
-#SBATCH --time=48:00:00
+#SBATCH --time=72:00:00
 #SBATCH --cpus-per-task=1
 #SBATCH --partition=cpu_medium
 
