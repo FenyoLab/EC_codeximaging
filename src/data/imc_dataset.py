@@ -268,6 +268,9 @@ class SlidesDataset(data.Dataset): #this is inheriting data.Dataset from torch!!
         lengths = []
         print('Loading slides...')
         for slide_id in tqdm(slide_ids):
+            #if slide_id == '20230720-3660-2G-1_Scan1' or slide_id == '20230720-4309-4G-1_Scan1':
+            if slide_id == '20230805_Fenyo_4G_Scan3' or slide_id == '20230806_Fenyo_2G_Scan2':
+                continue
             #print("we are in get_slides")
             #print(slide_id)
             slide_path = os.path.join(self.slides_root_path, slide_id)

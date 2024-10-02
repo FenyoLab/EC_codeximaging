@@ -16,8 +16,8 @@ def cluster_tiles(mean_data_dir, n_clusters, clusters_dir):
     sample_names = np.load(os.path.join(mean_data_dir, 'sample_names.npy'))
     unique_samples = np.unique(sample_names)
 
-    for sample in unique_samples:
-        sample_save_path = os.path.join(save_path, sample)
+    for sample in np.unique(sample_names):
+        sample_save_path = os.path.join(clusters_dir, sample)
         os.makedirs(sample_save_path, exist_ok = True)
         kmeans_labels_path = os.path.join(sample_save_path, 'kmeans_labels.npy')
         if os.path.exists(kmeans_labels_path):
@@ -50,24 +50,22 @@ def cluster_tiles(mean_data_dir, n_clusters, clusters_dir):
         plt.tight_layout()
         plt.savefig(os.path.join(sample_save_path, 'tile_kmeans_labels.png'))
         plt.close()
+        print(f'kmeans labels and cluster centers saved for sample {sample}')
 
 def create_cluster_masks(mean_data_dir, clusters_dir, data_dir, tile_size):
     sample_names = np.load(os.path.join(mean_data_dir, 'sample_names.npy'))
     tile_positions = np.load(os.path.join(mean_data_dir, 'tile_positions.npy'))
 
-    unique_samples = np.unique(sample_names)
-
     # Define colors for each cluster (you can customize these colors)
     cluster_colors = {
-        1: [255, 0, 0],     # Cluster 1: red
-        2: [0, 255, 0],     # Cluster 2: green
-        3: [0, 0, 255]      # Cluster 3: blue
+        0: [255, 0, 0],     # Cluster 0: red
+        1: [0, 255, 0]     # Cluster 1: green 
     }
 
     # Loop through each sample
-    for sample in unique_samples:
-        save_path = os.path.join(clusters_dir, sample)
-        combined_mask_path = os.path.join(save_path, f'combined_cluster_mask.png')
+    for sample in np.unique(sample_names):
+        sample_save_path = os.path.join(clusters_dir, sample)
+        combined_mask_path = os.path.join(sample_save_path, f'combined_cluster_mask.png')
         if os.path.exists(combined_mask_path):
             print(f'Cluster masks for sample {sample} already exist')
             continue
@@ -114,7 +112,7 @@ def create_cluster_masks(mean_data_dir, clusters_dir, data_dir, tile_size):
             #resize bw mask and save
             bw_mask = resize(bw_mask, (grid_height, grid_width), order=0, anti_aliasing=False)
             img = (np.clip(bw_mask, 0, 1) * 255).astype(np.uint8)
-            imsave(os.path.join(save_path, f'cluster_{cluster}_mask.png'), img)
+            imsave(os.path.join(sample_save_path, f'cluster_{cluster}_mask.png'), img)
             print(f'Cluster {cluster} mask saved as img for sample {sample}')
         
         #resize color mask and save
@@ -122,7 +120,6 @@ def create_cluster_masks(mean_data_dir, clusters_dir, data_dir, tile_size):
         color_mask = color_mask.astype(np.uint8)  #optional
         imsave(combined_mask_path, color_mask)
         print(f'Combined cluster mask saved for sample {sample}')
-
 
 if __name__ == "__main__":
     main()
