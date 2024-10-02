@@ -8,7 +8,7 @@ config_yaml= 'config/config_cellsegmentation.yaml'
 run_config = helper.load_yaml_file(config_yaml)
 config = SimpleNamespace(**run_config)
 
-from src.omero_analysis import split_data_by_sample, create_label_image, convert_tiff_to_zarr
+from src.label_images import split_data_by_sample, create_label_image, convert_tiff_to_zarr
 
 split_data_by_sample.split_by_sample(segmentation_data_dir = config.segementation_data_dir, 
                                     label_images_dir = config.label_images_dir, data_dir = config.data_dir)
