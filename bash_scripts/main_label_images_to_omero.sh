@@ -14,4 +14,4 @@ conda activate omero
 source .env
 
 cd ../
-python main_label_imgs_to_omero.py
+python main_label_images_to_omero.py

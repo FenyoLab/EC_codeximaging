@@ -4,12 +4,12 @@
 #SBATCH --ntasks=1
 #SBATCH --output=../logs/cell_segmentation_%j.txt
 #SBATCH --error=../logs/cell_segmentation_err_%j.txt
-#SBATCH --mem=100G
-#SBATCH --time=36:00:00
+#SBATCH --mem=200G
+#SBATCH --time=48:00:00
 #SBATCH --cpus-per-task=1
 #SBATCH --partition=cpu_medium
 
 module load condaenvs/new/deepcell
 
 cd ../
-python main_cell_segmentation_analysis.py
+python main_cell_segmentation.py
