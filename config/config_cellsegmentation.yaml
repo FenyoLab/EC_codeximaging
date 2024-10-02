@@ -18,9 +18,9 @@ out_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/
 data_dir: /gpfs/data/proteomics/data/Endometrial_mIF/out_256/data
 qptiff_data_dir: /gpfs/data/proteomics/data/Endometrial_mIF/qptiff_dat
 label_images_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/label_images
-preprocessing_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/preprocessing
 
 #specific paths
+tiles_split_dir: tiles_split
 clustering_dir: clustering
 sample_metadata_dir: metadata_per_sample
 matrix_normal_filtered_path: normalized_matrix/matrix_normal_filtered_markers.npy
