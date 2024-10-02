@@ -12,7 +12,7 @@
 source ~/.bashrc
 conda activate omero
 
-source .env
+source bash_scripts/.env
 
 cd ../
 python main_threshold_marker_tables.py

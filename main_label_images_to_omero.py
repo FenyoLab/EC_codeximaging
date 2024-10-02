@@ -3,9 +3,7 @@ import numpy as np
 from types import SimpleNamespace
 from utils import helper
 
-'''this script must be run from datamover node with omero conda environment activated'''
-'''first mount the research drive directly in terminal and then run the script (from sbatch)'''
-'''if running srun: have to do source .env before running'''
+#make sure you are in a datamover node and have mounted the research drive before running this
 
 #load in config
 config_yaml= 'config/config_cellsegmentation.yaml'

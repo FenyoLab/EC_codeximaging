@@ -20,7 +20,7 @@ def split_by_sample(segmentation_data_dir, label_images_dir, data_dir):
     unique_sample_names = os.listdir(data_dir)
 
     for sample in unique_sample_names:
-        if sample == 'common_channels.txt':
+        if sample == 'common_channels.txt' or sample == '20230805_Fenyo_4G_Scan3' or sample == '20230806_Fenyo_2G_Scan2':
             continue
 
         print(f"Processing sample: {sample}")
