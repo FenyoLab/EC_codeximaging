@@ -1,0 +1,15 @@
+#!/bin/bash
+#SBATCH --job-name=create_marker_tables
+#SBATCH --mail-type=FAIL # Mail events (NONE, BEGIN, END, FAIL, ALL)
+#SBATCH --mail-type=END
+#SBATCH --ntasks=1
+#SBATCH --output=../logs/create_marker_tables_%j.txt
+#SBATCH --error=../logs/create_marker_tables_err_%j.txt
+#SBATCH --mem=20G
+#SBATCH --time=4:00:00
+#SBATCH --partition=cpu_short
+
+module load condaenvs/new/deepcell
+
+cd ../
+python main_biomarker_tables.py
