@@ -6,7 +6,7 @@
 #SBATCH --output=../logs/celltype_cluster_omero_tables_%j.txt
 #SBATCH --error=../logs/celltype_cluster_omero_tables_err_%j.txt
 #SBATCH --mem=20G
-#SBATCH --time=6:00:00
+#SBATCH --time=4:00:00
 #SBATCH --partition=cpu_short
 
 source ~/.bashrc
