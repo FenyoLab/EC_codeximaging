@@ -13,7 +13,6 @@ from src.normalization import normalize_matrix, threshold_markers
 from src.umap_reduction import gen_umap_embedding 
 from src.clustering import kmeans
 from src.analysis import clustering_analysis
-from src.omero_tables import celltype_cluster_tables
 
 #threshold raw_matrix
 threshold_markers.threshold_markers(data_dir = config.segmentation_data_dir, channel_names = config.channel_names, 
