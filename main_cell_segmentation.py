@@ -11,7 +11,7 @@ config = SimpleNamespace(**run_config)
 #import python files
 from src.split_tiles import ecadherin_means, kmeans_tiles, assign_tissue_identity
 from src.cell_segmentation import get_cell_segmentations
-from src.omero_tables import create_biomarker_cluster_tables
+from src.omero_tables import lineage_marker_cluster_tables
 #from src.cell_segmentation import get_cell_segmentations
 
 segmentation_tile_positions_dir = os.path.join(config.segmentation_data_dir, config.tiles_split_dir)
@@ -37,7 +37,7 @@ get_cell_segmentations(data_path = config.data_dir, tile_size = config.tile_size
 #call thresholding lineage markers function 
 thresholding_save_dir = os.path.join(config.segmentation_data_dir, 'thresholding_clusters')
 
-create_biomarker_cluster_tables.threshold_biomarker_clusters(segmentation_data_dir = config.segmentation_data_dir, 
+lineage_marker_cluster_tables.lineage_marker_cluster_tables(segmentation_data_dir = config.segmentation_data_dir, 
                                                         channel_names = config.channel_names, 
                                                         thresholding_channel_names = config.threshold_channel_names, 
                                                         omero_dict = config.omero_image_dict, 

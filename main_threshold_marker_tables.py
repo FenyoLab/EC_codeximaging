@@ -8,18 +8,26 @@ config_yaml= 'config/config_cellsegmentation.yaml'
 run_config = helper.load_yaml_file(config_yaml)
 config = SimpleNamespace(**run_config)
 
-from src.omero_tables import omero_biomarker_cluster_tables
+from src.omero_tables import upload_omero_table, biomarker_mean_tables
 
-thresholding_save_dir = os.path.join(config.segmentation_data_dir, 'thresholding_clusters')
+#upload biomarker cluster tables
+thresholding_dir = os.path.join(config.segmentation_data_dir, 'thresholding_clusters')
+table_name_lineage_clusters = f'lineage_markers_{config.n_clusters_thresholding}clusters'
 
-omero_biomarker_cluster_tables.threshold_biomarker_clusters(segmentation_data_dir = config.segmentation_data_dir, 
-                                                        channel_names = config.channel_names, 
-                                                        thresholding_channel_names = config.threshold_channel_names, 
-                                                        omero_dict = config.omero_image_dict, 
-                                                        save_dir = thresholding_save_dir, 
-                                                        n_clusters = config.n_clusters_thresholding)
+upload_omero_table.upload_omero_table(table_dir = thresholding_dir, table_name = table_name_lineage_clusters, 
+                            omero_dict = config.omero_image_dict, 
+                            server="omero.nyumc.org", port=4064)
 
-omero_mean_marker_tables(segmentation_data_dir = config.segementation_data_dir, 
+
+biomarker_cell_means_dir = os.path.join(config.segmentation_data_dir, 'biomarker_cell_means')
+table_name_biomarker_means = 'raw_biomarker_means'
+
+biomarker_mean_tables.biomarker_mean_tables(segmentation_data_dir = config.segmentation_data_dir, 
                         channel_names = config.channel_names, 
                         omero_dict = config.omero_image_dict, 
-                        save_dir = config.label_images_dir)
+                        save_dir = biomarker_cell_means_dir,
+                        table_name = table_name_biomarker_means)
+
+upload_omero_table.upload_omero_table(table_dir = biomarker_cell_means_dir, table_name = table_name_biomarker_means, 
+                            omero_dict = config.omero_image_dict, 
+                            server="omero.nyumc.org", port=4064)

@@ -6,7 +6,7 @@ from sklearn.cluster import KMeans
 from src.omero_tables.create_omero_table import create_omero_table
 
 
-def threshold_biomarker_clusters(segmentation_data_dir, channel_names, thresholding_channel_names, omero_dict, save_dir, n_clusters, table_name):   
+def lineage_marker_cluster_tables(segmentation_data_dir, channel_names, thresholding_channel_names, omero_dict, save_dir, n_clusters, table_name):   
 
     #load data
     matrix = np.load(os.path.join(segmentation_data_dir, 'matrix.npy'))
@@ -16,7 +16,7 @@ def threshold_biomarker_clusters(segmentation_data_dir, channel_names, threshold
         os.makedirs(os.path.join(save_dir, sample), exist_ok = True)
         table_path = os.path.join(save_dir, sample, f'{table_name}.csv')
         if os.path.exists(table_path):
-            print(f'Omero table already saved for sample {sample}')
+            print(f'Omero table of lineage marker clusters already saved for sample {sample}')
             continue
         
         print(f'Processing sample {sample}')
@@ -30,7 +30,7 @@ def threshold_biomarker_clusters(segmentation_data_dir, channel_names, threshold
         print(omero_df.head())
 
         omero_df.to_csv(table_path, index = False)
-        print(f'Omero table saved for {sample}')
+        print(f'Omero table of lineage marker clusters saved for {sample}')
 
 def cluster_marker_means(sample_matrix, channel_names, thresholding_channel_names, n_clusters):
     kmeans_channel = []
