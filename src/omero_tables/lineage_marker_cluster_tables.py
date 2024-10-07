@@ -39,7 +39,7 @@ def cluster_marker_means(sample_matrix, channel_names, thresholding_channel_name
         channel_index = channel_names.index(channel)
         sample_channel_array = sample_matrix[:, channel_index]
         sample_channel_array = sample_channel_array.reshape(-1, 1)
-        kmeans = KMeans(n_clusters=n_clusters, random_state=0).fit(sample_channel_array)
+        kmeans = KMeans(n_clusters=n_clusters, n_init = 'auto', random_state=0).fit(sample_channel_array)
         cluster_labels = kmeans.labels_
         cluster_centers = kmeans.cluster_centers_
         kmeans_channel.append(cluster_labels)
