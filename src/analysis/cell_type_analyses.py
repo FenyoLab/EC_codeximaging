@@ -12,6 +12,7 @@ import seaborn as sns
 from sklearn.neighbors import NearestNeighbors
 from scipy.spatial.distance import cdist 
 
+
 def cell_type_analysis(matrix_path, metadata_path, channels, clinical_dat, cell_types, out_file):
     #load files 
     clinicaldata = pd.read_csv(clinical_dat)
@@ -54,14 +55,17 @@ def Pair_Correlation(matrix, metadata, metadata_celltypes, clinicaldata, channel
         #get the indices of the Tumor cells per slide 
         Tumorcells_indices = metadata_celltypes.index[(metadata_celltypes['slide_id'] == slide) & (metadata_celltypes['cell_type'].isin(["tumor", "tumor_cell"]))].to_list()
 
-        Tcells_x = metadata['centroid_x'].loc[Tcells_indices]
-        Tcells_y = metadata['centroid_y'].loc[Tcells_indices]
+        metadata['centroid_x_slide'] = metadata.centroid_x + metadata.tile_x
+        metadata['centroid_y_slide'] = metadata.centroid_y + metadata.tile_y
 
-        Tumorcells_x = metadata['centroid_x'].loc[Tumorcells_indices]
-        Tumorcells_y = metadata['centroid_y'].loc[Tumorcells_indices]
+        Tcells_x = metadata['centroid_x_slide'].loc[Tcells_indices]
+        Tcells_y = metadata['centroid_y_slide'].loc[Tcells_indices]
+
+        Tumorcells_x = metadata['centroid_x_slide'].loc[Tumorcells_indices]
+        Tumorcells_y = metadata['centroid_y_slide'].loc[Tumorcells_indices]
 
         #convert the centroids to be within slide locations rather than just within tile
-        pdb.set_trace()
+        #pdb.set_trace()
 
         # Combine T cell and Tumor cell centroids into a 2D array
         Tcells_centroids = np.column_stack((Tcells_x, Tcells_y))
@@ -96,9 +100,9 @@ def Pair_Correlation(matrix, metadata, metadata_celltypes, clinicaldata, channel
 
         #pdb.set_trace()
 
-        #distances = calculate_nearest_distances(Tcells_centroids, Tumorcells_centroids)
-        #distances_all.append(distances)
-    pdb.set_trace()
+        distances = calculate_nearest_distances(Tcells_centroids, Tumorcells_centroids)
+        distances_all.append(distances)
+    #pdb.set_trace()
     #calculate the mean distance per sample 
     mean_distances = [mean(sample) for sample in distances_all]
 
@@ -108,16 +112,16 @@ def Pair_Correlation(matrix, metadata, metadata_celltypes, clinicaldata, channel
     mean_distances_recur = [mean_distances[i] for i in samples_rec_idx]
     mean_distances_nonrecur = [mean_distances[i] for i in samples_nonrec_idx]
     t_stat, p_value = stats.ttest_ind(mean_distances_recur, mean_distances_nonrecur)
-    pdb.set_trace()
+    print("pvalue comparing mean distances of recurrent vs nonrecurrent patients: ", p_value)
 
     distances_recur = [distances_all[i] for i in samples_rec_idx]
     distances_nonrecur = [distances_all[i] for i in samples_nonrec_idx]
-    pdb.set_trace()
-    t_stat, p_value = stats.ttest_ind(np.concatenate(distances_recur), np.concatenate(distances_nonrecur))
+    # pdb.set_trace()
+    # t_stat, p_value = stats.ttest_ind(np.concatenate(distances_recur), np.concatenate(distances_nonrecur))
 
 
     #Make boxplots for each patient's distances!!
-    # Boxplot of distances across patients
+    #Boxplot of distances across patients
     plt.figure(figsize=(10, 6))
     plt.boxplot(distances_all, labels=slides)
     plt.title("Distribution of Tumor to T cell Distances Across Patients")
@@ -151,6 +155,9 @@ def Pair_Correlation(matrix, metadata, metadata_celltypes, clinicaldata, channel
     plt.close()
 
     pdb.set_trace()
+
+def pyRDF(coords):
+    g_r, radii = rdf(coords, dr=0.05) 
 
 # Function to filter coordinates based on region
 def filter_coordinates(coords, x_min, x_max, y_min, y_max):
