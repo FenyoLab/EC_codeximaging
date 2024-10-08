@@ -1,39 +1,53 @@
 import pandas as pd
 import geojson
 
-# Load CSV data into a DataFrame
-csv_file = '/gpfs/data/proteomics/data/Endometrial_mIF/qptiff_HE/Image/544800/Binary/0413-3D                  _1018924.svs [0]-544800-rois.csv'
-df = pd.read_csv(csv_file)
+import pandas as pd
+import geojson
 
-# Function to convert the string of coordinates to a list of tuples
-def parse_points(point_str):
-    point_pairs = point_str.split(' ')
-    coordinates = []
-    for pair in point_pairs:
-        lon, lat = map(float, pair.split(','))
-        coordinates.append((lon, lat))
-    return coordinates
+def csv_to_geojson(csv_file, geojson_file):
+    """
+    Convert a CSV file of polygon points to a GeoJSON file.
 
-# Create GeoJSON features
-features = []
-for _, row in df.iterrows():
-    polygon_points = parse_points(row['all_points'])  # Parse the polygon coordinates
-    polygon = geojson.Polygon([polygon_points])       # Create a Polygon geometry
-    properties = {
-        "Id": row['Id'],
-        "Name": row['Text'],
-        "Shape": row['type']
-    }
-    feature = geojson.Feature(geometry=polygon, properties=properties)
-    features.append(feature)
+    Args:
+        csv_file (str): Path to the input CSV file.
+        geojson_file (str): Path to save the output GeoJSON file.
+    """
+    # Load CSV data into a DataFrame
+    df = pd.read_csv(csv_file)
 
-# Create a FeatureCollection
-feature_collection = geojson.FeatureCollection(features)
+    # Function to convert the string of coordinates to a list of tuples
+    def parse_points(point_str):
+        point_pairs = point_str.split(' ')
+        coordinates = []
+        for pair in point_pairs:
+            lon, lat = map(float, pair.split(','))
+            coordinates.append((lon, lat))
+        return coordinates
 
-# Save to a GeoJSON file
-geojson_file = '/gpfs/data/proteomics/data/Endometrial_mIF/qptiff_HE/Image/544800/Binary/0413-3D                  _1018924.svs [0]-544800-rois.geojson'
-with open(geojson_file, 'w') as f:
-    geojson.dump(feature_collection, f)
+    # Create GeoJSON features
+    features = []
+    for _, row in df.iterrows():
+        polygon_points = parse_points(row['all_points'])  # Parse the polygon coordinates
+        polygon = geojson.Polygon([polygon_points])       # Create a Polygon geometry
+        properties = {
+            "Id": row['Id'],
+            "Name": row['Text'],
+            "Shape": row['type']
+        }
+        feature = geojson.Feature(geometry=polygon, properties=properties)
+        features.append(feature)
 
-print(f"GeoJSON saved to {geojson_file}")
+    # Create a FeatureCollection
+    feature_collection = geojson.FeatureCollection(features)
+
+    # Save to a GeoJSON file
+    with open(geojson_file, 'w') as f:
+        geojson.dump(feature_collection, f)
+
+    print(f"GeoJSON saved to {geojson_file}")
+
+# csv_file = '/media/ssd02/as18894/registration/data/annotations/20231012-9784-6H_Scan1/9784-6H_1018921.svs [0]-544815-rois.csv'
+# geojson_file = '/media/ssd02/as18894/registration/data/annotations/20231012-9784-6H_Scan1/9784-6H_1018921.svs [0]-544815-rois.geojson'
+# csv_to_geojson(csv_file, geojson_file)
+
 

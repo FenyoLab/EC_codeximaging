@@ -3,8 +3,8 @@
 celltypes: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_9-13-24b/clustering/20_clusters/phenotype_clusters.csv
 
 #raw data
-metadata_raw: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/raw_segmentation_data/metadata.csv
-matrix_raw: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/raw_segmentation_data/matrix.npy
+metadata_raw: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/raw_segmentation_data_old/metadata.csv
+matrix_raw: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/raw_segmentation_data_old/matrix.npy
     
 #Filtered and normalized data
 metadata_filt: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_9-13-24b/normalized_matrix/metadata_filtered.csv

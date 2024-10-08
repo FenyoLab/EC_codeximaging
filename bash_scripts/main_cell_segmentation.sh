@@ -13,3 +13,4 @@ module load condaenvs/new/deepcell
 
 cd ../
 python main_cell_segmentation.py
+
