@@ -54,7 +54,7 @@ def move_label_images_to_omero(label_images_dir, base_dir, image_id_dict, out_su
         
         elif os.path.isdir(zero_path):
             print(f"Uploading label image with roi_converter_ngff")
-            image_name = f'raw_cell_label_image'
+            image_name = f'cell_label_image'
             image_id = image_id_dict.get(sample, {}).get('image_id')
             print(sample, image_id)
             server_directory = os.path.join('/omero', base_dir, out_suffix, sample)

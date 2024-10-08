@@ -17,6 +17,7 @@ def get_normalized_matrix(save_path, raw_data_dir, thresholded_dir, channel_name
         return
 
     if samples_to_remove is not None:
+        print('samples_to_remove is not none')
         matrix_dir = os.path.join(save_path, 'matrix_filtered_samples')
         os.makedirs(matrix_dir, exist_ok = True)
         from src.normalization.filter_matrix import filter_by_sample
@@ -25,6 +26,7 @@ def get_normalized_matrix(save_path, raw_data_dir, thresholded_dir, channel_name
         filter_metadata(dapi_filter, matrix_dir, output_path)
     
     else:
+        print('samples_to_remove is none')
         matrix_filtered, dapi_filter = filter_matrix_rows(output_path, thresholded_dir)
         filter_metadata(dapi_filter, raw_data_dir, output_path)
 
@@ -105,6 +107,7 @@ def normalize_matrix(output_path, matrix_filtered, channel_names):
         #get indices were sample_ids == sample_id
         #get the same matrix rows
         sample_filter = cell_sample_names_filtered == sample_name
+        #sample_matrix = matrix_filtered[sample_filter]
         sample_matrix = matrix_capped[sample_filter]
         print(sample_name, sample_matrix.shape)
 
@@ -132,9 +135,3 @@ def filter_matrix_columns(output_path, channel_names, filtered_channel_names):
 
     np.save(os.path.join(output_path, 'matrix_normal_filtered_markers.npy'), filtered_matrix)
     print("Normal matrix filtered by biomarkers saved")
-
-
-#matrix_dir = '/gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging/out_8-26-24/matrix_filtered_samples'
-#output_path = '/gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging/out_8-26-24/matrix_filtered_samples/normalized_matrix_new'
-#matrix_filtered, dapi_filter = filter_matrix_rows(output_path, matrix_dir)
-#ilter_metadata(dapi_filter, matrix_dir, output_path)

@@ -17,11 +17,16 @@ def get_cell_segmentations(data_path, tile_size, batch_size, save_path, num_biom
 
     matrix_path = os.path.join(save_path, 'matrix.npy') #if matrix already exists, skip
     if os.path.exists(matrix_path):
-        print('Matrix already exists, skipping')
+        print('Full matrix already exists, skipping')
         return
 
-    dataloader = load_dataset(data_path, tile_size, batch_size)
-    get_matrix(dataloader, save_path, num_biomarkers)
+    dataloader = load_dataset(data_path, tile_size, batch_size, tissue_type='ecad+_')
+    get_matrix(dataloader, save_path, num_biomarkers, tissue_type='ecad+_')
+    
+    dataloader = load_dataset(data_path, tile_size, batch_size, tissue_type='ecad-_')
+    get_matrix(dataloader, save_path, num_biomarkers, tissue_type='ecad-_')
+
+    combine_matrices(save_path)
 
     end_time = time.time()  # Record the end time
     elapsed_time = end_time - start_time
@@ -29,7 +34,7 @@ def get_cell_segmentations(data_path, tile_size, batch_size, save_path, num_biom
     print("Cell segmentation complete")
     print(f"Time elapsed: {elapsed_time:.2f} seconds")
 
-def load_dataset(data_path, tile_size, batch_size, num_workers = 1):
+def load_dataset(data_path, tile_size, batch_size, num_workers = 1, tissue_type=''):
     '''loads dataset into a dataloader'''
     input_size = 224
     from torchvision import transforms
@@ -39,8 +44,8 @@ def load_dataset(data_path, tile_size, batch_size, num_workers = 1):
             ])
     
     #from ..data.imc_dataset import CANVASDatasetWithLocation, SlidesDataset
-    from src.data.imc_dataset import CANVASDatasetWithLocation, SlidesDataset
-    dataset = SlidesDataset(data_path, tile_size = tile_size, transform = None, dataset_class = CANVASDatasetWithLocation, use_normalization=False)
+    from src.data.imc_dataset_v2 import CANVASDatasetWithLocation, SlidesDataset
+    dataset = SlidesDataset(data_path, tile_size = tile_size, tissue_type = tissue_type, transform = None, dataset_class = CANVASDatasetWithLocation, use_normalization=False)
 
     dataloader= torch.utils.data.DataLoader(
         dataset, 
@@ -56,11 +61,17 @@ def load_model():
     model = Mesmer(model=None)
     return model
 
-def get_matrix(dataloader, output_path, num_biomarkers): 
+def get_matrix(dataloader, output_path, num_biomarkers, tissue_type=''): 
     ''''loops through the dataloader to extract:
             1. matrix with intensity values for each biomarker in each cell [shape: (num_cells, num_biomarkers)]
             2. metadata csv with additional cell information [shape: (num_cells, num_features)]
             3. tile_positions, tile_sample_names, segmentation_masks to be used in omero downstream analysis'''
+    
+    tissue_output_path = os.path.join(output_path, tissue_type)
+    os.makedirs(tissue_output_path, exist_ok=True)
+    if os.path.exists(os.path.join(tissue_output_path, f'matrix.npy')):
+        print(f'{tissue_type} matrix already exists, skipping')
+        return
 
     model = load_model() #load segmentation model
 
@@ -85,13 +96,12 @@ def get_matrix(dataloader, output_path, num_biomarkers):
         img_transposed = img.permute(0, 2, 3, 1).numpy()
         img_filtered = img_transposed[:, :, :, [0, 3]] 
         
-        #whole cell segmentation
-        segmentation_prediction = model.predict(img_filtered, image_mpp=0.5) 
-        
-        #nuclear segmentation
-        #segmentation_prediction = model.predict(img_filtered, image_mpp=0.5, compartment='nuclear', 
-        #                                           postprocess_kwargs_nuclear = {'pixel_expansion': 2}) 
-        #print("segmentation_prediction shape: ", segmentation_prediction.shape)
+        if tissue_type == 'ecad+_':
+            segmentation_prediction = model.predict(img_filtered, image_mpp=0.5)
+        else:
+            segmentation_prediction = model.predict(img_filtered, image_mpp=0.5, compartment='nuclear', 
+                                                postprocess_kwargs_nuclear = {'pixel_expansion': 2})
+
 
         segmentation_prediction = np.squeeze(segmentation_prediction, axis=-1)
         #print("segmentation_prediction squeezed shape: ", segmentation_prediction.shape)
@@ -108,8 +118,8 @@ def get_matrix(dataloader, output_path, num_biomarkers):
             prediction = np.squeeze(segmentation_prediction[i])
 
             intensity_matrix, metadata = get_tile_intensity(tile, prediction, num_biomarkers,
-                                                            slide_id, tile_x, tile_y)
-            
+                                                            slide_id, tile_x, tile_y, tissue_type)
+            #add tissue type 
             #print("intensity_matrix shape: ", intensity_matrix.shape)
             #print("metadata length: ", len(metadata))
             
@@ -126,15 +136,15 @@ def get_matrix(dataloader, output_path, num_biomarkers):
     cell_sample_names = metadata_df['slide_id'].values
     print("cell_sample_names length: ", len(cell_sample_names))
 
-    metadata_df.to_csv(os.path.join(output_path, 'metadata.csv'), index=True)
-    np.save(os.path.join(output_path, 'tile_positions.npy'), np.array(tile_positions))
-    np.save(os.path.join(output_path, 'tile_sample_names.npy'), np.array(tile_sample_names))
-    np.save(os.path.join(output_path, 'segmentation_masks.npy'), np.array(segmentation_masks))
-    np.save(os.path.join(output_path, 'matrix.npy'), cell_biomarker_matrix)
-    np.save(os.path.join(output_path, 'cell_sample_names.npy'), np.array(cell_sample_names, dtype=str))
+    metadata_df.to_csv(os.path.join(tissue_output_path, 'metadata.csv'), index=True)
+    np.save(os.path.join(tissue_output_path, 'tile_positions.npy'), np.array(tile_positions))
+    np.save(os.path.join(tissue_output_path, 'tile_sample_names.npy'), np.array(tile_sample_names))
+    np.save(os.path.join(tissue_output_path, 'segmentation_masks.npy'), np.array(segmentation_masks))
+    np.save(os.path.join(tissue_output_path, 'matrix.npy'), cell_biomarker_matrix)
+    np.save(os.path.join(tissue_output_path, 'cell_sample_names.npy'), np.array(cell_sample_names, dtype=str))
 
 
-def get_tile_intensity(image, prediction, num_biomarkers, slide_id, tile_x, tile_y):
+def get_tile_intensity(image, prediction, num_biomarkers, slide_id, tile_x, tile_y, tissue_type):
     '''gets information needed on a cell level for each tile
     returns this information for the mean intensity matrix + metadata'''
     from skimage.measure import regionprops
@@ -165,9 +175,43 @@ def get_tile_intensity(image, prediction, num_biomarkers, slide_id, tile_x, tile
             "axis_ratio": axis_ratio,
             "tile_x": int(tile_x),
             "tile_y": int(tile_y),
-            "slide_id": slide_id
+            "slide_id": slide_id,
+            "tissue_type": tissue_type
         }
 
         metadata.append(cell_metadata)
     
     return intensity_matrix, metadata
+
+def combine_matrices(output_path):
+
+    #load endo data
+    ecad_pos_matrix=np.load(os.path.join(output_path, 'ecad+_', 'matrix.npy'))
+    ecad_pos_metadata=pd.read_csv(os.path.join(output_path, 'ecad+_', 'metadata.csv'))
+    ecad_pos_cell_sample_names=np.load(os.path.join(output_path, 'ecad+_', 'cell_sample_names.npy'))
+    ecad_pos_tile_positions=np.load(os.path.join(output_path, 'ecad+_', 'tile_positions.npy'))
+    ecad_pos_tile_sample_names=np.load(os.path.join(output_path, 'ecad+_', 'tile_sample_names.npy'))
+    ecad_pos_segmentation_masks=np.load(os.path.join(output_path, 'ecad+_', 'segmentation_masks.npy'))
+
+    #load myo data
+    ecad_neg_matrix=np.load(os.path.join(output_path, 'ecad-_', 'matrix.npy'))
+    ecad_neg_metadata=pd.read_csv(os.path.join(output_path, 'ecad-_', 'metadata.csv'))
+    ecad_neg_cell_sample_names=np.load(os.path.join(output_path, 'ecad-_', 'cell_sample_names.npy'))
+    ecad_neg_tile_positions=np.load(os.path.join(output_path, 'ecad-_', 'tile_positions.npy'))
+    ecad_neg_tile_sample_names=np.load(os.path.join(output_path, 'ecad-_', 'tile_sample_names.npy'))
+    ecad_neg_segmentation_masks=np.load(os.path.join(output_path, 'ecad-_', 'segmentation_masks.npy'))
+
+    #combine data
+    matrix=np.vstack((ecad_pos_matrix, ecad_neg_matrix))
+    metadata=pd.concat([ecad_pos_metadata, ecad_neg_metadata], ignore_index=True)
+    cell_sample_names=np.concatenate((ecad_pos_cell_sample_names, ecad_neg_cell_sample_names))
+    tile_positions=np.concatenate((ecad_pos_tile_positions, ecad_neg_tile_positions))
+    tile_sample_names=np.concatenate((ecad_pos_tile_sample_names, ecad_neg_tile_sample_names))
+    segmentation_masks=np.concatenate((ecad_pos_segmentation_masks, ecad_neg_segmentation_masks))
+
+    np.save(os.path.join(output_path, 'matrix.npy'), matrix)
+    metadata.to_csv(os.path.join(output_path, 'metadata.csv'), index=True)
+    np.save(os.path.join(output_path, 'cell_sample_names.npy'), cell_sample_names)
+    np.save(os.path.join(output_path, 'tile_positions.npy'), tile_positions)
+    np.save(os.path.join(output_path, 'tile_sample_names.npy'), tile_sample_names)
+    np.save(os.path.join(output_path, 'segmentation_masks.npy'), segmentation_masks)

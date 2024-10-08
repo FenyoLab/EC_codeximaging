@@ -6,7 +6,7 @@ import pandas as pd
 import torch.utils.data as data
 import pdb
 
-from src.data.slide_dataset import SlideDataset
+from src.data.slide_dataset_v2 import SlideDataset
 #??? If this is the first thing being imported, does that mean it is being called?? Or does it only get called once NPYDataset is called?
 
 #when a class definition includes another class in parenthesis, it indicates the the class is inheriting all the attributes and methods from the class in parenthesis
@@ -14,8 +14,8 @@ from src.data.slide_dataset import SlideDataset
 
 class NPYDataset(SlideDataset):
 
-    def __init__(self, root_path = None, tile_size = None, transform = None, lazy = True):
-        super().__init__(root_path, tile_size, transform) #SlideDataset
+    def __init__(self, root_path = None, tile_size = None, tissue_type = '', transform = None, lazy = True):
+        super().__init__(root_path, tile_size, tissue_type, transform) #SlideDataset
         self.slide = self.read_slide(root_path, lazy)
         self.read_counter = 0
 
@@ -94,8 +94,8 @@ class ZarrDataset(NPYDataset):
 #CANVASDataset is a subclass of ZarrDataset
 class CANVASDataset(ZarrDataset): #once we get to this function, the image has already been normalized! 
 #also transform is set in SlidesDataset in main_pretrain.py 
-    def __init__(self, root_path, tile_size, common_channel_names : [str], transform = None, lazy = True):
-        super().__init__(root_path, tile_size, transform) #this is a call to the superclass constructor
+    def __init__(self, root_path, tile_size, tissue_type, common_channel_names : [str], transform = None, lazy = True):
+        super().__init__(root_path, tile_size, tissue_type, transform) #this is a call to the superclass constructor
         self.root_path = root_path
         self.slide = self.read_slide(root_path, lazy)
         self.read_counter = 0
@@ -133,10 +133,11 @@ class CANVASDatasetWithLocation(CANVASDataset):
 class SlidesDataset(data.Dataset): #this is inheriting data.Dataset from torch!!
     ''' Dataset for a list of slides '''
 
-    def __init__(self, slides_root_path = None, tile_size = None, transform = None, dataset_class = None, use_normalization = True):
+    def __init__(self, slides_root_path = None, tile_size = None, tissue_type = '', transform = None, dataset_class = None, use_normalization = True):
         self.slides_root_path = slides_root_path
         self.tile_size = tile_size
         self.transform = transform
+        self.tissue_type = tissue_type
 
         # Get id and path for all slides
         slide_ids = self.get_slide_paths(slides_root_path)
@@ -274,7 +275,7 @@ class SlidesDataset(data.Dataset): #this is inheriting data.Dataset from torch!!
             #print("we are in get_slides")
             #print(slide_id)
             slide_path = os.path.join(self.slides_root_path, slide_id)
-            slide = dataset_class(slide_path, self.tile_size, common_channel_names, self.transform) #dataset_class is CANVASDataset! This is where we go to that function
+            slide = dataset_class(slide_path, self.tile_size, self.tissue_type, common_channel_names, self.transform) #dataset_class is CANVASDataset! This is where we go to that function
             #self.transform refers to transform_codex in main_pretrain.py!
             slides_dict[slide_id] = slide
             lengths.append(len(slide))
