@@ -8,15 +8,6 @@
 #SBATCH --time=2:00:00
 #SBATCH --partition=data_mover
 
-<<<<<<< HEAD:bash_scripts/move_to_omero.sh
-source ~/.bashrc
-conda activate omero
-
-source .env
-
-cd ../
-python main_label_imgs_to_omero.py
-=======
 #make sure you are in a datamover node and have mounted the research drive before running this
 source ~/.bashrc
 conda activate omero
@@ -25,4 +16,3 @@ source bash_scripts/.env
 
 cd ../
 python main_label_images_to_omero.py
->>>>>>> 7b82f51368a16714324ece728f1ef598d284ae5f:bash_scripts/main_label_images_to_omero.sh
