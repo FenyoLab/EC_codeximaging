@@ -1,9 +1,6 @@
 import pandas as pd
 import geojson
 
-import pandas as pd
-import geojson
-
 def csv_to_geojson(csv_file, geojson_file):
     """
     Convert a CSV file of polygon points to a GeoJSON file.
