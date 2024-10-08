@@ -88,6 +88,8 @@ def get_matrix(dataloader, output_path, num_biomarkers, tissue_type=''):
         #    break
         #print("Batch number: ", idx)
         img, (labels, locations) = batch
+        #if labels[0] != '20231019-0413-3D_Scan1':
+        #    continue
         tile_sample_names.extend(labels)
         tile_positions.extend([loc.numpy() for loc in locations]) 
         
