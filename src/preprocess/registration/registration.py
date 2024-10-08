@@ -3,34 +3,39 @@ from valis import registration #, slide_io, valtils
 import pdb
 import os
 
-data_path = '/gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/registration'
-image_path = 'images/20231019-0413-3D_Scan1'
-annotation_path = 'annotations/20231019-0413-3D_Scan1'
+def convert_rois_with_registration(sample, sample_svs_name, sample_qptiff_name):
 
-slide_src_dir = os.path.join(data_path, image_path)
-results_dst_dir = os.path.join(slide_src_dir, 'registration')
-annotation_img_f = os.path.join(slide_src_dir, '0413-3D_1018924.svs')
-target_img_f = os.path.join(slide_src_dir, '20231019-0413-3D_Scan1.qptiff') 
-annotation_geojson_f = os.path.join(data_path, annotation_path, 'svs_rois.geojson')
-warped_geojson_annotation_f = os.path.join(data_path, annotation_path, 'qptiff_rois.geojson')
+    #define paths 
+    data_path = '../data'
+    image_path = 'images'
+    annotation_path = 'annotations'
+    slide_path = sample 
+    out_path = 'registration_results'
+    
+    slide_src_dir = os.path.join(data_path, image_path, slide_path)
+    results_dst_dir = os.path.join(data_path, out_path)
+    annotation_img = os.path.join(slide_src_dir, f'{sample_svs_name}.svs')
+    target_img = os.path.join(slide_src_dir, f'{sample_qptiff_name}.qptiff')
 
-# Perform registration
-registrar = registration.Valis(src_dir = slide_src_dir, dst_dir = results_dst_dir,
-                                reference_img_f = target_img_f, align_to_reference=True)
+    
+    annotation_geojson = os.path.join(data_path, annotation_path, slide_path, f'{sample_svs_name}_rois.geojson')
+    warped_geojson_annotation = os.path.join(data_path, annotation_path, slide_path, f'{sample_qptiff_name}_rois.geojson')
+    
+    
+    #perform registration
+    registrar = registration.Valis(src_dir = slide_src_dir, dst_dir = results_dst_dir, reference_img_f = target_img, align_to_reference=True)
+    rigid_registrar, non_rigid_registrar, error_df = registrar.register()
 
-rigid_registrar, non_rigid_registrar, error_df = registrar.register()
 
+    #Transfer annotation from image associated with annotation_img_f and image associated with target_img_f
+    annotation_source_slide = registrar.get_slide(annotation_img)
+    target_slide = registrar.get_slide(target_img)
 
-#Transfer annotation from image associated with annotation_img_f and image associated with target_img_f
-annotation_source_slide = registrar.get_slide(annotation_img_f)
-target_slide = registrar.get_slide(target_img_f)
+    warped_geojson_from_to = annotation_source_slide.warp_geojson_from_to(annotation_geojson, target_slide)
+    warped_geojson = annotation_source_slide.warp_geojson(annotation_geojson)
 
-warped_geojson_from_to = annotation_source_slide.warp_geojson_from_to(annotation_geojson_f, target_slide)
-warped_geojson = annotation_source_slide.warp_geojson(annotation_geojson_f)
-
-# Save annotation as warped_geojson_annotation_f, which can be dragged and dropped into QuPath
-with open(warped_geojson_annotation_f, 'w') as f:
-    json.dump(warped_geojson, f)
-
-registration.kill_jvm()
- 
+    # Save annotation as warped_geojson_annotation_f, which can be dragged and dropped into QuPath
+    with open(warped_geojson_annotation, 'w') as f:
+        json.dump(warped_geojson, f)
+    
+    registration.kill_jvm()
