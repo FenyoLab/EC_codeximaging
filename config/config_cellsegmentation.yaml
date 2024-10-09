@@ -10,152 +10,126 @@ channel_names: ['DAPI', 'MPO', 'pJAK1', 'Ecadherin', 'PDL1', 'CD163', 'PD1', 'CD
 filtered_channel_names: ['DAPI', 'MPO', 'Ecadherin', 'CD163', 'CD4', 'CD68', 'CD8', 'CD20', 'CD31', 'CD3e'] #change name to cell lineage markers
 threshold_channel_names: ['CD163', 'CD4', 'CD68', 'CD20']
 exclude_channel_names: ['pJAK1', 'CD56', 'MAL', 'Her2', 'STAT1']
-samples_to_remove: None
+samples_to_remove: null
 
 #base paths
-segementation_data_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/raw_segmentation_data
-out_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_9-13-24b
+segmentation_data_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/raw_segmentation_data
+label_images_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/label_images
+out_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_date_of_run
+
 data_dir: /gpfs/data/proteomics/data/Endometrial_mIF/out_256/data
 qptiff_data_dir: /gpfs/data/proteomics/data/Endometrial_mIF/qptiff_dat
-label_images_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/label_images
 
-#specific paths
+#specific paths: main_cell_segmentation
 tiles_split_dir: tiles_split
-clustering_dir: clustering
-sample_metadata_dir: metadata_per_sample
+
+#specific paths: main_cell_segmentation_analysis
+thresholded_dir: thresholded_matrix
+metadata_filtered_path: normalized_matrix/metadata_filtered.csv
 matrix_normal_filtered_path: normalized_matrix/matrix_normal_filtered_markers.npy
 umap_coord_path: umap/coord.npy
-figures_dir: analysis_figures
-metadata_filtered_path: normalized_matrix/metadata_filtered.csv
-thresholded_dir: thresholded_matrix
-preprocessing: preprocessing
+clustering_dir: clustering
 
 #research drive
 mount_lab: fenyolab
-kerberosid: kerberosid
 research_drive_dir: 'fenyolab/EC_codeximaging/cell_segmentation'
 
-nkmeans_clusters_marker_thresholding: 2 #this is the table that will be input into omero to be used as a label! 
-
-#omero
+#omero image info
 omero_image_dict:
-  20230805_Fenyo_4G_Scan3: 
-    image_id: 600713
-    roi_id: 1227164
+  20230720-4309-4G-1_Scan1: 
+    image_id: 597780
+    roi_id: 
+  20230720-3660-2G-1_Scan1: 
+    image_id: 597642
+    roi_id: 
   20230908-1872-4C-1_Scan2: 
     image_id: 611987
-    roi_id: 1227069
+    roi_id: 
   20230922-3869-1O_Scan1: 
     image_id: 614300
-    roi_id: 1227063
+    roi_id: 
   20231003-1160-3S_Scan1: 
     image_id: 617515
-    roi_id: 1227071
+    roi_id: 
   20231012-3535-1T_Scan2: 
     image_id: 619802
-    roi_id: 1227219
+    roi_id: 
   20231019-0413-3D_Scan1: 
     image_id: 620931
-    roi_id: 1227070
-  20230806_Fenyo_2G_Scan2: 
-    image_id: 600221
-    roi_id: 1227165
+    roi_id: 
   20230908-6103-1J-1_Scan2: 
     image_id: 612242
-    roi_id: 1227066
+    roi_id: 
   20230922-5689-1P_Scan1: 
     image_id: 615142
-    roi_id: 1227065
+    roi_id: 
   20231003-2630-3P_Scan1: 
     image_id: 617353
-    roi_id: 1227068
+    roi_id: 
   20231012-9390-1I_Scan1: 
     image_id: 619234
-    roi_id: 1227074
+    roi_id: 
   20231019-4475-1E_Scan2: 
     image_id: 620498
-    roi_id: 1227166
+    roi_id: 
   20230810_0488_3K_Scan1: 
-    image_id: 601969
-    roi_id: 1227162
+    image_id: 601969 
+    roi_id: 
   20230908-8710-3H-1_Scan1: 
     image_id: 611002
-    roi_id: 1227072
+    roi_id: 
   20230922-7331-1H_Scan1: 
     image_id: 615004
-    roi_id: 1227073
+    roi_id: 
   20231003-5988-4I_Scan1: 
     image_id: 616589
-    roi_id: 1227067
+    roi_id: 
   20231012-9784-6H_Scan1: 
     image_id: 618713
-    roi_id: 1227064
-  
-thresholding_biomarkers_dict:
+    roi_id: 
+
+#lineage markers cluster identity  
+lineage_markers_cluster_dict:
   20230805_Fenyo_4G_Scan3: 
     CD20:
       0: 
-      1:
-      2:
+      1: 
+      2: 
     CD4:
-      0:
-      1:
-      2:
-    CD8:
-      0:
-      1:
-      2:
-    CD3e:
-      0:
-      1:
-      2:
+      0:  
+      1:  
+      2:  
     CD68:
-      0:
-      1:
-      2:
+      0: 
+      1:  
+      2:  
     CD163:
-      0:
-      1:
-      2:
+      0:  
+      1:  
+      2:  
   20230908-1872-4C-1_Scan2: 
     CD20:
       0: 
-      1:
-      2:
+      1: 
+      2:  
     CD4:
-      0:
-      1:
-      2:
-    CD8:
-      0:
-      1:
-      2:
-    CD3e:
-      0:
-      1:
-      2:
+      0: 
+      1: 
+      2: 
     CD68:
-      0:
-      1:
-      2:
+      0: 
+      1: 
+      2: 
     CD163:
-      0:
-      1:
-      2:
+      0: 
+      1:  
+      2: 
   20230922-3869-1O_Scan1: 
     CD20:
       0: 
       1:
       2:
     CD4:
-      0:
-      1:
-      2:
-    CD8:
-      0:
-      1:
-      2:
-    CD3e:
       0:
       1:
       2:
@@ -176,14 +150,6 @@ thresholding_biomarkers_dict:
       0:
       1:
       2:
-    CD8:
-      0:
-      1:
-      2:
-    CD3e:
-      0:
-      1:
-      2:
     CD68:
       0:
       1:
@@ -198,14 +164,6 @@ thresholding_biomarkers_dict:
       1:
       2:
     CD4:
-      0:
-      1:
-      2:
-    CD8:
-      0:
-      1:
-      2:
-    CD3e:
       0:
       1:
       2:
@@ -226,14 +184,6 @@ thresholding_biomarkers_dict:
       0:
       1:
       2:
-    CD8:
-      0:
-      1:
-      2:
-    CD3e:
-      0:
-      1:
-      2:
     CD68:
       0:
       1:
@@ -248,14 +198,6 @@ thresholding_biomarkers_dict:
       1:
       2:
     CD4:
-      0:
-      1:
-      2:
-    CD8:
-      0:
-      1:
-      2:
-    CD3e:
       0:
       1:
       2:
@@ -276,14 +218,6 @@ thresholding_biomarkers_dict:
       0:
       1:
       2:
-    CD8:
-      0:
-      1:
-      2:
-    CD3e:
-      0:
-      1:
-      2:
     CD68:
       0:
       1:
@@ -298,14 +232,6 @@ thresholding_biomarkers_dict:
       1:
       2:
     CD4:
-      0:
-      1:
-      2:
-    CD8:
-      0:
-      1:
-      2:
-    CD3e:
       0:
       1:
       2:
@@ -326,14 +252,6 @@ thresholding_biomarkers_dict:
       0:
       1:
       2:
-    CD8:
-      0:
-      1:
-      2:
-    CD3e:
-      0:
-      1:
-      2:
     CD68:
       0:
       1:
@@ -348,14 +266,6 @@ thresholding_biomarkers_dict:
       1:
       2:
     CD4:
-      0:
-      1:
-      2:
-    CD8:
-      0:
-      1:
-      2:
-    CD3e:
       0:
       1:
       2:
@@ -376,14 +286,6 @@ thresholding_biomarkers_dict:
       0:
       1:
       2:
-    CD8:
-      0:
-      1:
-      2:
-    CD3e:
-      0:
-      1:
-      2:
     CD68:
       0:
       1:
@@ -395,42 +297,26 @@ thresholding_biomarkers_dict:
   20230810_0488_3K_Scan1: 
     CD20:
       0: 
-      1:
-      2:
+      1: 
+      2: 
     CD4:
-      0:
-      1:
-      2:
-    CD8:
-      0:
-      1:
-      2:
-    CD3e:
-      0:
-      1:
-      2:
+      0: 
+      1: 
+      2: 
     CD68:
-      0:
-      1:
-      2:
+      0: 
+      1: 
+      2:  
     CD163:
-      0:
-      1:
-      2:
+      0:  
+      1:  
+      2: 
   20230908-8710-3H-1_Scan1: 
     CD20:
       0: 
       1:
       2:
     CD4:
-      0:
-      1:
-      2:
-    CD8:
-      0:
-      1:
-      2:
-    CD3e:
       0:
       1:
       2:
@@ -451,14 +337,6 @@ thresholding_biomarkers_dict:
       0:
       1:
       2:
-    CD8:
-      0:
-      1:
-      2:
-    CD3e:
-      0:
-      1:
-      2:
     CD68:
       0:
       1:
@@ -476,14 +354,6 @@ thresholding_biomarkers_dict:
       0:
       1:
       2:
-    CD8:
-      0:
-      1:
-      2:
-    CD3e:
-      0:
-      1:
-      2:
     CD68:
       0:
       1:
@@ -498,14 +368,6 @@ thresholding_biomarkers_dict:
       1:
       2:
     CD4:
-      0:
-      1:
-      2:
-    CD8:
-      0:
-      1:
-      2:
-    CD3e:
       0:
       1:
       2:

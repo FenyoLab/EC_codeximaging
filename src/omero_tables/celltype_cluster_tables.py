@@ -1,7 +1,7 @@
 import os
 import sys
 import pandas as pd
-from omero_utils import create_omero_table, upload_omero_table
+from src.omero_tables.create_omero_table import create_omero_table
 
 from types import SimpleNamespace
 sys.path.append('../..')
@@ -18,7 +18,7 @@ def celltype_cluster_tables(clustering_path, save_path, omero_dict, n_clusters, 
             continue
         
         os.makedirs(os.path.join(save_path, sample), exist_ok = True)
-        table_path = os.path.join(sample_dir, f'{table_name}.csv')
+        table_path = os.path.join(save_path, sample, f'{table_name}.csv')
         if os.path.exists(table_path):
             print(f'Omero table of cell type clusters already saved for sample {sample}')
             continue
@@ -33,6 +33,7 @@ def celltype_cluster_tables(clustering_path, save_path, omero_dict, n_clusters, 
         omero_df = create_omero_table(kmeans_df, roi_value)
         print(omero_df.head())
         omero_df.to_csv(table_path, index = False)
+        print(f'Omero table of cell type clusters uploaded for sample {sample}')
 
 if __name__ == "__main__":
     main()

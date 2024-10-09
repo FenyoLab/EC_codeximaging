@@ -10,7 +10,7 @@ config = SimpleNamespace(**run_config)
 
 from src.label_images import split_data_by_sample, create_label_image, convert_tiff_to_zarr
 
-split_data_by_sample.split_by_sample(segmentation_data_dir = config.segementation_data_dir, 
-                                    label_images_dir = config.label_images_dir, data_dir = config.data_dir)
+split_data_by_sample.split_by_sample(segmentation_data_dir = config.segmentation_data_dir, 
+                                    label_images_dir = config.label_images_dir)
 create_label_image.create_label_image(data_dir = config.data_dir, label_images_dir = config.label_images_dir)
 convert_tiff_to_zarr.convert_tiff_to_zarr(label_images_dir = config.label_images_dir)

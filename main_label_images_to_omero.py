@@ -12,6 +12,8 @@ config = SimpleNamespace(**run_config)
 
 from src.label_images import move_to_omero
 
+out_suffix = os.path.basename(config.label_images_dir)
+
 move_to_omero.move_label_images_to_omero(label_images_dir = config.label_images_dir, 
                                         base_dir = config.research_drive_dir, 
-                                        image_id_dict = config.omero_image_dict)
+                                        image_id_dict = config.omero_image_dict, out_suffix = out_suffix)
