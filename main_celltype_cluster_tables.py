@@ -8,7 +8,7 @@ config_yaml= 'config/config_cellsegmentation.yaml'
 run_config = helper.load_yaml_file(config_yaml)
 config = SimpleNamespace(**run_config)
 
-from src.omero_tables import celltype_cluster_tables
+from src.omero_tables import celltype_cluster_tables, upload_omero_table
 
 #create celltype cluster tables for omero
 clustering_path = os.path.join(config.out_dir, config.clustering_dir, f'{config.n_clusters_celltypes}_clusters')
