@@ -9,21 +9,19 @@ def create_label_image(data_dir, label_images_dir):
     sample_names = os.listdir(label_images_dir)
 
     for sample in sample_names:
-        print(f"Processing sample: {sample}")
-
         sample_dir = os.path.join(label_images_dir, sample)
         image_dir = os.path.join(data_dir, sample)
         
         label_image_path = os.path.join(sample_dir, 'label_image.tiff') #if matrix already exists, skip
-        
         if os.path.exists(label_image_path):
-            print('Label image already exists, skipping')
+            print(f'Label image already exists for sample {sample}, skipping')
             continue
+        
+        print(f"Processing sample: {sample}")
 
         create_label_tiles(sample_dir)
         create_label_slide(sample_dir,image_dir)
-
-    print("All Label Images Created")
+        print(f'Label image created for sample {sample}')
 
 def create_label_tiles(label_images_dir):
     masks = np.load(os.path.join(label_images_dir, 'segmentation_masks.npy'))

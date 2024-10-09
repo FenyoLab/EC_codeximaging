@@ -12,9 +12,6 @@ def convert_tiff_to_zarr(label_images_dir, tiff_file='label_image.tiff', zarr_fi
     sample_names = os.listdir(label_images_dir)
 
     for sample in sample_names:
-        #if sample in samples_to_remove:
-        #    print(f"Skipping sample: {sample}")
-        #    continue
         print("Processing sample", sample)
         image_path = os.path.join(label_images_dir, sample)
         
