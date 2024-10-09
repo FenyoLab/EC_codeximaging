@@ -8,7 +8,7 @@ def new_positions(mean_data_dir, clusters_dir, positions_dir, tile_size):
     tile_positions = np.load(os.path.join(mean_data_dir, 'tile_positions.npy'))
     
     for sample in np.unique(sample_names):
-        sample_positions_path = os.path.join(positions_dir, sample, 'endometrium_tiles')
+        sample_positions_path = os.path.join(positions_dir, sample, 'tiles')
         os.makedirs(sample_positions_path, exist_ok=True)
         positions_df_path = os.path.join(sample_positions_path, f'ecad+_positions_{tile_size}.csv')
         if os.path.exists(positions_df_path):
