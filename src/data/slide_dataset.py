@@ -72,7 +72,7 @@ class SlideDataset(data.Dataset):
     def load_tiles(self, tile_size):
         ''' load tiles positions from disk '''
         #print("tile size", tile_size)
-        tile_path = f'{self.root_path}/endometrium_tiles/positions_{tile_size}.csv'
+        tile_path = f'{self.root_path}/tiles/positions_{tile_size}.csv'
         #tile_path = f'{self.root_path}/subset_10/positions_{tile_size}.csv'
         print(tile_path)
         tile_pos = pd.read_csv(tile_path, index_col = 0).to_numpy()

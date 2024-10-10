@@ -5,7 +5,7 @@ import subprocess
 import sys
 import getpass
 
-def move_label_images_to_omero(label_images_dir, base_dir, image_id_dict, out_suffix = "label_images"):
+def move_label_images_to_omero(label_images_dir, base_dir, image_id_dict, label_image_dir_name = "label_images", date = None):
 
     password = os.getenv('PASSWORD')
     kerberosid = os.getenv('KERBEROSID')
@@ -19,8 +19,8 @@ def move_label_images_to_omero(label_images_dir, base_dir, image_id_dict, out_su
     print(research_drive_dir)
     os.chdir(research_drive_dir)
 
-    os.makedirs(out_suffix, exist_ok =True)
-    os.chdir(out_suffix)
+    os.makedirs(label_image_dir_name, exist_ok =True)
+    os.chdir(label_image_dir_name)
     print(f"Current directory: {os.getcwd()}")
 
     print("Logging into omero")
@@ -30,13 +30,14 @@ def move_label_images_to_omero(label_images_dir, base_dir, image_id_dict, out_su
     for sample in sample_names:
         print(f'Processing sample {sample}')
 
-        os.makedirs(sample, exist_ok =True)
-        os.chdir(sample)
+        sample_dir = f'{sample}_{date}' #add date to dir name for sample to preserve dir structure 
+        os.makedirs(sample_dir, exist_ok =True)
+        os.chdir(sample_dir)
         print(f"Current directory: {os.getcwd()}")
 
         original_label_image_path = os.path.join(label_images_dir, sample, 'label_image.zarr')
-        copied_label_image_path = os.path.join(research_drive_dir, out_suffix, sample, 'label_image.zarr')
-        backup_path = os.path.join(research_drive_dir, out_suffix, sample, 'backup.zarr')
+        copied_label_image_path = os.path.join(research_drive_dir, label_image_dir_name, sample_dir, 'label_image.zarr')
+        backup_path = os.path.join(research_drive_dir, label_image_dir_name, sample_dir, 'backup.zarr')
         
         if os.path.exists(backup_path):
             print('Label image already exists, skipping')
@@ -57,7 +58,7 @@ def move_label_images_to_omero(label_images_dir, base_dir, image_id_dict, out_su
             image_name = f'cell_label_image'
             image_id = image_id_dict.get(sample, {}).get('image_id')
             print(sample, image_id)
-            server_directory = os.path.join('/omero', base_dir, out_suffix, sample)
+            server_directory = os.path.join('/omero', base_dir, label_image_dir_name, sample_dir)
             print(server_directory)
 
             try:
