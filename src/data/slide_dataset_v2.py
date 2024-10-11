@@ -11,7 +11,7 @@ import pdb
 class SlideDataset(data.Dataset):
     ''' Dataset for slides '''
 
-    def __init__(self, root_path = None, tile_size = None, tissue_type = '', transform = None):
+    def __init__(self, root_path = None, tile_size = None, tiles_dir = None, tissue_type = '', transform = None):
         ''' 
         Initialize the dataset 
         root_path: root path of the dataset (for saving processed file purposes)
@@ -19,6 +19,7 @@ class SlideDataset(data.Dataset):
         self.root_path = root_path
         self.tile_size = tile_size
         self.transform = transform
+        self.tiles_dir = tiles_dir
         self.tissue_type = tissue_type
 
         if tile_size is not None:
@@ -73,7 +74,7 @@ class SlideDataset(data.Dataset):
     def load_tiles(self, tile_size, tissue_type):
         ''' load tiles positions from disk '''
         #print("tile size", tile_size)
-        tile_path = f'{self.root_path}/endometrium_tiles/{tissue_type}positions_{tile_size}.csv'
+        tile_path = f'{self.root_path}/{self.tiles_dir}/{tissue_type}positions_{tile_size}.csv'
         print(tile_path)
         tile_pos = pd.read_csv(tile_path, index_col = 0).to_numpy()
         #tile_pos[0]: array([ 1024, 19456,     0])
