@@ -18,10 +18,10 @@ def run_preprocess(config_yaml):
     zarr_conversion(config.common_channel_file, config.input_path, config.input_ext, config.output_path, data_path, qc_path)
 
     # Step 2: Generate tiles
-    tiling(config.input_path, config.input_ext, data_path, config.ROI_path, config.output_path, config.inference_window_um, config.input_pixel_per_um, config.selected_region)
+    tiling(config.input_path, config.input_ext, data_path, config.tiles_dir, config.ref_channel, config.ROI_path, config.output_path, config.inference_window_um, config.input_pixel_per_um, config.selected_region, config.ROI_rm)
 
-def tiling(input_path, input_ext, data_path, ROI_path, output_path, inference_window_um, input_pixel_per_um, selected_region):
-    from preprocess.tile_v2 import gen_tiles
+def tiling(input_path, input_ext, data_path, tiles_dir, ref_channel, ROI_path, output_path, inference_window_um, input_pixel_per_um, selected_region, ROI_rm):
+    from preprocess.tile import gen_tiles
     file_names = utils.get_file_name_list(input_path, input_ext)
     print(file_names)
     training_window_um = inference_window_um * 2
@@ -29,8 +29,9 @@ def tiling(input_path, input_ext, data_path, ROI_path, output_path, inference_wi
     inference_window_pixel = inference_window_um * input_pixel_per_um
     for file_name in tqdm(file_names):
         print(file_name)
-        gen_tiles(data_path, file_name, ROI_path, training_window_pixel, selected_region)
-        #gen_tiles(data_path, file_name, ROI_path, inference_window_pixel, selected_region)
+        #if file_name == "20230720-3660-2G-1_Scan1":
+        gen_tiles(data_path, file_name, tiles_dir, ref_channel, ROI_path, training_window_pixel, selected_region, ROI_rm)
+        gen_tiles(data_path, file_name, tiles_dir, ref_channel, ROI_path, inference_window_pixel, selected_region, ROI_rm)
 
 def zarr_conversion(common_channel_file, input_path, input_ext, output_path, data_path, qc_path):
     from preprocess import io 
@@ -42,9 +43,9 @@ def zarr_conversion(common_channel_file, input_path, input_ext, output_path, dat
     print('Converting tiff to zarr')
     for file_name in tqdm(file_names):
         print(file_name)
-        if file_name == '20230720-4309-4G-1_Scan1' or file_name == '20230720-3660-2G-1_Scan1':
-            print(file_name)
-            io.tiff_to_zarr(input_path, data_path, file_name, input_ext, common_channels)
+        #if file_name == '20231003-0413-3C_Scan1' or file_name == '20230805_Fenyo_4G_Scan3' or file_name == "20230806_Fenyo_2G_Scan2":
+            #continue
+        io.tiff_to_zarr(input_path, data_path, file_name, input_ext, common_channels)
     # Plot global QC histogram
     #print('Generating global QC histogram')
     #qc.global_hist(data_path, file_names, qc_path)

@@ -7,30 +7,40 @@ from skimage.io import imsave
 import pandas as pd
 from skimage.draw import polygon
 from PIL import Image
-import cv2
 import pdb
+import cv2
 
-def gen_tiles(data_path: str, slideID: str, ROI_path:str, tile_size: int = 128, selected_region: str = None) -> np.ndarray:
-   
+def gen_tiles(data_path: str, slideID: str, tiles_dir: None, ref_channel: int, ROI_path:str, tile_size: int = 128, selected_region: str = None, ROI_rm: str = None) -> np.ndarray:
+    
     print("slideID: ", slideID)
     ''' Generate tiles for a given slide '''
 
-    output_path = os.path.join(f'{data_path}/{slideID}/tiles_v2')
+    output_path = os.path.join(f'{data_path}/{slideID}/{tiles_dir}')
     os.makedirs(output_path, exist_ok=True)
-    
+
+    #check if the positions file is created, if it is, there's no need to regenerate!!
+    if os.path.exists(os.path.join(output_path, f'positions_{tile_size}.csv')):
+        print(f"{slideID} positions exists.. moving on to next slide")
+        return None 
+
     # Read slide
     print('Reading slide...')
     slide = f'{data_path}/{slideID}/data.zarr'
     if isinstance(slide, str):
         if os.path.exists(slide):
             slide = zarr.load(slide)
+            #slide = zarr.open(slide, mode='r')
+            #slide = da.from_zarr(slide)
+            #pdb.set_trace()
+            # Convert the Dask array slice into a NumPy array using compute
+            #slide = slide[ref_channel].compute()  # This will load the data into memory as NumPy
         else:
             print(f'{slideID} zarr file DNE')
             return None
-    
+    #pdb.set_trace()
     # Generate and save thumbnail
     thumbnail_path = os.path.join(output_path, f"thumbnail_{tile_size // 4}.png")
-    thumbnail = gen_thumbnail(slide, slideID, scaling_factor=tile_size // 4)
+    thumbnail = gen_thumbnail(slide, slideID, ref_channel, scaling_factor=tile_size // 4)
     save_img(output_path, 'thumbnail', tile_size // 4, thumbnail)
     
     # Generate and save mask
@@ -48,7 +58,7 @@ def gen_tiles(data_path: str, slideID: str, ROI_path:str, tile_size: int = 128, 
     positions_file = os.path.join(output_path, f'positions_{tile_size}.csv')
     if not os.path.exists(positions_file):
         print("Positions and mask with artifacts removed don't exist, generating it and saving")
-        positions, tile_img = gen_tile_positions(output_path, slide, mask, mask_path, slideID, selected_region, ROI_path, tile_size=tile_size)
+        positions, tile_img = gen_tile_positions(output_path, slide, mask, mask_path, slideID, selected_region,ROI_rm, ROI_path, tile_size=tile_size)
         #check if positions and/or tile_img are None type (not generated)... if so, move to the next sample! 
         save_img(output_path, 'tile_img', tile_size, tile_img)
         #save_img(output_path, 'mask', tile_size // 4, mask_artifactsrm)
@@ -56,6 +66,7 @@ def gen_tiles(data_path: str, slideID: str, ROI_path:str, tile_size: int = 128, 
             f.write(' ,h,w\n')
             for i, (h, w) in enumerate(positions):
                 f.write(f'{i},{h},{w}\n')
+        print("positions file path: ", positions_file)
         print(f'Generated {len(positions)} tiles for slide with shape {slide.shape}')
 
 def save_img(output_path: str, task: str, tile_size: int, img: np.ndarray):
@@ -63,10 +74,10 @@ def save_img(output_path: str, task: str, tile_size: int, img: np.ndarray):
     img = (np.clip(img, 0, 1) * 255).astype(np.uint8)
     imsave(os.path.join(output_path, f'{task}_{tile_size}.png'), img)
 
-def gen_thumbnail(slide: zarr, slideID, scaling_factor: int) -> np.ndarray:
+def gen_thumbnail(slide: zarr, slideID: str, ref_channel:int, scaling_factor: int) -> np.ndarray:
     ''' Generate thumbnail for a given slide '''
     assert slide.shape[0] < slide.shape[1] and slide.shape[0] < slide.shape[2]
-    cache = block_reduce(slide[0], block_size=(scaling_factor, scaling_factor), func=np.mean)
+    cache = block_reduce(slide[ref_channel], block_size=(scaling_factor, scaling_factor), func=np.mean)
     cache = np.clip(cache, 0, np.percentile(cache, 95))
     cache /= cache.max()
     return np.clip(cache, 0, 1).squeeze()
@@ -79,10 +90,10 @@ def gen_mask(thumbnail: np.ndarray, slideID, threshold: int = .3) -> np.ndarray:
         threshold = .5
     elif slideID[0] in ("1T", "2G", "1E", "6H", "3H-1"):
         threshold = .4
-    print(threshold) 
+    print("background removal threshold: ", threshold) 
     return np.where(thumbnail > threshold, 1, 0)
 
-def gen_tile_positions(output_path: str, slide: zarr, mask: np.ndarray, mask_path, slideID: str, selected_region: str = None, ROI_path: str = None, tile_size: int = 256, threshold: float = 0.1) -> np.ndarray:
+def gen_tile_positions(output_path: str, slide: zarr, mask: np.ndarray, mask_path, slideID: str, selected_region: str = None, ROI_rm: str = None, ROI_path: str = None, tile_size: int = 256, threshold: float = 0.1) -> np.ndarray:
     
     # first smooth the mask!!! Removing unwanted holes 
     # Load the mask image in grayscale mode
@@ -119,6 +130,8 @@ def gen_tile_positions(output_path: str, slide: zarr, mask: np.ndarray, mask_pat
     scale_x = mask_width / original_width
     scale_y = mask_height / original_height
 
+    #pdb.set_trace()
+
     # List all files in the ROI directory
     all_files = os.listdir(ROI_path)
 
@@ -136,14 +149,16 @@ def gen_tile_positions(output_path: str, slide: zarr, mask: np.ndarray, mask_pat
  
         if selected_region is not None: #this is the region we want to include in the analysis
             #first keep only endometrium!! 
-            data_subset = ROIdata.loc[ROIdata.Text == selected_region] 
+            #data_subset = ROIdata.loc[ROIdata.Text == selected_region] 
+            data_subset = ROIdata.loc[ROIdata.Text.isin(selected_region)]
+    
             data_subset_coords = data_subset['all_points']
 
             data_subset_coords_list = data_subset_coords.str.split(' ', expand=False)
         
             ROIs_list = []
             for ROI in data_subset_coords_list:
-                print(ROI)
+                #print(ROI)
                 # Convert the list of strings to a NumPy array of floats (if it's in the format 'x,y')
                 data_subset_coords_array = np.array([list(map(float, coord.split(','))) for coord in ROI])
                 data_subset_coords_array_rescaled = data_subset_coords_array * [scale_x, scale_y]
@@ -167,17 +182,19 @@ def gen_tile_positions(output_path: str, slide: zarr, mask: np.ndarray, mask_pat
             print("no selected region... utilizing entire slide for analysis")
 
         #Now remove Artifacts!!!
+        data_subset = ROIdata.loc[ROIdata.Text.isin(ROI_rm)]
+
         #create a new column indicating whether or not the row was an integer
-        ROIdata['Text_numeric'] = pd.to_numeric(ROIdata['Text'], errors='coerce')
-        #these are just the artifact ROIs!!
-        data_subset = ROIdata.dropna(subset=['Text_numeric'])
+        # ROIdata['Text_numeric'] = pd.to_numeric(ROIdata['Text'], errors='coerce')
+        # #these are just the artifact ROIs!!
+        # data_subset = ROIdata.dropna(subset=['Text_numeric'])
 
         data_subset_coords = data_subset['all_points']
         data_subset_coords_list = data_subset_coords.str.split(' ', expand=False)
         
         ROIs_list = []
         for ROI in data_subset_coords_list:
-            print(ROI)
+            #print(ROI)
             # Convert the list of strings to a NumPy array of floats (if it's in the format 'x,y')
             data_subset_coords_array = np.array([list(map(float, coord.split(','))) for coord in ROI])
             data_subset_coords_array_rescaled = data_subset_coords_array * [scale_x, scale_y]
