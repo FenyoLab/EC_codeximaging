@@ -1,14 +1,60 @@
+#parameters needed for run_preprocessing 
+data_type: WSI # 'TMA' or 'WSI'
+input_ext: qptiff #qptiff
+input_pixel_per_um: 2
+inference_window_um: 64
+input_path: /gpfs/data/proteomics/data/Endometrial_mIF/qptiff_dat #dir with qptiffs 
+output_path: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_256 #this is where the output dir will be
+common_channel_file: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_256/data/common_channels.txt
+selected_channel_color_file: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_256/selected_channels_w_color.yaml
+channel_strength_file: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_256/channels_vis_strength.yaml
+
+ref_channel: 0 #this is the channel to be used for background removal!!
+#this is the path to the annotations folder. These are all the ROIs drawn on the qptiff images. 
+#utilize EC_codeximaging/src/preprocess/ExportROIsFromOmero.js to download annotations from all the qptiffs on omero
+ROI_path: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/preprocessing/Annotations_qptiff_all # ROI for removing unwanted regions.. change this to annotations path. I need to edit my script so it goes into each slide to get annotations 
+selected_region: 
+  - tumor # regions for visualization 
+  - TUMOR 
+  - tumor involving adenomyosis 
+ROI_rm: #these are the names of the ROIs you want to remove 
+  - artifact  
+  - necrosis 
+  - NECROSIS
+tiles_dir: tiles #this is the name of the tiles directory
+
+# Model training and inference arguments
+
+#model_dir: model_ckpt_cap35perc_endo/checkpoint-1550.pth #this is the latest training .pth output file 
+#base_path: /gpfs/data/proteomics/projects/mh6486/FenyoLab/Endometrial/CANVAS_v2/canvas/out_256
+#analysis_base_path: /gpfs/data/proteomics/home/jt3545/cavas_test/analysis
+#data_base_path: /gpfs/data/proteomics/data/Endometrial_mIF/out_256 #this is the base to where the actual slide data is 
+
+#directory names
+#clusters_npy: 17clusters.npy
+
+#SlidesDataset Arguments
+#post_normalization_scaling_strategy: threshold #this is the type of scaling (cap vs threshold)
+#cap_cutoff: None #if cap, what cutoff to use
+#perc_thres: 35 
+#tiles_dir: endometrium_tiles 
+
+
+
+
+
+
 #registration of H&E ROIs to mIF ROIs
 #set the singularity location to the proteomics directory!!
-data_path: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/registration_test
+# data_path: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/registration
 
-#preprocessing
-output_path: /gpfs/data/proteomics/data/Endometrial_mIF/out_256
-#common_channel_file: /gpfs/data/proteomics/projects/mh6486/FenyoLab/Endometrial/CANVAS_v2/canvas/out_256/data/common_channels.txt
-input_path: /gpfs/data/proteomics/data/Endometrial_mIF/qptiff_dat
-input_ext: qptiff
-inference_window_um: 2
-input_pixel_per_um: 64
-selected_region: endometrium
-ROI_path: /gpfs/data/proteomics/data/Endometrial_mIF/ROI_coordinates
-common_channel_file: /gpfs/data/proteomics/projects/mh6486/FenyoLab/Endometrial/CANVAS_v2/canvas/out_256/data/common_channels.txt
+# #preprocessing
+# output_path: /gpfs/data/proteomics/data/Endometrial_mIF/out
+# #common_channel_file: /gpfs/data/proteomics/projects/mh6486/FenyoLab/Endometrial/CANVAS_v2/canvas/out_256/data/common_channels.txt
+# input_path: /gpfs/data/proteomics/data/Endometrial_mIF/qptiff_dat
+# input_ext: qptiff
+# inference_window_um: 2
+# input_pixel_per_um: 64
+# selected_region: endometrium
+# ROI_path: /gpfs/data/proteomics/data/Endometrial_mIF/ROI_coordinates
+# common_channel_file: /gpfs/data/proteomics/projects/mh6486/FenyoLab/Endometrial/CANVAS_v2/canvas/out_256/data/common_channels.txt
