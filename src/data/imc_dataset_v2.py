@@ -134,7 +134,7 @@ class CANVASDatasetWithLocation(CANVASDataset):
 class SlidesDataset(data.Dataset): #this is inheriting data.Dataset from torch!!
     ''' Dataset for a list of slides '''
 
-    def __init__(self, slides_root_path = None, tile_size = None, tissue_type = '', transform = None, dataset_class = None, use_normalization = True):
+    def __init__(self, slides_root_path = None, tile_size = None, tiles_dir = None, tissue_type = '', transform = None, dataset_class = None, use_normalization = True):
         self.slides_root_path = slides_root_path
         self.tile_size = tile_size
         self.transform = transform

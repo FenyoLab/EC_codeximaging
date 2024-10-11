@@ -53,8 +53,3 @@ def geojson_to_csv(geojson_file, csv_file):
     df.to_csv(csv_file, index=False)
 
     print(f"CSV saved to {csv_file}")
-
-# Path to the GeoJSON file
-#geojson_file = '/media/ssd02/as18894/registration/data/annotations/20231012-9784-6H_Scan1/6H_qptiff_rois.geojson'
-#csv_file = '/media/ssd02/as18894/registration/data/annotations/20231012-9784-6H_Scan1/6H_qptiff_rois.csv'
-#geojson_to_csv(geojson_file, csv_file)

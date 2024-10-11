@@ -1,9 +1,6 @@
 import pandas as pd
 import geojson
 
-import pandas as pd
-import geojson
-
 def csv_to_geojson(csv_file, geojson_file):
     """
     Convert a CSV file of polygon points to a GeoJSON file.
@@ -45,9 +42,3 @@ def csv_to_geojson(csv_file, geojson_file):
         geojson.dump(feature_collection, f)
 
     print(f"GeoJSON saved to {geojson_file}")
-
-# csv_file = '/media/ssd02/as18894/registration/data/annotations/20231012-9784-6H_Scan1/9784-6H_1018921.svs [0]-544815-rois.csv'
-# geojson_file = '/media/ssd02/as18894/registration/data/annotations/20231012-9784-6H_Scan1/9784-6H_1018921.svs [0]-544815-rois.geojson'
-# csv_to_geojson(csv_file, geojson_file)
-
-
