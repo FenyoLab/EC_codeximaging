@@ -10,7 +10,7 @@ from deepcell.applications import Mesmer
 
 os.environ.update({"DEEPCELL_ACCESS_TOKEN": "<token-from-users.deepcell.org>"})
 
-def get_cell_segmentations(data_path, tile_size, batch_size, save_path, num_biomarkers):
+def get_cell_segmentations(data_path, tile_size, batch_size, tiles_dir, save_path, num_biomarkers):
     start_time = time.time()
 
     os.makedirs(save_path, exist_ok = True) #create output directory
@@ -20,10 +20,10 @@ def get_cell_segmentations(data_path, tile_size, batch_size, save_path, num_biom
         print('Full matrix already exists, skipping')
         return
 
-    dataloader = load_dataset(data_path, tile_size, batch_size, tissue_type='ecad+_')
+    dataloader = load_dataset(data_path, tile_size, batch_size, tiles_dir, tissue_type='ecad+_')
     get_matrix(dataloader, save_path, num_biomarkers, tissue_type='ecad+_')
     
-    dataloader = load_dataset(data_path, tile_size, batch_size, tissue_type='ecad-_')
+    dataloader = load_dataset(data_path, tile_size, batch_size, tiles_dir, tissue_type='ecad-_')
     get_matrix(dataloader, save_path, num_biomarkers, tissue_type='ecad-_')
 
     combine_matrices(save_path)
@@ -34,7 +34,7 @@ def get_cell_segmentations(data_path, tile_size, batch_size, save_path, num_biom
     print("Cell segmentation complete")
     print(f"Time elapsed: {elapsed_time:.2f} seconds")
 
-def load_dataset(data_path, tile_size, batch_size, num_workers = 1, tissue_type=''):
+def load_dataset(data_path, tile_size, batch_size, tiles_dir = None, num_workers=1, tissue_type=''):
     '''loads dataset into a dataloader'''
     input_size = 224
     from torchvision import transforms
@@ -45,7 +45,7 @@ def load_dataset(data_path, tile_size, batch_size, num_workers = 1, tissue_type=
     
     #from ..data.imc_dataset import CANVASDatasetWithLocation, SlidesDataset
     from src.data.imc_dataset_v2 import CANVASDatasetWithLocation, SlidesDataset
-    dataset = SlidesDataset(data_path, tile_size = tile_size, tissue_type = tissue_type, transform = None, dataset_class = CANVASDatasetWithLocation, use_normalization=False)
+    dataset = SlidesDataset(data_path, tile_size = tile_size, tiles_dir = tiles_dir, tissue_type = tissue_type, transform = None, dataset_class = CANVASDatasetWithLocation, use_normalization=False)
 
     dataloader= torch.utils.data.DataLoader(
         dataset, 
