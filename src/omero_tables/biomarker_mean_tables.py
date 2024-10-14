@@ -30,7 +30,7 @@ def biomarker_mean_tables(segmentation_data_dir, channel_names, omero_dict, save
         print(omero_df.head())
 
         omero_df.to_csv(table_path, index = False)
-        print(f'Omero table of biomarker means uploaded for sample {sample}')
+        print(f'Omero table of biomarker means saved for sample {sample}')
 
 if __name__ == "__main__":
     main()
