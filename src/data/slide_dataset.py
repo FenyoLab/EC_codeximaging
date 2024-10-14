@@ -18,12 +18,12 @@ class SlideDataset(data.Dataset):
         '''
         self.root_path = root_path
         self.tile_size = tile_size
-        self.transform = transform
         self.tiles_dir = tiles_dir
+        self.transform = transform
 
         if tile_size is not None:
             # Load tiles positions from disk
-            self.tile_pos = self.load_tiles(tile_size)
+            self.tile_pos = self.load_tiles(tile_size, tiles_dir)
 
     def __getitem__(self, index):
         image = self.read_region(self.tile_pos[index][0], self.tile_pos[index][1], self.tile_size, self.tile_size)
@@ -70,11 +70,10 @@ class SlideDataset(data.Dataset):
         ''' Save a thumbnail of the slide '''
         raise NotImplementedError
 
-    def load_tiles(self, tile_size):
+    def load_tiles(self, tile_size, tiles_dir):
         ''' load tiles positions from disk '''
         #print("tile size", tile_size)
         tile_path = f'{self.root_path}/{self.tiles_dir}/positions_{tile_size}.csv'
-        #tile_path = f'{self.root_path}/subset_10/positions_{tile_size}.csv'
         print(tile_path)
         tile_pos = pd.read_csv(tile_path, index_col = 0).to_numpy()
         #tile_pos[0]: array([ 1024, 19456,     0])
@@ -108,7 +107,7 @@ class SlideDataset(data.Dataset):
         ws, hs = np.where(mask >= threshold)
         positions = (np.array(list(zip(ws, hs))) * tile_size)
         # Save tile top left positions
-        tile_path = f'{self.root_path}/endometrium_tiles/{mask_id}'
+        tile_path = f'{self.root_path}/{self.tiles_dir}/{mask_id}'
         save_path = f'{tile_path}/{tile_size}'
         os.makedirs(save_path, exist_ok=True)
         np.save(f'{save_path}/tile_positions_top_left.npy', positions)

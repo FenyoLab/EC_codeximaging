@@ -7,7 +7,7 @@ from types import SimpleNamespace
 sys.path.append('../..')
 from utils import helper
 
-def get_top5_means_ecadherin(data_path, tile_size, batch_size, channel_names, mean_data_dir):
+def get_top5_means_ecadherin(data_path, tile_size, batch_size, tiles_dir, channel_names, mean_data_dir):
 
     top5_mean_data_path=os.path.join(mean_data_dir, 'top5percent_means.npy')
     if os.path.exists(top5_mean_data_path):
@@ -17,7 +17,7 @@ def get_top5_means_ecadherin(data_path, tile_size, batch_size, channel_names, me
     os.makedirs(mean_data_dir, exist_ok=True)
     ecadherin_index = channel_names.index('Ecadherin')
     #load dataset
-    dataloader = load_dataset(data_path, tile_size, batch_size)
+    dataloader = load_dataset(data_path, tile_size, batch_size, tiles_dir)
 
     top5percent_means = []
     sample_names=[]
@@ -67,7 +67,7 @@ def get_top5_means_ecadherin(data_path, tile_size, batch_size, channel_names, me
     np.save(os.path.join(mean_data_dir, 'sample_names.npy'), sample_names_arr)
     np.save(os.path.join(mean_data_dir, 'tile_positions.npy'), tile_positions_arr)
 
-def load_dataset(data_path, tile_size, batch_size, num_workers = 1):
+def load_dataset(data_path, tile_size, batch_size, tiles_dir, num_workers = 1):
     '''loads dataset into a dataloader'''
     input_size = 224
     from torchvision import transforms
@@ -78,7 +78,7 @@ def load_dataset(data_path, tile_size, batch_size, num_workers = 1):
     
     #from src.data.imc_dataset import CANVASDatasetWithLocation, SlidesDataset
     from ..data.imc_dataset import CANVASDatasetWithLocation, SlidesDataset #check this works
-    dataset = SlidesDataset(data_path, tile_size = tile_size, transform = None, dataset_class = CANVASDatasetWithLocation, use_normalization=False)
+    dataset = SlidesDataset(data_path, tile_size = tile_size, tiles_dir = tiles_dir, transform = None, dataset_class = CANVASDatasetWithLocation, use_normalization=False)
 
     dataloader= torch.utils.data.DataLoader(
         dataset, 

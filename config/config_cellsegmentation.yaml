@@ -1,6 +1,7 @@
 #basic input parameters
 tile_size: 256
 batch_size: 64
+tiles_dir: tiles
 num_channels: 36
 n_clusters_celltypes: 20
 n_clusters_preprocessing: 2

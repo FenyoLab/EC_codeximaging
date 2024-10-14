@@ -18,13 +18,13 @@ class SlideDataset(data.Dataset):
         '''
         self.root_path = root_path
         self.tile_size = tile_size
-        self.transform = transform
         self.tiles_dir = tiles_dir
         self.tissue_type = tissue_type
+        self.transform = transform
 
         if tile_size is not None:
             # Load tiles positions from disk
-            self.tile_pos = self.load_tiles(tile_size, tissue_type)
+            self.tile_pos = self.load_tiles(tile_size, tiles_dir, tissue_type)
 
     def __getitem__(self, index):
         image = self.read_region(self.tile_pos[index][0], self.tile_pos[index][1], self.tile_size, self.tile_size)
@@ -71,7 +71,7 @@ class SlideDataset(data.Dataset):
         ''' Save a thumbnail of the slide '''
         raise NotImplementedError
 
-    def load_tiles(self, tile_size, tissue_type):
+    def load_tiles(self, tile_size, tiles_dir, tissue_type):
         ''' load tiles positions from disk '''
         #print("tile size", tile_size)
         tile_path = f'{self.root_path}/{self.tiles_dir}/{tissue_type}positions_{tile_size}.csv'
