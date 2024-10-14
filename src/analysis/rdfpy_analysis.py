@@ -40,8 +40,8 @@ def Pair_Correlation(matrix, metadata, metadata_celltypes, clinicaldata, channel
         Tumorcells_centroids = np.column_stack((Tumorcells_x, Tumorcells_y))
         #pdb.set_trace()
         # compute radial distribution function with step size = 0.1
-        g_r_Tcells, radii_Tcells = rdf(Tcells_centroids, dr=1500)
-        g_r_Tumorcells, radii_Tumorcells = rdf(Tumorcells_centroids, dr=1500)
+        g_r_Tcells, radii_Tcells = rdf(Tcells_centroids, dr=2000)
+        g_r_Tumorcells, radii_Tumorcells = rdf(Tumorcells_centroids, dr=3000)
         
         # metadata_indices = metadata.index[metadata['slide_id'] == slide].tolist()
         # matrix_slide_chan = matrix[metadata_indices,chan]

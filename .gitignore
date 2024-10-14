@@ -176,3 +176,25 @@ cython_debug/
 out*/
 logs/
 extra/
+
+ *.tiff
+ *.qptiff
+ *.out
++*.sh
+ 
+ canvas/out_*
++
++*cap*
++*arcsinh*
++*35*
++*scalingafternorm*
++*endo*
++*h5ad
++*.gitignore*
++.DS*
++*.js*
++canvas/analysis/omero_label_generation.py
++canvas/analysis/omero_label_metatable_generation.py
++canvas/analysis/omero_label_genv2.py
++canvas/analysis/codex-imaging/gen_clinical_corr.py
++.gitignore
