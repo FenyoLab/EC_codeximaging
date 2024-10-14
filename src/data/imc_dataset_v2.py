@@ -15,7 +15,7 @@ from src.data.slide_dataset_v2 import SlideDataset
 class NPYDataset(SlideDataset):
 
     def __init__(self, root_path = None, tile_size = None, tiles_dir = None,  tissue_type = '', transform = None, lazy = True):
-        super().__init__(root_path, tile_size, tissue_type, transform) #SlideDataset
+        super().__init__(root_path, tile_size, tiles_dir, tissue_type, transform) #SlideDataset
         self.slide = self.read_slide(root_path, lazy)
         self.read_counter = 0
 
@@ -96,7 +96,7 @@ class CANVASDataset(ZarrDataset): #once we get to this function, the image has a
 #also transform is set in SlidesDataset in main_pretrain.py 
     def __init__(self, root_path, tile_size, tiles_dir, tissue_type, common_channel_names : [str], transform = None, lazy = True):
         super().__init__(root_path, tile_size, tiles_dir, tissue_type, transform) #this is a call to the superclass constructor
-        self.tiles_dir = tiles_dir 
+        self.tiles_dir = tiles_dir
         self.root_path = root_path
         self.slide = self.read_slide(root_path, lazy)
         self.read_counter = 0
