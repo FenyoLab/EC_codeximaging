@@ -12,7 +12,7 @@
 source ~/.bashrc
 conda activate omero
 
-source bash_scripts/.env
+source .env
 
 cd ../
 python main_celltype_cluster_tables.py
