@@ -15,9 +15,9 @@ samples_to_remove: null
 #base paths
 segmentation_data_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/raw_segmentation_data
 label_images_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/label_images
-out_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_date_of_run
+out_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_10-14-24
 
-data_dir: /gpfs/data/proteomics/data/Endometrial_mIF/out_256/data
+data_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_256/data
 qptiff_data_dir: /gpfs/data/proteomics/data/Endometrial_mIF/qptiff_dat
 
 #specific paths: main_cell_segmentation
@@ -38,55 +38,55 @@ research_drive_dir: 'fenyolab/EC_codeximaging/cell_segmentation'
 omero_image_dict:
   20230720-4309-4G-1_Scan1: 
     image_id: 597780
-    roi_id: 
+    roi_id: 1230523
   20230720-3660-2G-1_Scan1: 
     image_id: 597642
-    roi_id: 
+    roi_id: 1230525
   20230908-1872-4C-1_Scan2: 
     image_id: 611987
-    roi_id: 
+    roi_id: 1230521
   20230922-3869-1O_Scan1: 
     image_id: 614300
-    roi_id: 
+    roi_id: 1230514
   20231003-1160-3S_Scan1: 
     image_id: 617515
-    roi_id: 
+    roi_id: 1230524
   20231012-3535-1T_Scan2: 
     image_id: 619802
-    roi_id: 
+    roi_id: 1230515
   20231019-0413-3D_Scan1: 
     image_id: 620931
-    roi_id: 
+    roi_id: 1230522
   20230908-6103-1J-1_Scan2: 
     image_id: 612242
-    roi_id: 
+    roi_id: 1230518
   20230922-5689-1P_Scan1: 
     image_id: 615142
-    roi_id: 
+    roi_id: 1230517
   20231003-2630-3P_Scan1: 
     image_id: 617353
-    roi_id: 
+    roi_id: 1230520
   20231012-9390-1I_Scan1: 
     image_id: 619234
-    roi_id: 
+    roi_id: 1230529
   20231019-4475-1E_Scan2: 
     image_id: 620498
-    roi_id: 
+    roi_id: 1230526
   20230810_0488_3K_Scan1: 
     image_id: 601969 
-    roi_id: 
+    roi_id: 1230513
   20230908-8710-3H-1_Scan1: 
     image_id: 611002
-    roi_id: 
+    roi_id: 1230527
   20230922-7331-1H_Scan1: 
     image_id: 615004
-    roi_id: 
+    roi_id: 1230528
   20231003-5988-4I_Scan1: 
     image_id: 616589
-    roi_id: 
+    roi_id: 1230519
   20231012-9784-6H_Scan1: 
     image_id: 618713
-    roi_id: 
+    roi_id: 1230516
 
 #lineage markers cluster identity  
 lineage_markers_cluster_dict:

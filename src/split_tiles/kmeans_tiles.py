@@ -74,8 +74,8 @@ def create_cluster_masks(mean_data_dir, clusters_dir, data_dir, tile_size):
 
         #load in zarr data 
         slide_path = f'{data_dir}/{sample}/data.zarr'
-        print('Reading slide...')
-        slide = zarr.load(slide_path) 
+        print('Reading slide metadata...')
+        slide = zarr.open(slide_path, mode='r')  # Opens the Zarr array in read-only mode
         print(f'Slide_shape: {slide.shape}')
 
         _, slide_height, slide_width = slide.shape
