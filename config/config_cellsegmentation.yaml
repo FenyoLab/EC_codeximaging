@@ -98,7 +98,7 @@ lineage_markers_cluster_dict:
       2: negative
     CD20:
       0: negative 
-      1: negative #positive but less
+      1: negative 
       2: positive
     CD68:
       0: negative
@@ -106,7 +106,7 @@ lineage_markers_cluster_dict:
       2: positive
     CD163:
       0: negative
-      1: negative #might consider it positive 
+      1: negative 
       2: positive
   20230720-4309-4G-1_Scan1: 
     CD4:
@@ -124,7 +124,7 @@ lineage_markers_cluster_dict:
     CD163:
       0: negative 
       1: positive
-      2: negative #might consider it positive   
+      2: negative   
   20230810_0488_3K_Scan1: 
     CD4:
       0: negative
