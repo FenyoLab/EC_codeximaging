@@ -81,19 +81,7 @@ def normalize_matrix(output_path, matrix_filtered, channel_names):
     print("Matrix filtered by rows shape:", matrix_filtered.shape)
 
     #cap matrix to 99th percentile values per biomarker
-    matrix_capped = np.clip(matrix_filtered, 0, np.percentile(matrix_filtered, 99.9, axis=0))
-    
-    # Create a copy of the matrix to avoid modifying the original
-    #matrix_capped = np.copy(matrix_filtered)
-    
-    # Apply np.clip to all columns except column 28
-    #for i in range(matrix_filtered.shape[1]):
-    #    if i != 28:
-    #        matrix_capped[:, i] = np.clip(matrix_filtered[:, i], 0, np.percentile(matrix_filtered[:, i], 99))
-
-    # Cap column 28 to 99.9 directly
-    #matrix_capped[:, 28] = np.clip(matrix_filtered[:, 28], 0, 99.9)
-
+    #matrix_capped = np.clip(matrix_filtered, 0, np.percentile(matrix_filtered, 99.9, axis=0))
 
     #appy zscore and arcsinh transformation
     cell_sample_names_filtered = np.load(os.path.join(output_path, 'cell_sample_names_filtered.npy'))
@@ -107,20 +95,24 @@ def normalize_matrix(output_path, matrix_filtered, channel_names):
         #get indices were sample_ids == sample_id
         #get the same matrix rows
         sample_filter = cell_sample_names_filtered == sample_name
-        #sample_matrix = matrix_filtered[sample_filter]
-        sample_matrix = matrix_capped[sample_filter]
+        sample_matrix = matrix_filtered[sample_filter]
+        #sample_matrix = matrix_capped[sample_filter]
         print(sample_name, sample_matrix.shape)
 
         for col in range(num_channels):
             array = sample_matrix[:, col]
             mean = np.mean(array)
             std = np.std(array)
-            print(col, std)
-            array_zscore = (array - mean) / std
-            array_arcsinh = np.arcsinh(array_zscore)
+            #print(col, std)
+            
+            if np.all(array == 0):
+                print(f"All values are 0 for: {sample_name}, column {col}")
+            else:
+                # Otherwise, proceed with z-score and arcsinh transformation
+                array_zscore = (array - mean) / std
+                array_arcsinh = np.arcsinh(array_zscore)
+                sample_matrix[:, col] = array_arcsinh
 
-            sample_matrix[:, col] = array_arcsinh
-        
         normalized_matrix = np.concatenate((normalized_matrix, sample_matrix), axis=0)
 
     print("Matrix normalized per patient shape:", normalized_matrix.shape)
