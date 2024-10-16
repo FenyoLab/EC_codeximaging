@@ -35,19 +35,38 @@ def threshold_markers(data_dir, channel_names, threshold_dict, threshold_channel
         # Iterate over channels in the thresholding dictionary
         for channel_index, channel in enumerate(threshold_channel_names):
             print(channel, channel_index, threshold_indices[channel_index])
+            
             if channel in threshold_dict.get(sample, {}):  # Check if the sample is in the threshold_dict
                 # Get the corresponding thresholding mapping for the current channel
                 threshold_mapping = threshold_dict[sample][channel]
                 print(threshold_mapping)
 
-                # Iterate over each K-means label and its corresponding index
-                for index, label in enumerate(sample_kmeans_labels[:, channel_index]):
-                    # Check the value in the threshold mapping
-                    if label in threshold_mapping:
-                        # If the mapping value is 'negative', set the matrix value to 0
-                        if threshold_mapping[label] == 'negative':
+                # Check if the channel uses only lower cutoff thresholding
+                if 'lower_cutoff' in threshold_mapping:
+                    lower_cutoff = threshold_mapping['lower_cutoff']
+                    print(f"Applying lower cutoff of {lower_cutoff} for {channel}")
+                    sample_matrix[sample_matrix[:, threshold_indices[channel_index]] < lower_cutoff, threshold_indices[channel_index]] = 0
+
+                # Check if the channel uses upper cutoff in addition to cluster-based thresholding
+                elif 'upper_cutoff' in threshold_mapping:
+                    upper_cutoff = threshold_mapping['upper_cutoff']
+                    print(f"Applying cluster-based + upper cutoff (of {upper_cutoff}) thresholding for {channel}")
+
+                    # Apply cluster-based thresholding
+                    for index, label in enumerate(sample_kmeans_labels[:, channel_index]):
+                        if label in threshold_mapping and threshold_mapping[label] == 'negative':
                             sample_matrix[index, threshold_indices[channel_index]] = 0
-                        # If it’s positive, keep the original value (do nothing)
+                
+                    # Apply upper cutoff thresholding
+                    sample_matrix[sample_matrix[:, threshold_indices[channel_index]] > upper_cutoff, threshold_indices[channel_index]] = 0
+
+                # Apply cluster-based thresholding (only clusters 0, 1, 2)
+                else:
+                    print(f"Applying cluster-based thresholding for {channel}")
+                    for index, label in enumerate(sample_kmeans_labels[:, channel_index]):
+                        # If the mapping value is 'negative', set the matrix value to 0, If it’s positive, keep the original value (do nothing)
+                        if label in threshold_mapping and threshold_mapping[label] == 'negative':
+                            sample_matrix[index, threshold_indices[channel_index]] = 0
 
         # Update the matrix for this sample
         matrix[sample_indices] = sample_matrix

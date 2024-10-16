@@ -96,10 +96,10 @@ lineage_markers_cluster_dict:
       0: negative 
       1: positive 
       2: negative
-    CD20:
+    CD20: #stain is bad 
       0: negative 
       1: negative 
-      2: positive
+      2: negative
     CD68:
       0: negative
       1: negative
@@ -113,9 +113,9 @@ lineage_markers_cluster_dict:
       0: negative 
       1: positive  
       2: negative  
-    CD20:
+    CD20: #stain is bad 
       0: negative 
-      1: positive
+      1: negative
       2: negative
     CD68:
       0: negative 
@@ -130,10 +130,10 @@ lineage_markers_cluster_dict:
       0: negative
       1: negative
       2: positive 
-    CD20:
-      0: positive 
+    CD20: #stain is bad 
+      0: negative 
       1: negative
-      2:  negative
+      2: negative
     CD68:
       0: negative
       1: positive
@@ -159,7 +159,7 @@ lineage_markers_cluster_dict:
       0: negative
       1: negative
       2: positive
-  	20230908-6103-1J-1_Scan2: 
+  20230908-6103-1J-1_Scan2: 
     CD4:
       0: negative
       1: positive
@@ -203,13 +203,15 @@ lineage_markers_cluster_dict:
       1: positive
       2: negative
     CD68:
-      0: negative
-      1: positive
-      2: positive
+      lower_cutoff: 28
+      #0: negative
+      #1: positive
+      #2: positive
     CD163:
-      0: negative
-      1: positive
-      2: positive
+      lower_cutoff: 4
+      #0: negative
+      #1: positive
+      #2: positive
   20230922-5689-1P_Scan1: 
     CD4:
       0: negative
@@ -224,10 +226,11 @@ lineage_markers_cluster_dict:
       1: positive
       2: positive
     CD163:
-      0: negative 
-      1: positive
-      2: positive
-  	20230922-7331-1H_Scan1: 
+      lower_cutoff: 5
+      #0: negative 
+      #1: positive
+      #2: positive
+  20230922-7331-1H_Scan1: 
     CD4:
       0: negative 
       1: negative
@@ -271,13 +274,15 @@ lineage_markers_cluster_dict:
       1: positive
       2: positive
     CD68:
-      0: negative
-      1: negative
-      2: positive
+      lower_cutoff: 23
+      #0: negative
+      #1: negative
+      #2: positive
     CD163:
       0: negative
       1: negative
       2: positive
+      upper_cutoff: 23 #greater than 23 = 0 
   20231003-5988-4I_Scan1: 
     CD4:
       0: negative
@@ -295,15 +300,17 @@ lineage_markers_cluster_dict:
       0: negative
       1: negative
       2: positive
+      upper_cutoff: 20 #greater than 20 = 0 
   20231012-3535-1T_Scan2: 
     CD4:
       0: negative
       1: positive
       2: negative
     CD20:
-      0: negative
-      1: positive
-      2: negative
+      lower_cutoff: 7 
+      #0: negative
+      #1: positive
+      #2: negative
     CD68:
       0: negative
       1: negative
@@ -322,9 +329,10 @@ lineage_markers_cluster_dict:
       1: negative
       2: positive
     CD68:
-      0: negative
-      1: negative
-      2: positive
+      lower_cutoff: 35
+      #0: negative
+      #1: negative
+      #2: positive
     CD163:
       0: negative
       1: positive
@@ -346,6 +354,7 @@ lineage_markers_cluster_dict:
       0: negative
       1: negative
       2: positive
+      upper_cutoff: 30 #greater than 30 = 0 
   20231019-0413-3D_Scan1: 
     CD4:
       0: negative
