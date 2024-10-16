@@ -18,3 +18,13 @@ out_9-13-24c:
     - lineage markers: DAPI, MPO, E-cadherin, CD163, CD4, CD68, CD8, CD20, CD31, CD3e
     - thresholded markers: CD20
     - matrix capped at 99.9% value 
+
+out_10-14-24:
+    - no removed samples (as of now)
+    - lineage markers (FINAL): 'DAPI', 'MPO', 'Ecadherin', 'CD163', 'CD4', 'CD68', 'CD8', 'CD20', 'CD31', 'CD3e'
+    - thresholded markers with clustering (some manual): CD163, CD4, CD68, CD20
+    - normalization:
+        matrix not being capped 
+        if std = 0, marker value of all cells in sample = 0
+         
+
