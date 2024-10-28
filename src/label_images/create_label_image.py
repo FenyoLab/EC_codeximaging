@@ -84,4 +84,3 @@ def create_label_slide(label_images_dir, data_dir):
     #save the slide mask as tif
     tiff.imwrite(os.path.join(label_images_dir, 'label_image.tiff'), label_image)
     print("Label image saved as tiff")
-

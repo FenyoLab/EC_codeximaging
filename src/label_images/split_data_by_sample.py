@@ -10,7 +10,7 @@ def split_by_sample(segmentation_data_dir, label_images_dir):
     segmentation_masks = np.load(os.path.join(segmentation_data_dir, 'segmentation_masks.npy'))
     tile_positions = np.load(os.path.join(segmentation_data_dir, 'tile_positions.npy'))
     tile_sample_names = np.load(os.path.join(segmentation_data_dir, 'tile_sample_names.npy'))
-    metadata = pd.read_csv(os.path.join(segmentation_data_dir, 'metadata.csv'), index_col = 0)
+    metadata = pd.read_csv(os.path.join(segmentation_data_dir, 'metadata.csv'))
     print("Tile data loaded")
 
     print("Mask shape before swapping axes:", segmentation_masks.shape)
