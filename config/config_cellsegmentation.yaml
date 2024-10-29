@@ -3,9 +3,10 @@ tile_size: 256
 batch_size: 64
 tiles_dir: tiles
 num_channels: 36
-n_clusters_celltypes: 20
+n_clusters_celltypes: 35
 n_clusters_preprocessing: 2
 n_clusters_thresholding: 3
+random_state: 2024
 
 channel_names: ['DAPI', 'MPO', 'pJAK1', 'Ecadherin', 'PDL1', 'CD163', 'PD1', 'CD56', 'CD47', 'MAL', 'GAL3', 'PARP1', 'LAG3', 'Her2', 'CD4', 'PI3KCA', 'TIM3', 'CD68', 'ER', 'PR', 'MSH2', 'CD8', 'STAT1', 'MSH6', 'bCatenin1', 'HLAABC', 'MLH1', 'Ki67', 'CD20', 'ARID1A', 'IFNG', 'CD31', 'PMS', 'CD44', 'PanCytokeratin', 'CD3e']
 filtered_channel_names: ['DAPI', 'MPO', 'Ecadherin', 'CD163', 'CD4', 'CD68', 'CD8', 'CD20', 'CD31', 'CD3e'] #change name to cell lineage markers
@@ -16,7 +17,7 @@ samples_to_remove: null
 #base paths
 segmentation_data_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/raw_segmentation_data
 label_images_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/label_images
-out_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_10-14-24
+out_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_10-28-24
 
 data_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_256/data
 qptiff_data_dir: /gpfs/data/proteomics/data/Endometrial_mIF/qptiff_dat
@@ -26,9 +27,12 @@ tiles_split_dir: tiles_split
 
 #specific paths: main_cell_segmentation_analysis
 thresholded_dir: thresholded_matrix
+normalized_matrix_dir: normalized_matrix
 metadata_filtered_path: normalized_matrix/metadata_filtered.csv
 matrix_normal_filtered_path: normalized_matrix/matrix_normal_filtered_markers.npy
+umap_dir: umap
 umap_coord_path: umap/coord.npy
+pca_coord_path: pca/coord.npy
 clustering_dir: clustering
 
 #research drive
@@ -39,55 +43,72 @@ research_drive_dir: 'fenyolab/EC_codeximaging/cell_segmentation'
 omero_image_dict:
   20230720-3660-2G-1_Scan1: 
     image_id: 597642
-    roi_id: 1230525
+    roi_id: 1230963
+    #roi_id: 1230525
   20230720-4309-4G-1_Scan1: 
     image_id: 597780
-    roi_id: 1230523
+    roi_id: 1230961
+    #roi_id: 1230523
   20230810_0488_3K_Scan1: 
     image_id: 601969 
-    roi_id: 1230513
+    roi_id: 1230951
+    #roi_id: 1230513
   20230908-1872-4C-1_Scan2: 
     image_id: 611987
-    roi_id: 1230521
+    roi_id: 1230959
+    #roi_id: 1230521
   20230908-6103-1J-1_Scan2: 
     image_id: 612242
-    roi_id: 1230518
+    roi_id: 1230956
+    #roi_id: 1230518
   20230908-8710-3H-1_Scan1: 
     image_id: 611002
-    roi_id: 1230527
+    roi_id: 1230965
+    #roi_id: 1230527
   20230922-3869-1O_Scan1: 
     image_id: 614300
-    roi_id: 1230514
+    roi_id: 1230952
+    #roi_id: 1230514
   20230922-5689-1P_Scan1: 
     image_id: 615142
-    roi_id: 1230517
+    roi_id: 1230955
+    #roi_id: 1230517
   20230922-7331-1H_Scan1: 
     image_id: 615004
-    roi_id: 1230528
+    roi_id: 1230966
+    #roi_id: 1230528
   20231003-1160-3S_Scan1: 
     image_id: 617515
-    roi_id: 1230524
+    roi_id: 1230962
+    #roi_id: 1230524
   20231003-2630-3P_Scan1: 
     image_id: 617353
-    roi_id: 1230520
+    roi_id: 1230958
+    #roi_id: 1230520
   20231003-5988-4I_Scan1: 
     image_id: 616589
-    roi_id: 1230519
+    roi_id: 1230957
+    #roi_id: 1230519
   20231012-3535-1T_Scan2: 
     image_id: 619802
-    roi_id: 1230515
+    roi_id: 1230953
+    #roi_id: 1230515
   20231012-9390-1I_Scan1: 
     image_id: 619234
-    roi_id: 1230529
+    roi_id: 1230967
+    #roi_id: 1230529
   20231012-9784-6H_Scan1: 
     image_id: 618713
-    roi_id: 1230516
+    roi_id: 1230954
+    #roi_id: 1230516
   20231019-0413-3D_Scan1: 
     image_id: 620931
-    roi_id: 1230522
+    roi_id: 1230960
+    #roi_id: 1230522
   20231019-4475-1E_Scan2: 
     image_id: 620498
-    roi_id: 1230526
+    roi_id: 1230964
+    #roi_id: 1230526
 
 #lineage markers cluster identity  
 lineage_markers_cluster_dict:
@@ -106,8 +127,8 @@ lineage_markers_cluster_dict:
       2: positive
     CD163:
       0: negative
-      1: negative 
-      2: positive
+      1: positive 
+      2: negative
   20230720-4309-4G-1_Scan1: 
     CD4:
       0: negative 
@@ -119,12 +140,13 @@ lineage_markers_cluster_dict:
       2: negative
     CD68:
       0: negative 
-      1: negative
-      2: positive  
+      1: positive
+      2: negative  
     CD163:
       0: negative 
       1: positive
-      2: negative   
+      2: negative 
+      upper_cutoff: 45  
   20230810_0488_3K_Scan1: 
     CD4:
       0: negative
@@ -140,14 +162,15 @@ lineage_markers_cluster_dict:
       2: positive
     CD163:
       0: negative
-      1: negative
-      2: positive
+      1: positive
+      2: negative
+      upper_cutoff: 46
   20230908-1872-4C-1_Scan2: 
     CD4:
       0: negative
       1: positive
       2: negative 
-    CD20:
+    CD20: #there are cells but not within label image mask
       0: negative 
       1: negative
       2: negative 
@@ -157,8 +180,8 @@ lineage_markers_cluster_dict:
       2: positive
     CD163:
       0: negative
-      1: negative
-      2: positive
+      1: positive
+      2: negative
   20230908-6103-1J-1_Scan2: 
     CD4:
       0: negative
@@ -176,15 +199,16 @@ lineage_markers_cluster_dict:
       0: negative
       1: positive 
       2: negative
+      upper_cutoff: 30
   20230908-8710-3H-1_Scan1: 
     CD4:
       0: negative
-      1: positive 
-      2: negative
+      1: negative 
+      2: positive
     CD20:
       0: negative
-      1: negative
-      2: positive
+      1: positive
+      2: negative
     CD68:
       0: negative
       1: positive 
@@ -193,6 +217,7 @@ lineage_markers_cluster_dict:
       0: negative
       1: negative
       2: positive
+      upper_cutoff: 52
   20230922-3869-1O_Scan1: 
     CD4:
       0: negative
@@ -200,18 +225,12 @@ lineage_markers_cluster_dict:
       2: negative
     CD20:
       0: negative
-      1: positive
-      2: negative
+      1: negative
+      2: positive
     CD68:
       lower_cutoff: 28
-      #0: negative
-      #1: positive
-      #2: positive
     CD163:
       lower_cutoff: 4
-      #0: negative
-      #1: positive
-      #2: positive
   20230922-5689-1P_Scan1: 
     CD4:
       0: negative
@@ -227,25 +246,22 @@ lineage_markers_cluster_dict:
       2: positive
     CD163:
       lower_cutoff: 5
-      #0: negative 
-      #1: positive
-      #2: positive
   20230922-7331-1H_Scan1: 
     CD4:
       0: negative 
-      1: negative
-      2: positive
+      1: positive
+      2: negative
     CD20:
       0: negative
-      1: negative
-      2: positive
+      1: positive
+      2: negative
     CD68:
       0: negative
       1: positive
       2: positive 
     CD163:
       0: negative
-      1: negative
+      1: positive
       2: positive 
   20231003-1160-3S_Scan1: 
     CD4:
@@ -257,9 +273,7 @@ lineage_markers_cluster_dict:
       1: positive
       2: positive
     CD68:
-      0: negative
-      1: positive
-      2: positive
+      lower_cutoff: 35
     CD163:
       0: negative
       1: positive
@@ -275,9 +289,6 @@ lineage_markers_cluster_dict:
       2: positive
     CD68:
       lower_cutoff: 23
-      #0: negative
-      #1: negative
-      #2: positive
     CD163:
       0: negative
       1: negative
@@ -308,13 +319,10 @@ lineage_markers_cluster_dict:
       2: negative
     CD20:
       lower_cutoff: 7 
-      #0: negative
-      #1: positive
-      #2: negative
     CD68:
       0: negative
-      1: negative
-      2: positive 
+      1: positive
+      2: negative 
     CD163:
       0: negative
       1: positive  
@@ -326,26 +334,22 @@ lineage_markers_cluster_dict:
       2: negative
     CD20:
       0: negative
-      1: negative
-      2: positive
+      1: positive
+      2: negative
     CD68:
-      lower_cutoff: 35
-      #0: negative
-      #1: negative
-      #2: positive
+      lower_cutoff: 30
     CD163:
       0: negative
       1: positive
       2: negative
+      upper_cutoff: 24 
   20231012-9784-6H_Scan1: 
     CD4:
       0: negative
       1: positive
       2: negative
     CD20:
-      0: negative
-      1: positive
-      2: positive
+      lower_cutoff: 6
     CD68:
       0: negative
       1: positive
@@ -361,22 +365,18 @@ lineage_markers_cluster_dict:
       1: positive
       2: negative
     CD20:
-      0: negative
-      1: negative
-      2: positive
+      lower_cutoff: 6
     CD68:
       0: negative
       1: positive
       2: positive
     CD163:
-      0: negative
-      1: positive
-      2: positive
+      lower_cutoff: 2
   20231019-4475-1E_Scan2: 
     CD4:
       0: negative
-      1: negative
-      2: positive 
+      1: positive
+      2: negative 
     CD20:
       0: negative
       1: negative
@@ -386,6 +386,6 @@ lineage_markers_cluster_dict:
       1: positive
       2: negative
     CD163:
-      0: positive
-      1: negative
+      0: negative
+      1: positive
       2: positive
