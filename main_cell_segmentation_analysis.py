@@ -10,7 +10,7 @@ config = SimpleNamespace(**run_config)
 
 #import python files
 from src.normalization import normalize_matrix, threshold_markers
-from src.umap_reduction import gen_umap_embedding 
+from src.dimensionality_reduction import gen_umap_embedding, gen_pca_embedding
 from src.clustering import kmeans
 from src.analysis import clustering_analysis
 
@@ -30,18 +30,22 @@ normalize_matrix.get_normalized_matrix(save_path = config.out_dir, raw_data_dir 
 
 #call umap function 
 normal_matrix_filtered_path = os.path.join(config.out_dir, config.matrix_normal_filtered_path)
-umap_coord_path = os.path.join(config.out_dir, config.umap_coord_path)
+pca_coord_path = os.path.join(config.out_dir, config.pca_coord_path)
 
-gen_umap_embedding.plot_umap(emb_path = normal_matrix_filtered_path, umap_emb_path = umap_coord_path, 
-                            save_path = config.out_dir)
+gen_pca_embedding.plot_pca(emb_path = normal_matrix_filtered_path, pca_emb_path = pca_coord_path, 
+                            save_path = config.out_dir, random_state = config.random_state)
+
+#umap_coord_path = os.path.join(config.out_dir, config.umap_coord_path)
+#gen_umap_embedding.plot_umap(emb_path = normal_matrix_filtered_path, umap_emb_path = umap_coord_path, 
+#                            save_path = config.out_dir, random_state = config.random_state)
                             
 #call kmeans function 
 kmeans_labels_path = os.path.join(config.out_dir, config.clustering_dir, f'{config.n_clusters_celltypes}_clusters', 'kmeans_labels.npy')
 raw_metadata_path = os.path.join(config.segmentation_data_dir, 'metadata.csv')
 metadata_filtered_path = os.path.join(config.out_dir, config.metadata_filtered_path)
 
-kmeans.clustering(emb_path = normal_matrix_filtered_path, umap_path = umap_coord_path, 
-                n_clusters = config.n_clusters_celltypes, save_path = config.out_dir)
+kmeans.clustering(emb_path = normal_matrix_filtered_path, pca_path = pca_coord_path, 
+                n_clusters = config.n_clusters_celltypes, save_path = config.out_dir, random_state = config.random_state)
 kmeans.add_labels_to_metadata(labels_path = kmeans_labels_path, raw_metadata_path = raw_metadata_path, 
                 filtered_metadata_path = metadata_filtered_path, save_path=config.out_dir, 
                 n_clusters = config.n_clusters_celltypes)

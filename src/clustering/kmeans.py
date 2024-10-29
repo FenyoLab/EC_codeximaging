@@ -8,7 +8,7 @@ import pdb
 
 import sklearn.cluster as cluster
 
-def clustering(emb_path, umap_path, n_clusters, save_path, output_suffix = 'clustering'):
+def clustering(emb_path, pca_path, n_clusters, save_path, random_state, output_suffix = 'clustering'):
 
     output_path = f'{save_path}/{output_suffix}/{n_clusters}_clusters' #create output directory 
     os.makedirs(output_path, exist_ok = True)
@@ -20,7 +20,7 @@ def clustering(emb_path, umap_path, n_clusters, save_path, output_suffix = 'clus
 
     embedding = np.load(emb_path)
     print('Embedding loaded')
-    kmeans = cluster.KMeans(n_clusters=n_clusters, random_state=0).fit(embedding)
+    kmeans = cluster.KMeans(n_clusters=n_clusters, random_state = random_state).fit(embedding)
     kmeans_labels = kmeans.labels_ + 1
     kmeans_inertia = kmeans.inertia_
     np.save(labels_path, kmeans_labels)
@@ -29,14 +29,14 @@ def clustering(emb_path, umap_path, n_clusters, save_path, output_suffix = 'clus
         f.write(str(kmeans_inertia))
     print('Kmeans inertia saved')
 
-    print('Plotting clusters on UMAP')
-    umap_embedding = np.load(umap_path)
+    print('Plotting clusters on PCA plot')
+    pca_embedding = np.load(pca_path)
     fig, ax = plt.subplots(figsize = (10, 10))
     if n_clusters <= 20:
         palette = 'tab20'
     else:
         palette = 'Spectral'
-    sns.scatterplot(x = umap_embedding[:, 0], y = umap_embedding[:, 1], size = 0.1, hue=kmeans_labels, palette = palette, legend='full')
+    sns.scatterplot(x = pca_embedding[:, 0], y = pca_embedding[:, 1], size = 0.1, hue=kmeans_labels, marker = 'o', palette = palette, legend='full')
     plt.title(f'Kmeans {n_clusters} clusters')
     plt.legend(bbox_to_anchor=(1.1, 1.05))
     plt.savefig(labels_path.replace('.npy', '.png'))

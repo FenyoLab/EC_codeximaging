@@ -1,4 +1,5 @@
 import os
+import json
 import time
 
 import numpy as np
@@ -88,8 +89,9 @@ def normalize_matrix(output_path, matrix_filtered, channel_names):
     unique_sample_names, indices = np.unique(cell_sample_names_filtered, return_index=True)
     unique_sample_names = unique_sample_names[np.argsort(indices)]#sort them in order of when they show up
 
-    num_channels = len(channel_names)
-    normalized_matrix = np.empty((0, num_channels))
+    normalized_matrix = np.empty((0, len(channel_names)))
+
+    stats_dict = {}
 
     for sample_name in unique_sample_names:
         #get indices were sample_ids == sample_id
@@ -99,25 +101,34 @@ def normalize_matrix(output_path, matrix_filtered, channel_names):
         #sample_matrix = matrix_capped[sample_filter]
         print(sample_name, sample_matrix.shape)
 
-        for col in range(num_channels):
+        for col, channel in enumerate(channel_names):
             array = sample_matrix[:, col]
             mean = np.mean(array)
             std = np.std(array)
-            #print(col, std)
-            
+
             if np.all(array == 0):
-                print(f"All values are 0 for: {sample_name}, column {col}")
+                print(f"All values are 0 for: channel {channel} (col {col})")
+                mean, std = 0, 0
             else:
-                # Otherwise, proceed with z-score and arcsinh transformation
+                # Perform z-score normalization and arcsinh transformation
                 array_zscore = (array - mean) / std
                 array_arcsinh = np.arcsinh(array_zscore)
+                print(f"{channel} (col {col}) - Min: {np.min(array_arcsinh)}, Max: {np.max(array_arcsinh)}")
                 sample_matrix[:, col] = array_arcsinh
+            
+            if sample_name not in stats_dict:
+                stats_dict[sample_name] = {}
+            stats_dict[sample_name][channel] = {'mean': mean, 'std': std}
 
         normalized_matrix = np.concatenate((normalized_matrix, sample_matrix), axis=0)
 
     print("Matrix normalized per patient shape:", normalized_matrix.shape)
+    
     np.save(os.path.join(output_path, 'matrix_normal.npy'), normalized_matrix)
-    print("Normalized matrix saved")
+    with open(os.path.join(output_path, 'normalization_stats.json'), 'w') as f:
+        json.dump(stats_dict, f, indent=4)
+
+    print("Normalized matrix and statistics saved")
 
 def filter_matrix_columns(output_path, channel_names, filtered_channel_names):
     matrix_normal_path = os.path.join(output_path, 'matrix_normal.npy') 
