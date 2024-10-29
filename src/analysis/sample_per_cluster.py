@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import pdb
 
 def proportion_per_cluster(sample_names_path, labels_path, plot_dir, n_clusters):
-    if os.path.exists(f'{plot_dir}/sample_per_cluster.pdf'):  #if clustering already exists, skip
+    if os.path.exists(f'{plot_dir}/sample_per_cluster.png'):  #if clustering already exists, skip
         print('sample_per_cluster plot already exists, skipping')
         return
 
