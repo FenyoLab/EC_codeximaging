@@ -27,13 +27,13 @@ def celltype_cluster_tables(clustering_path, save_path, omero_dict, n_clusters, 
         
         sample_metadata = metadata[metadata["slide_id"] == sample]
         sample_cluster_labels = sample_metadata["cluster_label"]
-        kmeans_df = pd.DataFrame(sample_cluster_labels).rename(columns={"cluster_label": f'{n_clusters}_clusters'})
+        kmeans_df = pd.DataFrame(sample_cluster_labels).rename(columns={"cluster_label": f'clusters_{n_clusters}'})
         roi_value = omero_dict.get(sample, {}).get('roi_id')
 
         omero_df = create_omero_table(kmeans_df, roi_value)
         print(omero_df.head())
         omero_df.to_csv(table_path, index = False)
-        print(f'Omero table of cell type clusters uploaded for sample {sample}')
+        print(f'Omero table of cell type clusters saved for sample {sample}')
 
 if __name__ == "__main__":
     main()
