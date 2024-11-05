@@ -3,6 +3,7 @@ import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import math
 
 def pca_by_cluster(pca_path, labels_path, plot_dir, n_clusters, cols = 5):
    
@@ -18,32 +19,36 @@ def pca_by_cluster(pca_path, labels_path, plot_dir, n_clusters, cols = 5):
     unique_labels = np.unique(cluster_labels)
     print(unique_labels)
 
-    rows = n_clusters // cols 
+    rows = math.ceil(n_clusters / cols)
     fig, axes = plt.subplots(rows, cols, figsize=(cols * 5, rows * 4))
 
-    for label in unique_labels:
+    axes = axes.flatten()
+
+    for idx, label in enumerate(unique_labels):
         label_indices = cluster_labels == label
 
-        x = (label - 1) // cols
-        y = (label - 1) % cols
+        x = idx // cols  # Row index based on current index
+        y = idx % cols   # Column index based on current index
 
         sample_color = 'blue'
 
-        axes[x, y].scatter(pca_embedding[:, 0],
+        axes[idx].scatter(pca_embedding[:, 0],
                            pca_embedding[:, 1], s = 0.1, c = 'lightgray', label = 'all')
-        axes[x, y].scatter(pca_embedding[label_indices, 0],
+        axes[idx].scatter(pca_embedding[label_indices, 0],
                            pca_embedding[label_indices, 1], s = 0.1, c = sample_color, label = str(label))
 
-        axes[x, y].set_title(f'Cluster {label} (n = {np.sum(label_indices)})')
-        axes[x, y].set_xticks([])
-        axes[x, y].set_yticks([])
-        axes[x, y].legend()
+        axes[idx].set_title(f'Cluster {label} (n = {np.sum(label_indices)})')
+        axes[idx].set_xticks([])
+        axes[idx].set_yticks([])
+        axes[idx].legend()
 
+    # Turn off any unused axes
     for i in range(len(unique_labels), rows * cols):
-        axes[i // cols, i % cols].axis('off')
+        axes[i].axis('off')
 
-    for ax in axes.flat:
+    for ax in axes:
         ax.label_outer()
+
     plt.savefig(f'{plot_dir}/color_by_cluster.png', bbox_inches='tight')
     print(f"color by cluster fig saved for {n_clusters} clusters")
     plt.clf()

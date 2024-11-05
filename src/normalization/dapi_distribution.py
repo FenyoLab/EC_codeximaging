@@ -16,11 +16,12 @@ def plot_dapi_distribution(dapi_channel, save_path):
     mean_at_peak = x_values[peak_index]
 
     # Get mean value at half peak
-    max_y = np.max(y_values)
-    half_max_y = max_y / 2
-    index_half_max = np.argmax(y_values > half_max_y)
-    x_half_max = x_values[index_half_max]
-    threshold = int(np.floor(x_half_max))
+    #max_y = np.max(y_values)
+    #half_max_y = max_y / 2
+    #index_half_max = np.argmax(y_values > half_max_y)
+    #x_half_max = x_values[index_half_max]
+    #threshold = int(np.floor(x_half_max))
+    threshold = 10
 
     print("Mean value at the peak of KDE:", mean_at_peak)
     print("Cutoff value for filtering DAPI cells:", threshold)

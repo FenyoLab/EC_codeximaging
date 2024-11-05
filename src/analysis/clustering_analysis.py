@@ -14,11 +14,11 @@ def clustering_analysis(save_path, n_clusters, channel_names, filtered_channel_n
     normal_matrix_path = os.path.join(save_path, 'normalized_matrix/matrix_normal.npy')
     kmeans_labels_path = os.path.join(save_path, f'clustering/{n_clusters}_clusters/kmeans_labels.npy')
     cluster_centroids_df_path = os.path.join(output_path_bycluster, 'cluster_centroids_df.csv')
+
+    expression_per_cluster.gen_cluster_centroid_matrix(normal_matrix_path, kmeans_labels_path, output_path_bycluster, n_clusters, channel_names)
+    expression_per_cluster.plot_cluster_matrix_as_heatmap(cluster_centroids_df_path, output_path_bycluster, n_clusters, filtered_channel_names)
+    sample_per_cluster.proportion_per_cluster(sample_names_path, kmeans_labels_path, output_path_bycluster, n_clusters)
     
     color_by_sample.pca_by_sample(pca_coord_path, sample_names_path, output_path, n_clusters)
     color_by_marker.pca_by_marker(pca_coord_path, normal_matrix_path, output_path, channel_names)
     color_by_cluster.pca_by_cluster(pca_coord_path, kmeans_labels_path, output_path_bycluster, n_clusters)
-    
-    expression_per_cluster.gen_cluster_centroid_matrix(normal_matrix_path, kmeans_labels_path, output_path_bycluster, n_clusters, channel_names)
-    expression_per_cluster.plot_cluster_matrix_as_heatmap(cluster_centroids_df_path, output_path_bycluster, n_clusters, filtered_channel_names)
-    sample_per_cluster.proportion_per_cluster(sample_names_path, kmeans_labels_path, output_path_bycluster, n_clusters)
