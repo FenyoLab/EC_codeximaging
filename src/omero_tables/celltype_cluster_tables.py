@@ -7,7 +7,7 @@ from types import SimpleNamespace
 sys.path.append('../..')
 from utils import helper
 
-def celltype_cluster_tables(clustering_path, save_path, omero_dict, n_clusters, table_name, samples_to_remove=None, out_suffix=None):
+def celltype_cluster_tables(clustering_path, save_path, omero_dict, n_clusters, table_name, samples_to_remove=None):
 
     metadata = pd.read_csv(os.path.join(clustering_path, 'phenotype_clusters.csv'))
     sample_names = metadata["slide_id"]
