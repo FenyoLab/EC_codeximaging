@@ -2,22 +2,22 @@
 tile_size: 256
 batch_size: 64
 tiles_dir: tiles
-num_channels: 36
-n_clusters_celltypes: 35
+num_channels: 27
+n_clusters_celltypes: 26
 n_clusters_preprocessing: 2
 n_clusters_thresholding: 3
-random_state: 2024
+random_state: 13
 
 channel_names: ['DAPI', 'MPO', 'pJAK1', 'Ecadherin', 'PDL1', 'CD163', 'PD1', 'CD56', 'CD47', 'MAL', 'GAL3', 'PARP1', 'LAG3', 'Her2', 'CD4', 'PI3KCA', 'TIM3', 'CD68', 'ER', 'PR', 'MSH2', 'CD8', 'STAT1', 'MSH6', 'bCatenin1', 'HLAABC', 'MLH1', 'Ki67', 'CD20', 'ARID1A', 'IFNG', 'CD31', 'PMS', 'CD44', 'PanCytokeratin', 'CD3e']
 filtered_channel_names: ['DAPI', 'MPO', 'Ecadherin', 'CD163', 'CD4', 'CD68', 'CD8', 'CD20', 'CD31', 'CD3e'] #change name to cell lineage markers
-threshold_channel_names: ['CD163', 'CD4', 'CD68', 'CD20']
+threshold_channel_names: ['CD163', 'CD4', 'CD68', 'CD20', 'CD3e']
 exclude_channel_names: ['pJAK1', 'CD56', 'MAL', 'Her2', 'STAT1']
 samples_to_remove: null
 
 #base paths
 segmentation_data_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/raw_segmentation_data
 label_images_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/label_images
-out_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_10-28-24
+out_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_10-31-24
 
 data_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_256/data
 qptiff_data_dir: /gpfs/data/proteomics/data/Endometrial_mIF/qptiff_dat
@@ -34,81 +34,95 @@ umap_dir: umap
 umap_coord_path: umap/coord.npy
 pca_coord_path: pca/coord.npy
 clustering_dir: clustering
+celltypes_dir: cell_types
 
 #research drive
 mount_lab: fenyolab
 research_drive_dir: 'fenyolab/EC_codeximaging/cell_segmentation'
+
+cluster_celltype_labels:
+  0: Artifact
+  1: Tumor cells
+  2: T cells (other)
+  3: Heterogeneous
+  4: Helper T cells
+  5: Endothelial cells
+  6: Tumor cells
+  7: Tumor cells
+  8: Tumor cells
+  9: Neutrophils
+  10: Tumor cells
+  11: Heterogeneous
+  12: Cytotoxic T cells
+  13: Endothelial cells
+  14: Endothelial cells
+  15: Helper T cells
+  16: Tumor cells
+  17: Tumor cells
+  18: Macrophages
+  19: Neutrophils
+  20: Macrophages
+  21: mixed Macrophages/Helper T cells
+  22: Endothelial cells
+  23: B cells
+  24: Tumor cells
+  25: Heterogeneous
+  26: Heterogeneous
+
 
 #omero image info
 omero_image_dict:
   20230720-3660-2G-1_Scan1: 
     image_id: 597642
     roi_id: 1230963
-    #roi_id: 1230525
   20230720-4309-4G-1_Scan1: 
     image_id: 597780
     roi_id: 1230961
-    #roi_id: 1230523
   20230810_0488_3K_Scan1: 
     image_id: 601969 
     roi_id: 1230951
-    #roi_id: 1230513
   20230908-1872-4C-1_Scan2: 
     image_id: 611987
     roi_id: 1230959
-    #roi_id: 1230521
   20230908-6103-1J-1_Scan2: 
     image_id: 612242
     roi_id: 1230956
-    #roi_id: 1230518
   20230908-8710-3H-1_Scan1: 
     image_id: 611002
     roi_id: 1230965
-    #roi_id: 1230527
   20230922-3869-1O_Scan1: 
     image_id: 614300
     roi_id: 1230952
-    #roi_id: 1230514
   20230922-5689-1P_Scan1: 
     image_id: 615142
     roi_id: 1230955
-    #roi_id: 1230517
   20230922-7331-1H_Scan1: 
     image_id: 615004
     roi_id: 1230966
-    #roi_id: 1230528
   20231003-1160-3S_Scan1: 
     image_id: 617515
     roi_id: 1230962
-    #roi_id: 1230524
   20231003-2630-3P_Scan1: 
     image_id: 617353
     roi_id: 1230958
-    #roi_id: 1230520
   20231003-5988-4I_Scan1: 
     image_id: 616589
     roi_id: 1230957
-    #roi_id: 1230519
   20231012-3535-1T_Scan2: 
     image_id: 619802
     roi_id: 1230953
-    #roi_id: 1230515
   20231012-9390-1I_Scan1: 
     image_id: 619234
     roi_id: 1230967
-    #roi_id: 1230529
   20231012-9784-6H_Scan1: 
     image_id: 618713
     roi_id: 1230954
-    #roi_id: 1230516
   20231019-0413-3D_Scan1: 
     image_id: 620931
     roi_id: 1230960
-    #roi_id: 1230522
   20231019-4475-1E_Scan2: 
     image_id: 620498
     roi_id: 1230964
-    #roi_id: 1230526
 
 #lineage markers cluster identity  
 lineage_markers_cluster_dict:
@@ -129,6 +143,11 @@ lineage_markers_cluster_dict:
       0: negative
       1: positive 
       2: negative
+    Ecadherin: 7
+    CD3e:
+      0: negative
+      1: positive
+      2: positive
   20230720-4309-4G-1_Scan1: 
     CD4:
       0: negative 
@@ -147,6 +166,11 @@ lineage_markers_cluster_dict:
       1: positive
       2: negative 
       upper_cutoff: 45  
+    Ecadherin: 4.5
+    CD3e:
+      0: negative
+      1: positive
+      2: positive
   20230810_0488_3K_Scan1: 
     CD4:
       0: negative
@@ -165,6 +189,11 @@ lineage_markers_cluster_dict:
       1: positive
       2: negative
       upper_cutoff: 46
+    Ecadherin: 4
+    CD3e:
+      0: negative
+      1: positive
+      2: positive
   20230908-1872-4C-1_Scan2: 
     CD4:
       0: negative
@@ -180,6 +209,11 @@ lineage_markers_cluster_dict:
       2: positive
     CD163:
       0: negative
+      1: positive
+      2: negative
+    Ecadherin: 4
+    CD3e:
+      0: positive
       1: positive
       2: negative
   20230908-6103-1J-1_Scan2: 
@@ -200,6 +234,11 @@ lineage_markers_cluster_dict:
       1: positive 
       2: negative
       upper_cutoff: 30
+    Ecadherin: 5
+    CD3e:
+      0: positive
+      1: negative
+      2: positive
   20230908-8710-3H-1_Scan1: 
     CD4:
       0: negative
@@ -218,6 +257,11 @@ lineage_markers_cluster_dict:
       1: negative
       2: positive
       upper_cutoff: 52
+    Ecadherin: 5
+    CD3e:
+      0: positive
+      1: positive
+      2: negative
   20230922-3869-1O_Scan1: 
     CD4:
       0: negative
@@ -231,6 +275,11 @@ lineage_markers_cluster_dict:
       lower_cutoff: 28
     CD163:
       lower_cutoff: 4
+    Ecadherin: 4
+    CD3e:
+      0: negative
+      1: positive
+      2: positive
   20230922-5689-1P_Scan1: 
     CD4:
       0: negative
@@ -246,6 +295,11 @@ lineage_markers_cluster_dict:
       2: positive
     CD163:
       lower_cutoff: 5
+    Ecadherin: 5
+    CD3e:
+      0: negative
+      1: positive
+      2: positive
   20230922-7331-1H_Scan1: 
     CD4:
       0: negative 
@@ -263,6 +317,11 @@ lineage_markers_cluster_dict:
       0: negative
       1: positive
       2: positive 
+    Ecadherin: 6
+    CD3e:
+      0: negative
+      1: positive
+      2: positive
   20231003-1160-3S_Scan1: 
     CD4:
       0: negative
@@ -275,6 +334,11 @@ lineage_markers_cluster_dict:
     CD68:
       lower_cutoff: 35
     CD163:
+      0: negative
+      1: positive
+      2: positive
+    Ecadherin: 5
+    CD3e:
       0: negative
       1: positive
       2: positive
@@ -294,6 +358,11 @@ lineage_markers_cluster_dict:
       1: negative
       2: positive
       upper_cutoff: 23 #greater than 23 = 0 
+    Ecadherin: 7
+    CD3e:
+      0: negative
+      1: positive
+      2: positive
   20231003-5988-4I_Scan1: 
     CD4:
       0: negative
@@ -312,6 +381,11 @@ lineage_markers_cluster_dict:
       1: negative
       2: positive
       upper_cutoff: 20 #greater than 20 = 0 
+    Ecadherin: 8
+    CD3e:
+      0: negative
+      1: positive
+      2: positive
   20231012-3535-1T_Scan2: 
     CD4:
       0: negative
@@ -326,6 +400,11 @@ lineage_markers_cluster_dict:
     CD163:
       0: negative
       1: positive  
+      2: positive
+    Ecadherin: 5
+    CD3e:
+      0: negative
+      1: positive
       2: positive
   20231012-9390-1I_Scan1: 
     CD4:
@@ -343,6 +422,11 @@ lineage_markers_cluster_dict:
       1: positive
       2: negative
       upper_cutoff: 24 
+    Ecadherin: 7
+    CD3e:
+      0: negative
+      1: positive
+      2: positive
   20231012-9784-6H_Scan1: 
     CD4:
       0: negative
@@ -359,6 +443,11 @@ lineage_markers_cluster_dict:
       1: negative
       2: positive
       upper_cutoff: 30 #greater than 30 = 0 
+    Ecadherin: 7
+    CD3e:
+      0: negative
+      1: positive
+      2: positive
   20231019-0413-3D_Scan1: 
     CD4:
       0: negative
@@ -372,6 +461,11 @@ lineage_markers_cluster_dict:
       2: positive
     CD163:
       lower_cutoff: 2
+    Ecadherin: 6
+    CD3e:
+      0: negative
+      1: positive
+      2: positive
   20231019-4475-1E_Scan2: 
     CD4:
       0: negative
@@ -386,6 +480,11 @@ lineage_markers_cluster_dict:
       1: positive
       2: negative
     CD163:
+      0: negative
+      1: positive
+      2: positive
+    Ecadherin: 4
+    CD3e:
       0: negative
       1: positive
       2: positive
