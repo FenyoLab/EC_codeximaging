@@ -54,29 +54,17 @@ def add_labels_to_metadata(labels_path, raw_metadata_path, filtered_metadata_pat
     raw_metadata = pd.read_csv(raw_metadata_path, index_col = 0)
     filtered_metadata = pd.read_csv(filtered_metadata_path, index_col = 0)
 
-    print("Raw metadata shape: ", raw_metadata.shape)
+    assert cluster_labels.shape[0] == filtered_metadata.shape[0], "Number of cells for kmeans and filtered metadata do not match!"
 
-    # Create a mapping of filtered indices to cluster labels
-    index_to_cluster = pd.Series(cluster_labels, index=filtered_metadata.index).to_dict()
-    # Add the cluster label column to raw_metadata with default value 0
-    raw_metadata['cluster_label'] = raw_metadata.index.map(index_to_cluster).fillna(0).astype(int)
-    phenotype_clusters_df = raw_metadata[['slide_id', 'cluster_label']]
+    phenotype_clusters_df = raw_metadata[['slide_id']].copy()
+    phenotype_clusters_df.loc[:, 'cluster_label'] = 0
+    phenotype_clusters_df.loc[filtered_metadata.index, 'cluster_label'] = cluster_labels
     phenotype_clusters_df.index = phenotype_clusters_df.index + 1
 
-    print("Phenotype clusters df shape: ", phenotype_clusters_df.shape)
-    assert raw_metadata.shape[0] == phenotype_clusters_df.shape[0], "Number of rows do not match!"
+    assert raw_metadata.shape[0] == phenotype_clusters_df.shape[0], "Number of cells for raw metadata and phenotype clusters do not match!"
 
     phenotype_clusters_df.to_csv(phenotype_clusters_df_path, index = True)
-
-def assign_cellphenotype(clustering_results_dir, n_clusters, cluster_labels):
-    phenotype_clusters_df_path = os.path.join(clustering_results_dir, 'clustering', f'{n_clusters}_clusters', 'phenotype_clusters.csv')
-    phenotype_clusters_df = pd.read_csv(phenotype_clusters_df_path)
-
-    #add a column to the metadata file assigning cluster labels cell types
-    #map(): The map() function in pandas is used to map values from a dictionary to a DataFrame column.
-    phenotype_clusters_df['cell_type'] = phenotype_clusters_df['cluster_label'].map(cluster_labels)
-    phenotype_clusters_df.to_csv(phenotype_clusters_df_path, index=False)
-
+    print('Cluster labels added to metadata and saved')
 
     
     

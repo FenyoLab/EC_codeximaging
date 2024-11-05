@@ -28,16 +28,12 @@ normalize_matrix.get_normalized_matrix(save_path = config.out_dir, raw_data_dir 
                     filtered_channel_names = config.filtered_channel_names, 
                     samples_to_remove = config.samples_to_remove) 
 
-#call umap function 
+#call pca function 
 normal_matrix_filtered_path = os.path.join(config.out_dir, config.matrix_normal_filtered_path)
 pca_coord_path = os.path.join(config.out_dir, config.pca_coord_path)
 
 gen_pca_embedding.plot_pca(emb_path = normal_matrix_filtered_path, pca_emb_path = pca_coord_path, 
                             save_path = config.out_dir, random_state = config.random_state)
-
-#umap_coord_path = os.path.join(config.out_dir, config.umap_coord_path)
-#gen_umap_embedding.plot_umap(emb_path = normal_matrix_filtered_path, umap_emb_path = umap_coord_path, 
-#                            save_path = config.out_dir, random_state = config.random_state)
                             
 #call kmeans function 
 kmeans_labels_path = os.path.join(config.out_dir, config.clustering_dir, f'{config.n_clusters_celltypes}_clusters', 'kmeans_labels.npy')
@@ -49,7 +45,7 @@ kmeans.clustering(emb_path = normal_matrix_filtered_path, pca_path = pca_coord_p
 kmeans.add_labels_to_metadata(labels_path = kmeans_labels_path, raw_metadata_path = raw_metadata_path, 
                 filtered_metadata_path = metadata_filtered_path, save_path=config.out_dir, 
                 n_clusters = config.n_clusters_celltypes)
-
+                
 #analyze results 
 clustering_analysis.clustering_analysis(save_path = config.out_dir, n_clusters = config.n_clusters_celltypes, 
                                     channel_names = config.channel_names, 
