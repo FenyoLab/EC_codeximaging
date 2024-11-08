@@ -32,4 +32,4 @@ assign_tissue_identity.new_positions(mean_data_dir = mean_data_dir, clusters_dir
 #call segmentation function 
 get_cell_segmentations(data_path = config.data_dir, tile_size = config.tile_size, batch_size = config.batch_size, 
                        tiles_dir = config.tiles_dir, save_path = config.segmentation_data_dir, 
-                       num_biomarkers = config.num_channels)
+                       channel_names = config.channel_names, num_biomarkers = config.num_channels)
