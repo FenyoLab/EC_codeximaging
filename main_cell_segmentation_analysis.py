@@ -25,7 +25,7 @@ thresholded_dir = os.path.join(config.out_dir, config.thresholded_dir)
 
 normalize_matrix.get_normalized_matrix(save_path = config.out_dir, raw_data_dir = config.segmentation_data_dir, 
                     thresholded_dir = thresholded_dir, channel_names = config.channel_names, 
-                    filtered_channel_names = config.filtered_channel_names, 
+                    lineage_markers = config.lineage_markers, 
                     samples_to_remove = config.samples_to_remove) 
 
 #call pca function 
@@ -49,5 +49,5 @@ kmeans.add_labels_to_metadata(labels_path = kmeans_labels_path, raw_metadata_pat
 #analyze results 
 clustering_analysis.clustering_analysis(save_path = config.out_dir, n_clusters = config.n_clusters_celltypes, 
                                     channel_names = config.channel_names, 
-                                    filtered_channel_names = config.filtered_channel_names)
+                                    lineage_markers = config.lineage_markers)
 
