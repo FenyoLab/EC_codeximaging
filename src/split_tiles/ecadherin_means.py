@@ -16,6 +16,7 @@ def get_top5_means_ecadherin(data_path, tile_size, batch_size, tiles_dir, channe
 
     os.makedirs(mean_data_dir, exist_ok=True)
     ecadherin_index = channel_names.index('Ecadherin')
+    print('Ecadherin index:', ecadherin_index)
     #load dataset
     dataloader = load_dataset(data_path, tile_size, batch_size, tiles_dir)
 
@@ -28,8 +29,6 @@ def get_top5_means_ecadherin(data_path, tile_size, batch_size, tiles_dir, channe
             print("Batch index:", idx)
         
         img, (labels, locations) = batch
-        #if labels[0] != '20230810_0488_3K_Scan1':
-        #    break
         img_filtered = img[:, ecadherin_index, :, :] 
 
         means = []
