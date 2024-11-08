@@ -5,14 +5,14 @@ input_pixel_per_um: 2
 inference_window_um: 64
 input_path: /gpfs/data/proteomics/data/Endometrial_mIF/qptiff_dat #dir with qptiffs 
 output_path: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_256 #this is where the output dir will be
-common_channel_file: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_256/data/common_channels.txt
+common_channel_file: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_256/data/common_channels_cell_segmentation.txt
 selected_channel_color_file: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_256/selected_channels_w_color.yaml
 channel_strength_file: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_256/channels_vis_strength.yaml
 
 ref_channel: 0 #this is the channel to be used for background removal!!
 #this is the path to the annotations folder. These are all the ROIs drawn on the qptiff images. 
 #utilize EC_codeximaging/src/preprocess/ExportROIsFromOmero.js to download annotations from all the qptiffs on omero
-ROI_path: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/preprocessing/Annotations_qptiff_all # ROI for removing unwanted regions.. change this to annotations path. I need to edit my script so it goes into each slide to get annotations 
+ROI_path: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/preprocessing/qptiff_annotations # ROI for removing unwanted regions.. change this to annotations path. I need to edit my script so it goes into each slide to get annotations 
 selected_region: 
   - tumor # regions for visualization 
   - TUMOR 
@@ -50,11 +50,11 @@ tiles_dir: tiles #this is the name of the tiles directory
 
 # #preprocessing
 # output_path: /gpfs/data/proteomics/data/Endometrial_mIF/out
-# #common_channel_file: /gpfs/data/proteomics/projects/mh6486/FenyoLab/Endometrial/CANVAS_v2/canvas/out_256/data/common_channels.txt
+# #common_channel_file: /gpfs/data/proteomics/projects/mh6486/FenyoLab/Endometrial/CANVAS_v2/canvas/out_256/data/common_channels_cell_segmentation.txt
 # input_path: /gpfs/data/proteomics/data/Endometrial_mIF/qptiff_dat
 # input_ext: qptiff
 # inference_window_um: 2
 # input_pixel_per_um: 64
 # selected_region: endometrium
 # ROI_path: /gpfs/data/proteomics/data/Endometrial_mIF/ROI_coordinates
-# common_channel_file: /gpfs/data/proteomics/projects/mh6486/FenyoLab/Endometrial/CANVAS_v2/canvas/out_256/data/common_channels.txt
+# common_channel_file: /gpfs/data/proteomics/projects/mh6486/FenyoLab/Endometrial/CANVAS_v2/canvas/out_256/data/common_channels_cell_segmentation.txt
