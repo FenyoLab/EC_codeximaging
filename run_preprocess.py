@@ -30,7 +30,7 @@ def main():
     args = parser.parse_args()
 
     #load the default configuration
-    config_yaml= "/gpfs/data/proteomics/projects/mh6486/FenyoLab/Endometrial/EC_codeximaging/config/config_preprocessing.yaml"
+    config_yaml= "config/config_preprocessing.yaml"
     run_config = helper.load_yaml_file(config_yaml)
     config = SimpleNamespace(**run_config)
 
@@ -39,7 +39,7 @@ def main():
     # Add the directory containing your analysis scripts to the Python path
     # this is where the following analysis scripts are located OR change all the module paths in the analysis scripts
     
-    sys.path.append(os.path.abspath('/gpfs/data/proteomics/projects/mh6486/FenyoLab/Endometrial/EC_codeximaging/src'))
+    sys.path.append(os.path.abspath('src'))
 
     #Analysis Scripts
     #run_registration(config_yaml)

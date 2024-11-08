@@ -23,13 +23,13 @@ def run_preprocess(config_yaml):
 def tiling(input_path, input_ext, data_path, tiles_dir, ref_channel, ROI_path, output_path, inference_window_um, input_pixel_per_um, selected_region, ROI_rm):
     from preprocess.tile import gen_tiles
     file_names = utils.get_file_name_list(input_path, input_ext)
+    print("ROI_path: ", ROI_path)
     print(file_names)
     training_window_um = inference_window_um * 2
     training_window_pixel = training_window_um * input_pixel_per_um
     inference_window_pixel = inference_window_um * input_pixel_per_um
     for file_name in tqdm(file_names):
         print(file_name)
-        #if file_name == "20230720-3660-2G-1_Scan1":
         gen_tiles(data_path, file_name, tiles_dir, ref_channel, ROI_path, training_window_pixel, selected_region, ROI_rm)
         gen_tiles(data_path, file_name, tiles_dir, ref_channel, ROI_path, inference_window_pixel, selected_region, ROI_rm)
 

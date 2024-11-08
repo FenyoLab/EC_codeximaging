@@ -10,7 +10,7 @@ from deepcell.applications import Mesmer
 
 os.environ.update({"DEEPCELL_ACCESS_TOKEN": "<token-from-users.deepcell.org>"})
 
-def get_cell_segmentations(data_path, tile_size, batch_size, tiles_dir, save_path, num_biomarkers):
+def get_cell_segmentations(data_path, tile_size, batch_size, tiles_dir, save_path, channel_names, num_biomarkers):
     start_time = time.time()
 
     os.makedirs(save_path, exist_ok = True) #create output directory
@@ -21,10 +21,10 @@ def get_cell_segmentations(data_path, tile_size, batch_size, tiles_dir, save_pat
         return
 
     dataloader = load_dataset(data_path, tile_size, batch_size, tiles_dir, tissue_type='ecad+_')
-    get_matrix(dataloader, save_path, num_biomarkers, tissue_type='ecad+_')
+    get_matrix(dataloader, save_path, num_biomarkers, channel_names, tissue_type='ecad+_')
     
     dataloader = load_dataset(data_path, tile_size, batch_size, tiles_dir, tissue_type='ecad-_')
-    get_matrix(dataloader, save_path, num_biomarkers, tissue_type='ecad-_')
+    get_matrix(dataloader, save_path, num_biomarkers, channel_names, tissue_type='ecad-_')
 
     combine_matrices(save_path, data_path)
 
@@ -61,7 +61,7 @@ def load_model():
     model = Mesmer(model=None)
     return model
 
-def get_matrix(dataloader, output_path, num_biomarkers, tissue_type=''): 
+def get_matrix(dataloader, output_path, num_biomarkers, channel_names, tissue_type=''): 
     ''''loops through the dataloader to extract:
             1. matrix with intensity values for each biomarker in each cell [shape: (num_cells, num_biomarkers)]
             2. metadata csv with additional cell information [shape: (num_cells, num_features)]
@@ -94,7 +94,8 @@ def get_matrix(dataloader, output_path, num_biomarkers, tissue_type=''):
         tile_positions.extend([loc.numpy() for loc in locations]) 
         
         img_transposed = img.permute(0, 2, 3, 1).numpy()
-        img_filtered = img_transposed[:, :, :, [0, 3]] 
+        print("Nuclear and membrane marker indices:", "DAPI-", channel_names.index('DAPI'), "Ecadherin-", channel_names.index('Ecadherin'))
+        img_filtered = img_transposed[:, :, :, [channel_names.index('DAPI'), channel_names.index('Ecadherin')]] 
         
         if tissue_type == 'ecad+_':
             segmentation_prediction = model.predict(img_filtered, image_mpp=0.5)

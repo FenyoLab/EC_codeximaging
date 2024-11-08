@@ -184,7 +184,7 @@ class SlidesDataset(data.Dataset): #this is inheriting data.Dataset from torch!!
         return sum(self.lengths)
 
     def get_common_channel_names(self, root_path):
-        with open(f'{root_path}/common_channels.txt', 'r') as f:
+        with open(f'{root_path}/common_channels_cell_segmentation.txt', 'r') as f:
             channel_names = f.read().splitlines()
         return channel_names
 
@@ -240,7 +240,8 @@ class SlidesDataset(data.Dataset): #this is inheriting data.Dataset from torch!!
         # Check if all slides have the same channels
         print(f'Found {len(slide_ids)} slides with {slide_channels} channels')
 
-        common_channels_path = f'{slides_root_path}/common_channels.txt'
+        common_channels_path = f'{slides_root_path}/common_channels_cell_segmentation.txt'
+        print(common_channels_path)
         if not os.path.exists(common_channels_path):
             common_channels = self.get_common_channels(slide_channel_dicts)
             # Save common channels as txt file
@@ -268,6 +269,7 @@ class SlidesDataset(data.Dataset): #this is inheriting data.Dataset from torch!!
         from tqdm import tqdm
         slides_dict = {}
         lengths = []
+        print('Common channel names:', common_channel_names)
         print('Loading slides...')
         for slide_id in tqdm(slide_ids):
             #if slide_id == '20230720-3660-2G-1_Scan1' or slide_id == '20230720-4309-4G-1_Scan1':

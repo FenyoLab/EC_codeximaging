@@ -5,7 +5,7 @@ import time
 import numpy as np
 import pandas as pd
 
-def get_normalized_matrix(save_path, raw_data_dir, thresholded_dir, channel_names, filtered_channel_names, output_suffix = 'normalized_matrix', samples_to_remove = None):
+def get_normalized_matrix(save_path, raw_data_dir, thresholded_dir, channel_names, lineage_markers, output_suffix = 'normalized_matrix', samples_to_remove = None):
     start_time = time.time()
 
     output_path = f'{save_path}/{output_suffix}'
@@ -32,7 +32,7 @@ def get_normalized_matrix(save_path, raw_data_dir, thresholded_dir, channel_name
         filter_metadata(dapi_filter, raw_data_dir, output_path)
 
     normalize_matrix(output_path, matrix_filtered, channel_names)
-    filter_matrix_columns(output_path, channel_names, filtered_channel_names)
+    filter_matrix_columns(output_path, channel_names, lineage_markers)
 
     end_time = time.time()  # Record the end time
     elapsed_time = end_time - start_time
@@ -48,7 +48,7 @@ def filter_matrix_rows(output_path, matrix_dir): #, channel_names):
 
     '''old way where biomarkers were filtered first'''
     #from src.normalization.filter_matrix import filter_by_biomarker
-    #matrix_filtered = filter_by_biomarker(os.path.join(cell_marker_matrix_dir, 'matrix.npy'), channel_names, filtered_channel_names)
+    #matrix_filtered = filter_by_biomarker(os.path.join(cell_marker_matrix_dir, 'matrix.npy'), channel_names, lineage_markers)
 
     #from src.normalization.filter_matrix import filter_by_dapi_threshold
     #matrix_filtered, dapi_filter = filter_by_dapi_threshold(matrix_filtered, output_path)
@@ -130,11 +130,11 @@ def normalize_matrix(output_path, matrix_filtered, channel_names):
 
     print("Normalized matrix and statistics saved")
 
-def filter_matrix_columns(output_path, channel_names, filtered_channel_names):
+def filter_matrix_columns(output_path, channel_names, lineage_markers):
     matrix_normal_path = os.path.join(output_path, 'matrix_normal.npy') 
 
     from src.normalization.filter_matrix import filter_by_biomarker
-    filtered_matrix = filter_by_biomarker(matrix_normal_path, channel_names, filtered_channel_names)
+    filtered_matrix = filter_by_biomarker(matrix_normal_path, channel_names, lineage_markers)
 
     np.save(os.path.join(output_path, 'matrix_normal_filtered_markers.npy'), filtered_matrix)
     print("Normal matrix filtered by biomarkers saved")

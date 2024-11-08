@@ -19,13 +19,13 @@ def filter_by_dapi_threshold(matrix_path, save_path): #switched filterede_matrix
 def filter_by_doublets(matrix_filtered):
     pass
 
-def filter_by_biomarker(normal_matrix_path, channel_names, filtered_channel_names): #will this now go last? 
+def filter_by_biomarker(normal_matrix_path, channel_names, lineage_markers): #will this now go last? 
     normal_matrix = np.load(normal_matrix_path)
     print("Normalized_matrix shape:", normal_matrix.shape)
 
     print("All channel names:", channel_names, len(channel_names))
-    print("Filtered channel names:", filtered_channel_names, (len(filtered_channel_names)))
-    filtered_indices = [i for i, channel in enumerate(channel_names) if channel in filtered_channel_names]
+    print("Filtered channel names:", lineage_markers, (len(lineage_markers)))
+    filtered_indices = [i for i, channel in enumerate(channel_names) if channel in lineage_markers]
 
     filtered_matrix = normal_matrix[:, filtered_indices]
     print("Normal matrix filtered by biomarkers shape:", filtered_matrix.shape)

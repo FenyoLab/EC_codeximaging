@@ -56,12 +56,6 @@ def create_cluster_masks(mean_data_dir, clusters_dir, data_dir, tile_size):
     sample_names = np.load(os.path.join(mean_data_dir, 'sample_names.npy'))
     tile_positions = np.load(os.path.join(mean_data_dir, 'tile_positions.npy'))
 
-    # Define colors for each cluster (you can customize these colors)
-    cluster_colors = {
-        0: [255, 0, 0],     # Cluster 0: red
-        1: [0, 255, 0]     # Cluster 1: green 
-    }
-
     # Loop through each sample
     for sample in np.unique(sample_names):
         sample_save_path = os.path.join(clusters_dir, sample)
@@ -84,7 +78,18 @@ def create_cluster_masks(mean_data_dir, clusters_dir, data_dir, tile_size):
 
         #load in sample cluster data
         kmeans_labels = np.load(os.path.join(clusters_dir, sample, 'kmeans_labels.npy'))
+        kmeans_cluster_centers = np.load(os.path.join(clusters_dir, sample, 'kmeans_cluster_centers.npy'))
         unique_clusters = np.unique(kmeans_labels)
+
+        sorted_indices = np.argsort(kmeans_cluster_centers.flatten()) 
+        cluster_colors = {}
+        for i, idx in enumerate(sorted_indices):  # Flatten to turn the 2D array into 1D
+            if i == 0:
+                print(f'Lowest center: {kmeans_cluster_centers[idx]}')
+                cluster_colors[idx] = [0, 0, 255]  # Lowest center -> blue
+            else:
+                print(f'Higher Center {i}: {kmeans_cluster_centers[idx]}')
+                cluster_colors[idx] = [0, 255, 0]  # All other centers -> green
 
         #filter tile pos for sample
         sample_indices = np.where(sample_names == sample)[0]
@@ -92,7 +97,7 @@ def create_cluster_masks(mean_data_dir, clusters_dir, data_dir, tile_size):
 
         # Loop through each cluster
         for cluster in unique_clusters:
-            print(f'Processing cluster {cluster}')
+            print(f'Processing cluster {cluster}, cluster center: {kmeans_cluster_centers[cluster]}')
 
             # Initialize an empty bw mask for this cluster
             bw_mask = np.zeros((slide_height, slide_width), dtype=np.uint8)
@@ -116,7 +121,7 @@ def create_cluster_masks(mean_data_dir, clusters_dir, data_dir, tile_size):
             print(f'Cluster {cluster} mask saved as img for sample {sample}')
         
         #resize color mask and save
-        color_mask = resize(color_mask, (slide_height // tile_size, slide_width // tile_size, 3), order=0, anti_aliasing=False, preserve_range=True) #optional
+        color_mask = resize(color_mask, ((slide_height // tile_size)*2 , (slide_width // tile_size)*2, 3), order=0, anti_aliasing=False, preserve_range=True) #optional
         color_mask = color_mask.astype(np.uint8)  #optional
         imsave(combined_mask_path, color_mask)
         print(f'Combined cluster mask saved for sample {sample}')
