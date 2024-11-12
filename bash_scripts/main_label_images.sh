@@ -6,7 +6,7 @@
 #SBATCH --mem=100G
 #SBATCH --time=4:00:00
 #SBATCH --cpus-per-task=1
-#SBATCH --partition=cpu_short
+#SBATCH --partition=fn_short
 
 source ~/.bashrc
 conda activate omero
