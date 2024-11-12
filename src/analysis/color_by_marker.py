@@ -13,7 +13,9 @@ def pca_by_marker(pca_path, marker_path, plot_dir, channel_names = None, cols = 
         return
 
     pca_embedding = np.load(pca_path)
+    print(pca_embedding.shape)
     markers = np.load(marker_path)
+    print(markers.shape)
     
     rows = len(channel_names) // cols + 1
     #fig, axes = subplots(rows, cols, figsize=(cols * 50, rows * 40), font_size = 5)
@@ -23,7 +25,16 @@ def pca_by_marker(pca_path, marker_path, plot_dir, channel_names = None, cols = 
         marker_color = markers[:, marker_i]
         print(channel)
 
-        percentiles = [1, 99.9] if channel in ['CD20', 'CD163'] else [1, 99]
+        #percentiles = [1, 99.5] if channel in ['CD163', 'CD20'] else [1, 99]
+        percentiles = [1, 95]
+        #if channel == 'CD163':
+        #    percentiles = [1, 99.3]
+        #elif channel == 'DAPI':
+        #    percentiles = [5, 95]
+        #elif channel == 'CD20':
+        #    percentiles = [1, 99.7]
+        #else:
+        #    percentiles = [1, 95]
         m_min, m_max = np.percentile(marker_color, percentiles)
         print(m_min, m_max)
 
