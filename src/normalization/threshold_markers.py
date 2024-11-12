@@ -34,6 +34,8 @@ def threshold_markers(data_dir, channel_names, threshold_dict, threshold_channel
     
         # Iterate over channels in the thresholding dictionary
         for channel_index, channel in enumerate(threshold_channel_names):
+            if channel in ['MPO', 'CD8', 'CD3e', 'Ecadherin', 'DAPI']:
+                continue
             print(channel, channel_index, threshold_indices[channel_index])
             
             if channel in threshold_dict.get(sample, {}):  # Check if the sample is in the threshold_dict
@@ -41,8 +43,15 @@ def threshold_markers(data_dir, channel_names, threshold_dict, threshold_channel
                 threshold_mapping = threshold_dict[sample][channel]
                 print(threshold_mapping)
 
+                if 'upper_cutoff' in threshold_mapping and 'lower_cutoff' in threshold_mapping:
+                    lower_cutoff = threshold_mapping['lower_cutoff']
+                    upper_cutoff = threshold_mapping['upper_cutoff']
+                    print(f"Applying lower cutoff of {lower_cutoff} and upper cutoff of {upper_cutoff} for {channel}")
+                    sample_matrix[sample_matrix[:, threshold_indices[channel_index]] < lower_cutoff, threshold_indices[channel_index]] = 0
+                    sample_matrix[sample_matrix[:, threshold_indices[channel_index]] > upper_cutoff, threshold_indices[channel_index]] = 0
+
                 # Check if the channel uses only lower cutoff thresholding
-                if 'lower_cutoff' in threshold_mapping:
+                elif 'lower_cutoff' in threshold_mapping:
                     lower_cutoff = threshold_mapping['lower_cutoff']
                     print(f"Applying lower cutoff of {lower_cutoff} for {channel}")
                     sample_matrix[sample_matrix[:, threshold_indices[channel_index]] < lower_cutoff, threshold_indices[channel_index]] = 0
@@ -73,6 +82,7 @@ def threshold_markers(data_dir, channel_names, threshold_dict, threshold_channel
 
     # Save the thresholded matrix
     np.save(thresholded_matrix_path, matrix)
+    np.save(os.path.join(output_path, 'cell_sample_names.npy'), cell_sample_names)
     print(f'Thresholded matrix saved at: {thresholded_matrix_path}')
 
 if __name__ == '__main__':
