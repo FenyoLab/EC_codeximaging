@@ -25,7 +25,7 @@ thresholded_dir = os.path.join(config.out_dir, config.thresholded_dir)
 
 normalize_matrix.get_normalized_matrix(save_path = config.out_dir, raw_data_dir = config.segmentation_data_dir, 
                     thresholded_dir = thresholded_dir, channel_names = config.channel_names, 
-                    lineage_markers = config.lineage_markers, 
+                    lineage_markers = config.lineage_markers, threshold_dict = config.lineage_markers_cluster_dict,
                     samples_to_remove = config.samples_to_remove) 
 
 #call pca function 
