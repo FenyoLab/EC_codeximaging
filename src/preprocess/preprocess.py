@@ -50,4 +50,3 @@ def zarr_conversion(common_channel_file, input_path, input_ext, output_path, dat
     #print('Generating global QC histogram')
     #qc.global_hist(data_path, file_names, qc_path)
 
-

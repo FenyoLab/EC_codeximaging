@@ -5,8 +5,8 @@
 #SBATCH --output=../logs/preprocessing_%j.txt
 #SBATCH --mem=600G
 #SBATCH --time=24:00:00
-#SBATCH --cpus-per-task=30
-#SBATCH --partition=fn_medium
+#SBATCH --cpus-per-task=5
+#SBATCH --partition=fn_long
 
 source ~/.bashrc
 conda activate canvas 
