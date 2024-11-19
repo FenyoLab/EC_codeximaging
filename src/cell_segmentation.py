@@ -26,7 +26,7 @@ def get_cell_segmentations(data_path, tile_size, batch_size, tiles_dir, save_pat
     dataloader = load_dataset(data_path, tile_size, batch_size, tiles_dir, tissue_type='ecad-_')
     get_matrix(dataloader, save_path, num_biomarkers, channel_names, tissue_type='ecad-_')
 
-    combine_matrices(save_path, data_path)
+    combine_matrices(save_path, data_path, tiles_dir)
 
     end_time = time.time()  # Record the end time
     elapsed_time = end_time - start_time
@@ -94,7 +94,7 @@ def get_matrix(dataloader, output_path, num_biomarkers, channel_names, tissue_ty
         tile_positions.extend([loc.numpy() for loc in locations]) 
         
         img_transposed = img.permute(0, 2, 3, 1).numpy()
-        print("Nuclear and membrane marker indices:", "DAPI-", channel_names.index('DAPI'), "Ecadherin-", channel_names.index('Ecadherin'))
+        #print("Nuclear and membrane marker indices:", "DAPI-", channel_names.index('DAPI'), "Ecadherin-", channel_names.index('Ecadherin'))
         img_filtered = img_transposed[:, :, :, [channel_names.index('DAPI'), channel_names.index('Ecadherin')]] 
         
         if tissue_type == 'ecad+_':
@@ -196,7 +196,7 @@ def load_data(prefix, output_path):
         'segmentation_masks': np.load(os.path.join(base_path, 'segmentation_masks.npy')),
     }
 
-def order_data(matrix, metadata, cell_sample_names, data_path):
+def order_data(matrix, metadata, cell_sample_names, tiles_dir, data_path):
     print("Original data shapes:")
     print(f"Matrix: {matrix.shape}, Metadata: {metadata.shape}, Cell sample names: {cell_sample_names.shape}")
 
@@ -220,7 +220,7 @@ def order_data(matrix, metadata, cell_sample_names, data_path):
         sample_metadata = sample_metadata.reset_index(drop=True)
 
         # Load tile positions for that sample
-        tile_positions_path = os.path.join(data_path, sample, 'tiles/positions_256.csv')
+        tile_positions_path = os.path.join(data_path, sample, tiles_dir, 'positions_256.csv')
         sample_tile_positions = pd.read_csv(tile_positions_path)
         
         print('First row of metadata (before reordering):', sample_metadata[['tile_x', 'tile_y']].head(1))
@@ -279,7 +279,7 @@ def save_data(output_path, matrix, metadata, cell_sample_names, tile_positions, 
     np.save(os.path.join(output_path, 'tile_sample_names.npy'), tile_sample_names)
     np.save(os.path.join(output_path, 'segmentation_masks.npy'), segmentation_masks)
 
-def combine_matrices(output_path, data_path):
+def combine_matrices(output_path, data_path, tiles_dir):
     # Load data
     ecad_pos = load_data('ecad+_', output_path)
     ecad_neg = load_data('ecad-_', output_path)
@@ -292,7 +292,7 @@ def combine_matrices(output_path, data_path):
     tile_sample_names = np.concatenate([ecad_pos['tile_sample_names'], ecad_neg['tile_sample_names']])
     segmentation_masks = np.concatenate([ecad_pos['segmentation_masks'], ecad_neg['segmentation_masks']])
 
-    reordered_matrix, reordered_metadata, reordered_cell_sample_names = order_data(matrix, metadata, cell_sample_names, data_path)
+    reordered_matrix, reordered_metadata, reordered_cell_sample_names = order_data(matrix, metadata, cell_sample_names, tiles_dir, data_path)
 
     # Save combined data
     save_data(output_path, reordered_matrix, reordered_metadata, reordered_cell_sample_names, tile_positions, tile_sample_names, segmentation_masks)
