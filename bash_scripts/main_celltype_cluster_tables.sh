@@ -6,7 +6,7 @@
 #SBATCH --output=../logs/celltype_cluster_omero_tables_%j.txt
 #SBATCH --mem=20G
 #SBATCH --time=1:00:00
-#SBATCH --partition=cpu_short
+#SBATCH --partition=fn_short
 
 source ~/.bashrc
 conda activate omero

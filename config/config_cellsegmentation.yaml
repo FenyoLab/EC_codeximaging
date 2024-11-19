@@ -1,9 +1,9 @@
 #basic input parameters
 tile_size: 256
 batch_size: 64
-tiles_dir: tiles
+tiles_dir: tiles_11_13
 num_channels: 31
-n_clusters_celltypes: 26
+n_clusters_celltypes: 27
 n_clusters_preprocessing: 3
 n_clusters_thresholding: 3
 random_state: 2024
@@ -18,7 +18,7 @@ samples_to_remove: null
 #base paths
 segmentation_data_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/raw_segmentation_data
 label_images_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/label_images
-out_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_11-12-24
+out_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_11-14-24
 
 data_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_256/data
 qptiff_data_dir: /gpfs/data/proteomics/data/Endometrial_mIF/qptiff_dat
@@ -44,458 +44,486 @@ research_drive_dir: 'fenyolab/EC_codeximaging/cell_segmentation'
 cluster_celltype_labels:
   0: Artifact
   1: Tumor cells
-  2: T cells (other)
-  3: Heterogeneous
-  4: Helper T cells
+  2: Heterogeneous 
+  3: Helper T cells
+  4: Heterogeneous
   5: Endothelial cells
-  6: Tumor cells
-  7: Tumor cells
-  8: Tumor cells
-  9: Neutrophils
+  6: Cytotoxic T cells
+  7: Neutrophils
+  8: Macrophages
+  9: Tumor cells
   10: Tumor cells
-  11: Heterogeneous
-  12: Cytotoxic T cells
-  13: Endothelial cells
-  14: Endothelial cells
-  15: Helper T cells
-  16: Tumor cells
+  11: Neutrophils
+  12: Tumor cells
+  13: Tumor cells
+  14: Cytotoxic T cells
+  15: T cells (other)
+  16: B cells
   17: Tumor cells
   18: Macrophages
   19: Neutrophils
-  20: Macrophages
-  21: mixed Macrophages/Helper T cells
-  22: Endothelial cells
-  23: B cells
-  24: Tumor cells
-  25: Heterogeneous
+  20: Helper T cells
+  21: Macrophages
+  22: Tumor cells
+  23: Heterogeneous
+  24: Macrophages
+  25: Endothelial cells
   26: Heterogeneous
+  27: Tumor cells
 
 
 #omero image info
 omero_image_dict:
   20230720-3660-2G-1_Scan1: 
     image_id: 597642
-    roi_id: 1231416
+    roi_id: 1231686
   20230720-4309-4G-1_Scan1: 
     image_id: 597780
-    roi_id: 1231414
+    roi_id: 1231684
   20230810_0488_3K_Scan1: 
     image_id: 601969 
-    roi_id: 1231404
+    roi_id: 1231674
   20230908-1872-4C-1_Scan2: 
     image_id: 611987
-    roi_id: 1231412
+    roi_id: 1231682
   20230908-6103-1J-1_Scan2: 
     image_id: 612242
-    roi_id: 1231409
+    roi_id: 1231679
   20230908-8710-3H-1_Scan1: 
     image_id: 611002
-    roi_id: 1231418
+    roi_id: 1231688
   20230922-3869-1O_Scan1: 
     image_id: 614300
-    roi_id: 1231405
+    roi_id: 1231675
   20230922-5689-1P_Scan1: 
     image_id: 615142
-    roi_id: 1231408
+    roi_id: 1231678
   20230922-7331-1H_Scan1: 
     image_id: 615004
-    roi_id: 1231419
+    roi_id: 1231689
   20231003-1160-3S_Scan1: 
     image_id: 617515
-    roi_id: 1231415
+    roi_id: 1231685
   20231003-2630-3P_Scan1: 
     image_id: 617353
-    roi_id: 1231411
+    roi_id: 1231681
   20231003-5988-4I_Scan1: 
     image_id: 616589
-    roi_id: 1231410
+    roi_id: 1231680
   20231012-3535-1T_Scan2: 
     image_id: 619802
-    roi_id: 1231406
+    roi_id: 1231676
   20231012-9390-1I_Scan1: 
     image_id: 619234
-    roi_id: 1231420
+    roi_id: 1231690
   20231012-9784-6H_Scan1: 
     image_id: 618713
-    roi_id: 1231407
+    roi_id: 1231677
   20231019-0413-3D_Scan1: 
     image_id: 620931
-    roi_id: 1231413
+    roi_id: 1231683
   20231019-4475-1E_Scan2: 
     image_id: 620498
-    roi_id: 1231417
+    roi_id: 1231687
 
 #lineage markers cluster identity  
 lineage_markers_cluster_dict:
   20230720-3660-2G-1_Scan1:
-    MPO:
-    CD163:
+    MPO: 
+    CD163: 
       0: negative
       1: positive
       2: positive
-    CD4:
+    CD4: 
       0: negative
       1: positive
       2: negative
     CD68:
-      lower_cutoff: 30
-    CD20:
+      lower_cutoff: 35 
+    CD8: 
+      0: negative
+      1: positive
+      2: positive
+    CD20: 
+      0: negative
+      1: negative
+      2: negative
+    CD3e:  
+      0: negative
+      1: positive
+      2: positive
+    DAPI: 8.5
+    Ecadherin: 4
+  20230720-4309-4G-1_Scan1: 
+    MPO: 
+    CD163: 
+      lower_cutoff: 7
+      upper_cutoff: 70
+    CD4: 
+      lower_cutoff: 18
+    CD68: 
+      lower_cutoff: 25
+    CD8: 
+      0: negative
+      1: positive
+      2: positive
+    CD20: 
+      0: negative
+      1: negative
+      2: negative
+    CD3e:  
+      lower_cutoff: 16
+    DAPI: 9
+    Ecadherin: 4.75
+  20230810_0488_3K_Scan1: 
+    MPO: 
+    CD163: 
+      0: negative
+      1: positive
+      2: negative
+    CD4: 
+      0: negative
+      1: negative
+      2: positive
+    CD68: 
+      lower_cutoff: 18
+    CD8: 
+      0: negative
+      1: positive
+      2: positive
+    CD20: 
       0: negative
       1: negative
       2: negative
     CD3e: 
-      lower_cutoff: 15
+      0: negative
+      1: positive
+      2: positive 
+    DAPI: 7.45
     Ecadherin: 4
-    DAPI: 8.5
-  20230720-4309-4G-1_Scan1: 
-    MPO:
-    CD163:
-      0: negative
-      1: positive
-      2: negative
-    CD4:
-      0: negative
-      1: positive
-      2: negative
-    CD68:
-      lower_cutoff: 20
-    CD20:
-      0: negative
-      1: negative
-      2: negative
-    CD3e:
-      0: negative
-      1: positive
-      2: positive
-    Ecadherin: 4.5
-    DAPI: 9
-  20230810_0488_3K_Scan1: 
-    MPO:
-    CD163:
-      0: negative
-      1: positive
-      2: negative
-      upper_cutoff: 46
-    CD4:
-      0: negative
-      1: negative
-      2: positive
-    CD68:
-      0: negative
-      1: positive
-      2: positive
-    CD20:
-      0: negative
-      1: negative
-      2: negative
-    CD3e:
-      0: negative
-      1: positive
-      2: positive
-    Ecadherin: 4
-    DAPI: 7.5
   20230908-1872-4C-1_Scan2: 
-    MPO:
-    CD163:
+    MPO: 
+    CD163: 
       0: negative
-      1: positive
+      1: negative
       2: positive
-    CD4:
+    CD4: 
       0: negative
-      1: positive
-      2: negative
-    CD68:
-      0: negative
-      1: positive
+      1: negative
       2: positive
-    CD20:
+    CD68: 
+      lower_cutoff: 35
+    CD8:
+      0: negative
+      1: positive
+      2: positive 
+    CD20: 
       0: negative
       1: negative
       2: negative
-    CD3e:
-      lower_cutoff: 6
-    Ecadherin: 6
+    CD3e: 
+      lower_cutoff: 7 
     DAPI: 8.5
-  20230908-6103-1J-1_Scan2: 
-    MPO:
-    CD163:
-      0: negative
-      1: positive
-      2: positive
-    CD4:
-      0: negative
-      1: positive
-      2: negative
-    CD68:
-      0: negative
-      1: positive
-      2: positive
-    CD20:
-      0: negative
-      1: positive
-      2: positive
-    CD3e:
-      0: negative
-      1: positive
-      2: positive
-    Ecadherin: 5
-    DAPI: 7.5
-  20230908-8710-3H-1_Scan1: 
-    MPO:
-    CD163:
-      0: negative
-      1: positive
-      2: positive
-    CD4:
-      0: negative
-      1: negative
-      2: positive
-    CD68:
-      lower_cutoff: 28
-    CD20:
-      0: negative
-      1: negative
-      2: positive
-    CD3e:
-      0: negative
-      1: positive
-      2: positive
-    Ecadherin: 3
-    DAPI: 7.5
-  20230922-3869-1O_Scan1: 
-    MPO:
-    CD163:
-      lower_cutoff: 4
-    CD4:
-      0: negative
-      1: positive
-      2: negative
-    CD68:
-      lower_cutoff: 28
-    CD20:
-      lower_cutoff: 7
-    CD3e:
-      0: negative
-      1: positive
-      2: positive
-    Ecadherin: 3
-    DAPI: 8.5
-  20230922-5689-1P_Scan1: 
-    MPO:
-    CD163:
-      lower_cutoff: 13
-    CD4:
-      0: negative
-      1: negative
-      2: positive
-    CD68:
-      lower_cutoff: 20
-    CD20:
-      0: negative
-      1: positive
-      2: negative
-    CD3e:
-      0: negative
-      1: positive
-      2: positive
     Ecadherin: 4
-    DAPI: 8.5
-  20230922-7331-1H_Scan1: 
-    MPO:
-    CD163:
+  20230908-6103-1J-1_Scan2: 
+    MPO: 
+    CD163: 
+      lower_cutoff: 9
+      upper_cutoff: 70
+    CD4: 
       0: negative
       1: positive
       2: negative
-    CD4:
+    CD68: 
+      lower_cutoff: 20
+    CD8: 
+      0: negative
+      1: positive
+      2: positive
+    CD20: 
+      0: negative
+      1: positive
+      2: positive
+    CD3e:  
+      0: negative
+      1: positive
+      2: positive
+    DAPI: 7.5
+    Ecadherin: 5
+  20230908-8710-3H-1_Scan1: 
+    MPO: 
+    CD163: 
       0: negative
       1: negative
       2: positive
-    CD68:
+    CD4: 
+      0: negative
+      1: positive
+      2: negative
+    CD68: 
+      lower_cutoff: 45
+    CD8: 
+      0: negative
+      1: positive
+      2: positive
+    CD20: 
+      0: negative
+      1: positive
+      2: negative
+    CD3e:  
+      lower_cutoff: 21
+    DAPI: 7.5
+    Ecadherin: 3
+  20230922-3869-1O_Scan1: 
+    MPO: 
+    CD163: 
+      lower_cutoff: 8
+    CD4: 
+      lower_cutoff: 20
+    CD68: 
+      lower_cutoff: 35
+    CD8: 
+      0: negative
+      1: positive
+      2: positive
+    CD20: 
+      0: negative
+      1: positive
+      2: negative
+    CD3e:  
+      lower_cutoff: 17
+    DAPI: 8.5
+    Ecadherin: 3
+  20230922-5689-1P_Scan1: 
+    MPO: 
+    CD163: 
+      lower_cutoff: 13
+    CD4: 
+      0: negative
+      1: positive
+      2: negative
+    CD68: 
+      lower_cutoff: 30
+    CD8: 
+      0: negative
+      1: positive
+      2: positive
+    CD20: 
+      0: negative
+      1: positive
+      2: negative
+    CD3e:  
+      0: negative
+      1: positive
+      2: positive
+    DAPI: 8.5
+    Ecadherin: 4
+  20230922-7331-1H_Scan1: 
+    MPO: 
+    CD163: 
+      lower_cutoff: 4
+    CD4: 
+      0: negative
+      1: positive
+      2: negative
+    CD68: 
+      lower_cutoff: 30
+    CD8: 
+      0: negative
+      1: positive
+      2: positive
+    CD20: 
+      0: negative
+      1: positive
+      2: positive
+    CD3e:  
+      0: negative
+      1: positive
+      2: positive
+    DAPI: 7.5
+    Ecadherin: 6
+  20231003-1160-3S_Scan1: 
+    MPO: 
+    CD163: 
+      0: negative
+      1: positive
+      2: negative
+    CD4: 
+      0: negative
+      1: positive
+      2: negative
+    CD68: 
+      lower_cutoff: 30
+    CD8: 
       0: positive
       1: negative
       2: positive
-    CD20:
-      0: negative
-      1: positive
-      2: positive
-    CD3e:
-      0: negative
-      1: positive
-      2: positive
-    Ecadherin: 6
-    DAPI: 7.5
-  20231003-1160-3S_Scan1: 
-    MPO:
-    CD163:
-      0: negative
-      1: positive
-      2: positive
-    CD4:
+    CD20: 
       0: negative
       1: positive
       2: negative
-    CD68:
-      0: negative
-      1: positive
-      2: positive
-    CD20:
-      lower_cutoff: 5
-    CD3e:
-      0: negative
-      1: positive
-      2: positive
-    Ecadherin: 4
-    DAPI: 8.5
-  20231003-2630-3P_Scan1: 
-    MPO:
-    CD163:
-      0: negative
-      1: negative
-      2: negative
-      upper_cutoff: 23
-    CD4:
-      0: negative
-      1: positive
-      2: negative
-    CD68:
-      lower_cutoff: 23
-    CD20:
-      0: negative
-      1: positive
-      2: positive
-    CD3e:
-      lower_cutoff: 17
-    Ecadherin: 6.5
-    DAPI: 8.5
-  20231003-5988-4I_Scan1: 
-    MPO:
-    CD163:
-      0: negative
+    CD3e:  
+      0: positive
       1: negative
       2: positive
-      upper_cutoff: 20
-    CD4:
-      0: negative
-      1: positive
-      2: negative
-    CD68:
-      0: negative
-      1: positive
-      2: positive
-    CD20:
-      0: negative
-      1: positive
-      2: negative
-    CD3e:
-      0: negative
-      1: positive
-      2: positive
-    Ecadherin: 6
     DAPI: 7.75
-  20231012-3535-1T_Scan2: 
-    MPO:
-    CD163:
-      0: negative
-      1: positive
-      2: positive
-    CD4:
-      0: negative
-      1: positive
-      2: negative
-    CD68:
-      lower_cutoff: 10
-    CD20:
-      lower_cutoff: 7
-    CD3e:
-      0: negative
-      1: positive
-      2: positive
-    Ecadherin: 2.5
-    DAPI: 9
-  20231012-9390-1I_Scan1: 
-    MPO:
-    CD163:
-      0: negative
-      1: positive
-      2: negative
-    CD4:
+    Ecadherin: 4
+  20231003-2630-3P_Scan1: 
+    MPO: 
+    CD163: 
       0: negative
       1: negative
       2: positive
+    CD4: 
+      lower_cutoff: 21
     CD68:
+      lower_cutoff: 28 
+    CD8: 
+      lower_cutoff: 18
+    CD20: 
       0: negative
       1: positive
       2: positive
-    CD20:
+    CD3e:  
+      0: negative
+      1: positive
+      2: positive
+    DAPI: 8.5
+    Ecadherin: 6.5
+  20231003-5988-4I_Scan1: 
+    MPO: 
+    CD163: 
       0: negative
       1: positive
       2: negative
-    CD3e:
+    CD4: 
+      lower_cutoff: 25
+    CD68: 
       0: negative
       1: positive
       2: positive
-    Ecadherin: 7
-    DAPI: 11
-  20231012-9784-6H_Scan1: 
-    MPO:
-    CD163:
-      lower_cutoff: 2
-      upper_cutoff: 30
-    CD4:
+    CD8: 
+      0: negative
+      1: positive
+      2: positive
+    CD20: 
       0: negative
       1: positive
       2: negative
-    CD68:
-      0: negative
-      1: positive
-      2: positive
-    CD20:
-      lower_cutoff: 6
-    CD3e:
-      0: negative
-      1: positive
-      2: positive
-    Ecadherin: 1.5
-    DAPI: 7
-  20231019-0413-3D_Scan1: 
-    MPO:
-    CD163:
-      lower_cutoff: 1.5
-    CD4:
-      lower_cutoff: 8
-    CD68:
-      0: negative
-      1: positive
-      2: positive
-    CD20:
-      lower_cutoff: 6
-    CD3e:
-      0: negative
-      1: positive
-      2: positive
+    CD3e:  
+      lower_cutoff: 23
+    DAPI: 7.75
     Ecadherin: 6
-    DAPI: 7
-  20231019-4475-1E_Scan2: 
-    MPO:
-    CD163:
+  20231012-3535-1T_Scan2: 
+    MPO: 
+    CD163: 
       0: negative
-      1: positive
+      1: negative
       2: positive
-    CD4:
+    CD4: 
       0: negative
       1: positive
       2: negative
-    CD68:
+    CD68: 
+      0: negative
+      1: negative
+      2: positive
+    CD8: 
       0: negative
       1: positive
       2: positive
-    CD20:
+    CD20: 
+      0: negative
+      1: positive
+      2: negative
+    CD3e:  
+      lower_cutoff: 16
+    DAPI: 9
+    Ecadherin: 2.5
+  20231012-9390-1I_Scan1: 
+    MPO: 
+    CD163: 
+      0: negative
+      1: positive
+      2: negative
+    CD4: 
+      0: negative
+      1: negative
+      2: positive
+    CD68: 
+      lower_cutoff: 27
+    CD8: 
+      lower_cutoff: 18
+    CD20: 
+      lower_cutoff: 12
+    CD3e: 
+      lower_cutoff: 38 
+    DAPI: 11
+    Ecadherin: 7
+  20231012-9784-6H_Scan1: 
+    MPO: 
+    CD163: 
+      0: negative
+      1: negative
+      2: positive
+    CD4: 
+      lower_cutoff: 22
+    CD68: 
+      0: negative
+      1: positive
+      2: positive
+    CD8: 
+      lower_cutoff: 15
+    CD20: 
+      0: negative
+      1: positive
+      2: negative
+    CD3e: 
+      lower_cutoff: 28
+    DAPI: 7
+    Ecadherin: 3
+  20231019-0413-3D_Scan1: 
+    MPO: 
+    CD163: 
+      lower_cutoff: 2
+    CD4: 
+      lower_cutoff: 9
+    CD68: 
+      0: negative
+      1: positive
+      2: positive
+    CD8: 
+      lower_cutoff: 7
+    CD20: 
+      lower_cutoff: 6
+    CD3e:  
+      0: negative
+      1: positive
+      2: positive
+    DAPI: 7
+    Ecadherin: 6
+  20231019-4475-1E_Scan2: 
+    MPO: 
+    CD163: 
+      lower_cutoff: 5
+    CD4: 
+      0: negative
+      1: negative
+      2: positive
+    CD68: 
+      lower_cutoff: 10
+    CD8: 
+      0: negative
+      1: positive
+      2: positive
+    CD20: 
       0: negative
       1: negative
       2: negative
-    CD3e:
+    CD3e: 
       0: negative
       1: positive
-      2: positive
-    Ecadherin: 3
+      2: positive 
     DAPI: 10
+    Ecadherin: 3
+    
