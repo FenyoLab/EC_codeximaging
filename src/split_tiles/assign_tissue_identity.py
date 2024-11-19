@@ -3,12 +3,12 @@ import sys
 import numpy as np
 import pandas as pd
 
-def new_positions(mean_data_dir, clusters_dir, positions_dir, tile_size):
+def new_positions(mean_data_dir, clusters_dir, positions_dir, tiles_dir, tile_size):
     sample_names = np.load(os.path.join(mean_data_dir, 'sample_names.npy'))
     tile_positions = np.load(os.path.join(mean_data_dir, 'tile_positions.npy'))
     
     for sample in np.unique(sample_names):
-        sample_positions_path = os.path.join(positions_dir, sample, 'tiles')
+        sample_positions_path = os.path.join(positions_dir, sample, tiles_dir)
         os.makedirs(sample_positions_path, exist_ok=True)
         positions_df_path = os.path.join(sample_positions_path, f'ecad+_positions_{tile_size}.csv')
         if os.path.exists(positions_df_path):
