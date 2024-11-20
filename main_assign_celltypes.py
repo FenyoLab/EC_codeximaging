@@ -9,7 +9,7 @@ run_config = helper.load_yaml_file(config_yaml)
 config = SimpleNamespace(**run_config)
 
 #import python files
-from src.clustering import assign_celltypes
+from src.celltypes import assign_celltypes
 
 phenotype_clusters_path = os.path.join(config.out_dir, config.clustering_dir, f'{config.n_clusters_celltypes}_clusters/phenotype_clusters.csv')
 thresholded_matrix_path = os.path.join(config.out_dir, config.thresholded_dir, 'matrix.npy')
