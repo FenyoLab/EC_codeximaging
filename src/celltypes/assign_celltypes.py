@@ -3,14 +3,16 @@ import pandas as pd
 import numpy as np 
 import json
 
-def assign_celltypes(save_path, matrix_dir, n_clusters_celltypes, n_clusters_thresholding, cell_types_dict, thresholding_dict, phenotype_clusters_path, threshold_channel_names, channel_names, output_suffix = 'cell_types_test'):
+def assign_celltypes(save_path, matrix_dir, n_clusters_celltypes, n_clusters_thresholding, cell_types_dict, thresholding_dict, phenotype_clusters_path, threshold_channel_names, channel_names, output_suffix = 'cell_types'):
 
     output_path = f'{save_path}/{output_suffix}/{n_clusters_celltypes}_clusters'
     os.makedirs(output_path, exist_ok=True)
     cell_types_df_path = os.path.join(output_path, 'cell_types.csv')
-    #if os.path.exists(cell_types_df_path):  
-    #    print('Cell type information saved, skipping')
-    #    return
+    print(cell_types_df_path)
+
+    if os.path.exists(cell_types_df_path):  
+        print('Cell type information saved, skipping')
+        return
 
     phenotype_clusters = pd.read_csv(phenotype_clusters_path, index_col =0)
     print(phenotype_clusters.shape)
@@ -30,7 +32,7 @@ def assign_celltypes(save_path, matrix_dir, n_clusters_celltypes, n_clusters_thr
 
     cell_type_stats = {}
     
-    for cell_type_name in ['B cells', 'Helper T cells', 'Cytotoxic T cells', 'Macrophages', 'T cells (other)']:
+    for cell_type_name in ['B cells', 'Helper T cells', 'Cytotoxic T cells', 'T cells (other)', 'Macrophages']:
         print(f'Processing {cell_type_name}')
         cell_types_df, single_cell_type_stats = split_mixed_celltype(cell_type_name, cell_types_df, thresholded_matrix, channel_names)
         cell_type_stats[cell_type_name] = single_cell_type_stats
@@ -38,14 +40,14 @@ def assign_celltypes(save_path, matrix_dir, n_clusters_celltypes, n_clusters_thr
     with open(os.path.join(output_path, 'heterogeneous_cell_stats.json'), 'w') as json_file:
         json.dump(heterogenous_cells_stats, json_file, indent=4)
 
-    with open(os.path.join(output_path, 'cell_type_stats_v3.json'), 'w') as json_file:
+    with open(os.path.join(output_path, 'cell_type_stats.json'), 'w') as json_file:
         json.dump(cell_type_stats, json_file, indent=4)
 
     print('Cell types after splitting mixed cell types:')
     print(cell_types_df['cell_type'].value_counts())
     cell_types_df.to_csv(cell_types_df_path)
 
-    print('Cell types assigned and saved')
+    print(f'Cell types assigned and saved at {cell_types_df_path}')
 
 def threshold_matrix(matrix_dir, threshold_dict, threshold_channel_names, channel_names, n_clusters_thresholding):
     matrix = np.load(os.path.join(matrix_dir, 'matrix.npy'))
@@ -257,7 +259,6 @@ def split_mixed_celltype(cell_type_name, cell_types_df, thresholded_matrix, chan
         b_cell_count = 0
         helper_t_count = 0
         cytotoxic_t_count = 0
-        t_cell_other_count = 0
         stromal_cell_count = 0
 
         for i, cell_index in enumerate(single_cell_type_df_index):
@@ -265,19 +266,17 @@ def split_mixed_celltype(cell_type_name, cell_types_df, thresholded_matrix, chan
 
             if cell_arr[channel_names.index('CD3e')] > 0:
                 if cell_arr[channel_names.index('CD8')] > 0:
-                    #print('Cell is positive for CD3e and CD8 and becomes a cytotoxic T cell')
-                    cell_types_df.at[cell_index + 1, 'cell_type'] = 'Cytotoxic T cells (CD20+)'
+                    #print('Cell is positive for CD20 and CD8 and becomes a cytotoxic T cell')
+                    cell_types_df.at[cell_index + 1, 'cell_type'] = 'Cytotoxic T cells'
                     cytotoxic_t_count += 1
-
                 elif cell_arr[channel_names.index('CD4')] > 0:
-                    #print('Cell is positive for CD3e and CD4 and becomes a helper T cell')
-                    cell_types_df.at[cell_index + 1, 'cell_type'] = 'Helper T cells (CD20+)'
+                    #print('Cell is positive for CD20 and CD4 and becomes a helper T cell')
+                    cell_types_df.at[cell_index + 1, 'cell_type'] = 'Helper T cells'
                     helper_t_count += 1
                 else:
-                    #print('Cell is positive for CD3e (not cd4 or cd8) and becomes a T cells (other)')
-                    cell_types_df.at[cell_index + 1, 'cell_type'] = 'T cells (other) (CD20+)'
-                    t_cell_other_count += 1
-            
+                    #print('Cell is positive for CD20 and remains a B cell')
+                    b_cell_count += 1
+                
             elif cell_arr[channel_names.index('CD20')] > 0:
                 #print('Cell is positive for CD20 and remains a B cell')
                 b_cell_count += 1
@@ -291,7 +290,6 @@ def split_mixed_celltype(cell_type_name, cell_types_df, thresholded_matrix, chan
             'B cell': int(b_cell_count),
             'Helper T cells': int(helper_t_count),
             'Cytotoxic T cells': int(cytotoxic_t_count),
-            'T cells (other)': int(t_cell_other_count),
             'Stromal cells (undefined)': int(stromal_cell_count)
         }
         print(split_cells_stats)
@@ -300,12 +298,10 @@ def split_mixed_celltype(cell_type_name, cell_types_df, thresholded_matrix, chan
     if cell_type_name == 'T cells (other)':
         print(cell_type_name)
         helper_t_count = 0
-        helper_t_no_cd3e_count = 0
         cytotoxic_t_count = 0
-        cytotoxic_t_no_cd3e_count = 0
         t_cell_other_count = 0
         b_cell_count = 0 
-        stromal_cell_count = 0
+        #stromal_cell_count = 0
 
         for i, cell_index in enumerate(single_cell_type_df_index):
             cell_arr = thresholded_matrix[cell_index]
@@ -323,15 +319,15 @@ def split_mixed_celltype(cell_type_name, cell_types_df, thresholded_matrix, chan
                     #print('Cell is positive for CD3e (not cd4 or cd8) and remains a T cells (other)')
                     t_cell_other_count += 1
 
-            #exploratory version
+
             elif cell_arr[channel_names.index('CD8')] > 0:
                 #print('Cell is positive for CD8 and becomes a cytotoxic T cell')
-                cell_types_df.at[cell_index + 1, 'cell_type'] = 'Cytotoxic T cells (no CD3e)'
-                cytotoxic_t_no_cd3e_count += 1
+                cell_types_df.at[cell_index + 1, 'cell_type'] = 'Cytotoxic T cells'
+                cytotoxic_t_count += 1
             elif cell_arr[channel_names.index('CD4')] > 0:
                 #print('Cell is positive for CD4 and becomes a helper T cell')
-                cell_types_df.at[cell_index + 1, 'cell_type'] = 'Helper T cells (no CD3e)'
-                helper_t_no_cd3e_count += 1
+                cell_types_df.at[cell_index + 1, 'cell_type'] = 'Helper T cells'
+                helper_t_count += 1
             
             elif cell_arr[channel_names.index('CD20')] > 0:
                 #print('Cell is positive for CD20 and becomes a B cell')
@@ -339,20 +335,20 @@ def split_mixed_celltype(cell_type_name, cell_types_df, thresholded_matrix, chan
                 b_cell_count += 1
             
             else:
+                #print('Cell remains a T cells (other)')\
+                t_cell_other_count += 1
                 #print('Cell is not positive for cd3e according to thresholding')
-                cell_types_df.at[cell_index + 1, 'cell_type'] = 'Stromal cells (undefined)'
-                stromal_cell_count += 1
+                #cell_types_df.at[cell_index + 1, 'cell_type'] = 'Stromal cells (undefined)'
+                #stromal_cell_count += 1
                 
             
         split_cells_stats = {
             'Original cell number': int(single_cell_type_df.shape[0]),
             'T cells (other)': int(t_cell_other_count),
             'Cytotoxic T cells': int(cytotoxic_t_count),
-            'Cytotoxic T cells (no CD3e)': int(cytotoxic_t_no_cd3e_count),
             'Helper T cells': int(helper_t_count),
-            'Helper T cells (no CD3e)': int(helper_t_no_cd3e_count),
-            'B cells': int(b_cell_count),
-            'Stromal cells (undefined)': int(stromal_cell_count)
+            'B cells': int(b_cell_count)#,
+            #'Stromal cells (undefined)': int(stromal_cell_count)
         }
         print(split_cells_stats)
         print('')
@@ -360,9 +356,7 @@ def split_mixed_celltype(cell_type_name, cell_types_df, thresholded_matrix, chan
     if cell_type_name == 'Helper T cells':
         print(cell_type_name)
         helper_t_count = 0
-        helper_t_no_cd3e_count = 0 
         cytotoxic_t_count = 0
-        cytotoxic_t_no_cd3e_count = 0
         macrophage_count = 0
         t_cell_other_count = 0
         b_cell_count = 0
@@ -389,15 +383,13 @@ def split_mixed_celltype(cell_type_name, cell_types_df, thresholded_matrix, chan
                 cell_types_df.at[cell_index + 1, 'cell_type'] = 'Macrophages'
                 macrophage_count += 1
             
-            #exploratory version - added this 
             elif cell_arr[channel_names.index('CD4')] > 0:
-                cell_types_df.at[cell_index + 1, 'cell_type'] = 'Helper T cells (no CD3e)'
                 #print('Cell is positive for CD4 and remains a Helper T cell')
-                helper_t_no_cd3e_count += 1
+                helper_t_count += 1
             elif cell_arr[channel_names.index('CD8')] > 0:
                 #print('Cell is positive for CD8 and becomes a Cytotoxic T cell')
-                cell_types_df.at[cell_index + 1, 'cell_type'] = 'Cytotoxic T cells (no CD3e)'
-                cytotoxic_t_no_cd3e_count += 1
+                cell_types_df.at[cell_index + 1, 'cell_type'] = 'Cytotoxic T cells'
+                cytotoxic_t_count += 1
             
             elif cell_arr[channel_names.index('CD20')] > 0:
                 #print('Cell is positive for CD20 and becomes a B cell')
@@ -411,9 +403,7 @@ def split_mixed_celltype(cell_type_name, cell_types_df, thresholded_matrix, chan
         split_cells_stats = {
             'Original cell number': int(single_cell_type_df.shape[0]),
             'Helper T cells': int(helper_t_count),
-            'Helper T cells (no CD3e)': int(helper_t_no_cd3e_count),
             'Cytotoxic T cells': int(cytotoxic_t_count),
-            'Cytotoxic T cells (no CD3e)': int(cytotoxic_t_no_cd3e_count),
             'Macrophages': int(macrophage_count),
             'T cells (other)': int(t_cell_other_count),
             'B cells': int(b_cell_count),
@@ -425,9 +415,7 @@ def split_mixed_celltype(cell_type_name, cell_types_df, thresholded_matrix, chan
     if cell_type_name == 'Cytotoxic T cells':
         print(cell_type_name)
         helper_t_count = 0
-        helper_t_no_cd3e_count = 0
         cytotoxic_t_count = 0
-        cytotoxic_t_no_cd3e_count = 0
         b_cell_count = 0
         t_cell_other_count = 0
         stromal_cell = 0 
@@ -449,14 +437,13 @@ def split_mixed_celltype(cell_type_name, cell_types_df, thresholded_matrix, chan
                     t_cell_other_count += 1
 
             #v2 - added this
-            if cell_arr[channel_names.index('CD8')] > 0:
-                cell_types_df.at[cell_index + 1, 'cell_type'] = 'Cytotoxic T cells (no CD3e)'
+            elif cell_arr[channel_names.index('CD8')] > 0:
                 #print('Cell is positive for CD8 and remains a Cytotoxic T cell')
-                cytotoxic_t_no_cd3e_count += 1
+                cytotoxic_t_count += 1
             elif cell_arr[channel_names.index('CD4')] > 0:
                 #print('Cell is positive for CD4 and becomes a Helper T cell')
-                cell_types_df.at[cell_index + 1, 'cell_type'] = 'Helper T cells (no CD3e)'
-                helper_t_no_cd3e_count += 1
+                cell_types_df.at[cell_index + 1, 'cell_type'] = 'Helper T cells'
+                helper_t_count += 1
 
             elif cell_arr[channel_names.index('CD20')] > 0:
                 #print('Cell is positive for CD20 and becomes a B cell')
@@ -464,29 +451,28 @@ def split_mixed_celltype(cell_type_name, cell_types_df, thresholded_matrix, chan
                 b_cell_count += 1
 
             else:
-                cell_types_df.at[cell_index + 1, 'cell_type'] = 'Stromal cells (undefined)'
-                stromal_cell += 1
+                #print('Cell remains a cytotoxic T cell')
+                cytotoxic_t_count += 1
+                #cell_types_df.at[cell_index + 1, 'cell_type'] = 'Stromal cells (undefined)'
+                #stromal_cell += 1
             
         split_cells_stats = {
             'Original cell number': int(single_cell_type_df.shape[0]),
             'Cytotoxic T cells': int(cytotoxic_t_count),
-            'Cytotoxic T cells (no CD3e)': int(cytotoxic_t_no_cd3e_count),
             'Helper T cells': int(helper_t_count),
-            'Helper T cells (no CD3e)': int(helper_t_no_cd3e_count),
             'T cells (other)': int(t_cell_other_count),
-            'B cells': int(b_cell_count),
-            'Stromal cells (undefined)': int(stromal_cell),
+            'B cells': int(b_cell_count)#,
+            #'Stromal cells (undefined)': int(stromal_cell),
         }
         print(split_cells_stats)
         print('')
         
     if cell_type_name == 'Macrophages':
         print(cell_type_name)
-        macrophage_count = 0
+        macrophage_cd163_pos_count = 0
+        macrophage_cd163_neg_count = 0
         helper_t_count = 0
-        helper_t_no_cd3e_count = 0
         cytotoxic_t_count = 0
-        cytotoxic_t_no_cd3e_count = 0
         t_cell_other_count = 0
         stromal_cell_count = 0
 
@@ -508,18 +494,24 @@ def split_mixed_celltype(cell_type_name, cell_types_df, thresholded_matrix, chan
                     t_cell_other_count += 1
 
             elif cell_arr[channel_names.index('CD68')] > 0:
-                #print('Cell is positive for CD68 and remains a Macrophage')
-                macrophage_count += 1
+                if cell_arr[channel_names.index('CD163')] > 0:
+                    #print('Cell is positive for CD68 and CD163 and is a Macrophage (CD163+)')
+                    cell_types_df.at[cell_index + 1, 'cell_type'] = 'Macrophages (CD163+)'
+                    macrophage_cd163_pos_count += 1
+                else:
+                    #print('Cell is positive for CD68 and negative for CD163 and is a Macrophage (CD163-)')
+                    cell_types_df.at[cell_index + 1, 'cell_type'] = 'Macrophages (CD163-)'
+                    macrophage_cd163_neg_count += 1
             
             #v2 - added this
             elif cell_arr[channel_names.index('CD8')] > 0:
                 #print('Cell is positive for CD8 and becomes a Cytotoxic T cell')
-                cell_types_df.at[cell_index + 1, 'cell_type'] = 'Cytotoxic T cells (no CD3e)'
-                cytotoxic_t_no_cd3e_count += 1
+                cell_types_df.at[cell_index + 1, 'cell_type'] = 'Cytotoxic T cells'
+                cytotoxic_t_count += 1
             elif cell_arr[channel_names.index('CD4')] > 0:
                 #print('Cell is positive for CD4 and becomes a Helper T cell')
-                cell_types_df.at[cell_index + 1, 'cell_type'] = 'Helper T cells (no CD3e)'
-                helper_t_no_cd3e_count += 1
+                cell_types_df.at[cell_index + 1, 'cell_type'] = 'Helper T cells'
+                helper_t_count += 1
     
             else:
                 #print('Cell is not positive for any relevant lineage markers')
@@ -528,11 +520,10 @@ def split_mixed_celltype(cell_type_name, cell_types_df, thresholded_matrix, chan
         
         split_cells_stats = {
             'Original cell number': int(single_cell_type_df.shape[0]),
-            'Macrophages': int(macrophage_count),
+            'Macrophages (CD163+)': int(macrophage_cd163_pos_count),
+            'Macrophages (CD163-)': int(macrophage_cd163_neg_count),
             'Helper T cells': int(helper_t_count),
-            'Helper T cells (no CD3e)': int(helper_t_no_cd3e_count),
             'Cytotoxic T cells': int(cytotoxic_t_count),
-            'Cytotoxic T cells (no CD3e)': int(cytotoxic_t_no_cd3e_count),
             'T cells (other)': int(t_cell_other_count),
             'Stromal cells (undefined)': int(stromal_cell_count)
         }
