@@ -264,7 +264,11 @@ def split_mixed_celltype(cell_type_name, cell_types_df, thresholded_matrix, chan
         for i, cell_index in enumerate(single_cell_type_df_index):
             cell_arr = thresholded_matrix[cell_index]
 
-            if cell_arr[channel_names.index('CD3e')] > 0:
+            if cell_arr[channel_names.index('CD20')] > 0:
+                #print('Cell is positive for CD20 and remains a B cell')
+                b_cell_count += 1
+
+            elif cell_arr[channel_names.index('CD3e')] > 0:
                 if cell_arr[channel_names.index('CD8')] > 0:
                     #print('Cell is positive for CD20 and CD8 and becomes a cytotoxic T cell')
                     cell_types_df.at[cell_index + 1, 'cell_type'] = 'Cytotoxic T cells'
@@ -276,10 +280,6 @@ def split_mixed_celltype(cell_type_name, cell_types_df, thresholded_matrix, chan
                 else:
                     #print('Cell is positive for CD20 and remains a B cell')
                     b_cell_count += 1
-                
-            elif cell_arr[channel_names.index('CD20')] > 0:
-                #print('Cell is positive for CD20 and remains a B cell')
-                b_cell_count += 1
 
             else:
                 cell_types_df.at[cell_index + 1, 'cell_type'] = 'Stromal cells (undefined)'
