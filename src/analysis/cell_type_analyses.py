@@ -55,8 +55,8 @@ def Pair_Correlation(matrix, metadata, metadata_celltypes, clinicaldata, channel
         #get the indices of the Tumor cells per slide 
         Tumorcells_indices = metadata_celltypes.index[(metadata_celltypes['slide_id'] == slide) & (metadata_celltypes['cell_type'].isin(["tumor", "tumor_cell"]))].to_list()
 
-        metadata['centroid_x_slide'] = metadata.centroid_x + metadata.tile_x
-        metadata['centroid_y_slide'] = metadata.centroid_y + metadata.tile_y
+        metadata['centroid_x_slide'] = metadata.centroid_x + metadata.tile_w
+        metadata['centroid_y_slide'] = metadata.centroid_y + metadata.tile_h
 
         Tcells_x = metadata['centroid_x_slide'].loc[Tcells_indices]
         Tcells_y = metadata['centroid_y_slide'].loc[Tcells_indices]

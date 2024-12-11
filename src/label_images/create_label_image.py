@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import zarr 
 import tifffile as tiff
+import matplotlib.pyplot as plt
 
 def create_label_image(data_dir, label_images_dir):
     
@@ -37,8 +38,8 @@ def create_label_tiles(label_images_dir):
     for i, mask in enumerate(masks):
         tile_position = tile_positions[i]
         filtered_metadata = metadata[
-            (metadata['tile_x'] == tile_position[0]) & 
-            (metadata['tile_y'] == tile_position[1])]
+            (metadata['tile_h'] == tile_position[0]) & 
+            (metadata['tile_w'] == tile_position[1])]
 
         cell_to_label = dict(zip(filtered_metadata['cell_label'], filtered_metadata['label_image_cell_index']))
     
@@ -72,11 +73,11 @@ def create_label_slide(label_images_dir, data_dir):
     print("Blank label image shape:", label_image.shape)
 
     for i, tile_mask in enumerate(label_tiles):
-        x, y = tile_positions[i]
-        label_image[x:x+tile_mask.shape[0], y:y+tile_mask.shape[1]] = tile_mask
+        h, w = tile_positions[i]
+        label_image[h:h+tile_mask.shape[0], w:w+tile_mask.shape[1]] = tile_mask
 
         if i % 500 == 0:
-            print(f'Tile {i}: {x}, {y}')
+            print(f'Tile {i}: {h}, {w}')
     
     print("Label image shape:", label_image.shape)
     print("# of Unique values in label image:", len(np.unique(label_image)))

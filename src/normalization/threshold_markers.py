@@ -34,7 +34,8 @@ def threshold_markers(data_dir, channel_names, threshold_dict, threshold_channel
     
         # Iterate over channels in the thresholding dictionary
         for channel_index, channel in enumerate(threshold_channel_names):
-            if channel in ['MPO', 'CD8', 'CD3e', 'Ecadherin', 'DAPI']:
+            #if channel in ['MPO', 'CD8', 'CD3e', 'Ecadherin', 'DAPI']:
+            if channel in ['MPO', 'Ecadherin', 'DAPI']:
                 continue
             print(channel, channel_index, threshold_indices[channel_index])
             

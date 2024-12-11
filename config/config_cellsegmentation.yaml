@@ -18,7 +18,7 @@ samples_to_remove: null
 #base paths
 segmentation_data_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/raw_segmentation_data
 label_images_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/label_images
-out_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_11-14-24
+out_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_12-2-24
 
 data_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_256/data
 qptiff_data_dir: /gpfs/data/proteomics/data/Endometrial_mIF/qptiff_dat
@@ -35,7 +35,8 @@ umap_dir: umap
 umap_coord_path: umap/coord.npy
 pca_coord_path: pca/coord.npy
 clustering_dir: clustering
-celltypes_dir: cell_types
+celltypes_dir: celltypes_test
+omero_table_dir: omero_tables
 
 #research drive
 mount_lab: fenyolab
@@ -43,34 +44,33 @@ research_drive_dir: 'fenyolab/EC_codeximaging/cell_segmentation'
 
 cluster_celltype_labels:
   0: Artifact
-  1: Tumor cells
-  2: Heterogeneous 
-  3: Helper T cells
-  4: Heterogeneous
-  5: Endothelial cells
-  6: Cytotoxic T cells
-  7: Neutrophils
-  8: Macrophages
-  9: Tumor cells
+  1: Heterogeneous
+  2: Tumor cells
+  3: Heterogeneous
+  4: Helper T cells
+  5: Tumor cells
+  6: Endothelial cells
+  7: Heterogeneous
+  8: Cytotoxic T cells
+  9: Neutrophils
   10: Tumor cells
   11: Neutrophils
-  12: Tumor cells
-  13: Tumor cells
-  14: Cytotoxic T cells
-  15: T cells (other)
-  16: B cells
+  12: Macrophages
+  13: B cells
+  14: T cells (other)
+  15: Tumor cells
+  16: Tumor cells
   17: Tumor cells
-  18: Macrophages
-  19: Neutrophils
-  20: Helper T cells
-  21: Macrophages
-  22: Tumor cells
-  23: Heterogeneous
-  24: Macrophages
-  25: Endothelial cells
-  26: Heterogeneous
+  18: Heterogeneous
+  19: Tumor cells
+  20: Cytotoxic T cells
+  21: T cells (other)
+  22: Macrophages
+  23: Endothelial cells
+  24: Endothelial cells
+  25: Tumor cells
+  26: Helper T cells
   27: Tumor cells
-
 
 #omero image info
 omero_image_dict:
@@ -526,4 +526,159 @@ lineage_markers_cluster_dict:
       2: positive 
     DAPI: 10
     Ecadherin: 3
-    
+
+marker_celltype_dict:
+  B cells: CD20
+  Cytotoxic T cells: CD8
+  Helper T cells: CD4
+  T cells (other): CD3e
+
+stricter_threshold_dict:
+  20230720-3660-2G-1_Scan1:
+    CD8: 38
+    CD4: 33
+  20230720-4309-4G-1_Scan1: 
+    CD8: 28
+    CD4: 23
+  20230810_0488_3K_Scan1: 
+    CD8: 24
+    CD4: 25
+  20230908-1872-4C-1_Scan2: 
+    CD8: 18
+    CD4: 16
+  20230908-6103-1J-1_Scan2: 
+    CD8: 21
+    CD4: 18
+    CD20: 10
+    CD3e: 24
+  20230908-8710-3H-1_Scan1: 
+    CD8: 24
+    CD4: 26
+    CD20: 13
+    CD3e: 35
+  20230922-3869-1O_Scan1: 
+    CD8: 17
+    CD4: 23
+    CD20: 12
+    CD3e: 28
+  20230922-5689-1P_Scan1: 
+    CD8: 16
+    CD4: 28
+    CD20: 17
+    CD3e: 30
+  20230922-7331-1H_Scan1: 
+    CD8: 24
+    CD4: 17
+    CD20: 8
+    CD3e: 22
+  20231003-1160-3S_Scan1: 
+    CD8: 23
+    CD4: 25
+    CD20: 9
+    CD3e: 23
+  20231003-2630-3P_Scan1: 
+    CD8: 22
+    CD4: 29
+    CD20: 25
+    CD3e: 38
+  20231003-5988-4I_Scan1: 
+    CD8: 16
+    CD4: 27
+    CD20: 6
+    CD3e: 31
+  20231012-3535-1T_Scan2: 
+    CD8: 10
+    CD4: 23
+    CD20: 14
+    CD3e: 255 #there are no cd3e+ cells from T cells (other) (CD20+) celltype
+  20231012-9390-1I_Scan1: 
+    CD8: 30
+    CD4: 33
+    CD20: 20
+    CD3e: 70
+  20231012-9784-6H_Scan1: 
+    CD8: 25
+    CD4: 33
+    CD20: 11
+    CD3e: 40
+  20231019-0413-3D_Scan1: 
+    CD8: 20
+    CD4: 13
+    CD20: 7
+    CD3e: 18
+  20231019-4475-1E_Scan2: 
+    CD8: 10
+    CD4: 18
+
+percentile_thresholds_dict:
+  20230720-3660-2G-1_Scan1:
+    CD8: 25
+    CD4: 0
+  20230720-4309-4G-1_Scan1: 
+    CD8: 50
+    CD4: 25
+  20230810_0488_3K_Scan1: 
+    CD8: 25
+    CD4: 5
+  20230908-1872-4C-1_Scan2: 
+    CD8: 25
+    CD4: 25
+  20230908-6103-1J-1_Scan2: 
+    CD8: 50
+    CD4: 5
+    CD20: 25
+    CD3e: 50
+  20230908-8710-3H-1_Scan1: 
+    CD8: 25
+    CD4: 5
+    CD20: 5
+    CD3e: 25
+  20230922-3869-1O_Scan1: 
+    CD8: 50
+    CD4: 5
+    CD20: 0
+    CD3e: 50
+  20230922-5689-1P_Scan1: 
+    CD8: 25
+    CD4: 5
+    CD20: 5
+    CD3e: 50
+  20230922-7331-1H_Scan1: 
+    CD8: 25
+    CD4: 5
+    CD20: 50
+    CD3e: 25
+  20231003-1160-3S_Scan1: 
+    CD8: 25
+    CD4: 5
+    CD20: 25
+    CD3e: 75
+  20231003-2630-3P_Scan1: 
+    CD8: 25
+    CD4: 5
+    CD20: 25
+    CD3e: 75
+  20231003-5988-4I_Scan1: 
+    CD8: 75
+    CD4: 5
+    CD20: 25
+    CD3e: 25
+  20231012-3535-1T_Scan2: 
+    CD8: 50
+    CD4: 50
+    CD20: 75
+  20231012-9390-1I_Scan1: 
+    CD8: 25
+    CD4: 50
+    CD20: 50
+    CD3e: 50
+  20231012-9784-6H_Scan1: 
+    CD8: 25
+    CD4: 25
+    CD20: 50
+    CD3e: 50
+  20231019-0413-3D_Scan1: 
+    CD8: 50
+    CD4: 25
+    CD20: 25
+    CD3e: 95
