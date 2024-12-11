@@ -12,12 +12,12 @@ from src.omero_tables import celltype_cluster_tables, upload_omero_table
 
 #create celltype cluster tables for omero
 clustering_path = os.path.join(config.out_dir, config.clustering_dir, f'{config.n_clusters_celltypes}_clusters')
-omero_table_dir = os.path.join(clustering_path, 'omero_tables')
+omero_table_dir = os.path.join(config.out_dir, config.omero_table_dir)
 
 out_suffix = os.path.basename(config.out_dir)
 date = "_".join(out_suffix.split("_")[1:])
 table_name_celltype_clusters = f'celltype_{config.n_clusters_celltypes}clusters_{date}'
-print(table_name_celltype_clusters)
+print('Table name:', table_name_celltype_clusters)
 
 celltype_cluster_tables.celltype_cluster_tables(clustering_path = clustering_path, save_path = omero_table_dir, 
                                                 omero_dict = config.omero_image_dict, n_clusters = config.n_clusters_celltypes,
