@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np 
 import json
 
-def assign_celltypes(save_path, matrix_dir, n_clusters_celltypes, n_clusters_thresholding, cell_types_dict, thresholding_dict, phenotype_clusters_path, threshold_channel_names, channel_names, output_suffix = 'cell_types'):
+def assign_celltypes(save_path, thresholded_matrix_dir, n_clusters_celltypes, cell_types_dict, thresholding_dict, phenotype_clusters_path, channel_names, output_suffix = 'cell_types'):
 
     output_path = f'{save_path}/{output_suffix}/{n_clusters_celltypes}_clusters'
     os.makedirs(output_path, exist_ok=True)
@@ -22,8 +22,8 @@ def assign_celltypes(save_path, matrix_dir, n_clusters_celltypes, n_clusters_thr
     phenotype_clusters['cell_type'] = phenotype_clusters['cluster_label'].map(cell_types_dict)
     print(phenotype_clusters.head())
 
-    thresholded_matrix = threshold_matrix(matrix_dir, thresholding_dict, threshold_channel_names, channel_names, n_clusters_thresholding)
-    np.save(os.path.join(output_path, 'thresholded_matrix.npy'), thresholded_matrix)
+    #load in thresholded matrix
+    thresholded_matrix = np.load(os.path.join(thresholded_matrix_dir, 'matrix.npy'))
 
     cell_types_df, heterogenous_cells_stats = assign_heterogeneous_celltype(phenotype_clusters, thresholded_matrix, thresholding_dict, channel_names)
 
@@ -48,84 +48,7 @@ def assign_celltypes(save_path, matrix_dir, n_clusters_celltypes, n_clusters_thr
     cell_types_df.to_csv(cell_types_df_path)
 
     print(f'Cell types assigned and saved at {cell_types_df_path}')
-
-def threshold_matrix(matrix_dir, threshold_dict, threshold_channel_names, channel_names, n_clusters_thresholding):
-    matrix = np.load(os.path.join(matrix_dir, 'matrix.npy'))
-    cell_sample_names = np.load(os.path.join(matrix_dir, 'cell_sample_names.npy'))
-
-    for sample in np.unique(cell_sample_names):
-        print(f'Processing sample {sample}')
-        sample_indices = np.where(cell_sample_names == sample)[0]
-        sample_matrix = matrix[sample_indices]
-        print(f'Sample matrix shape: {sample_matrix.shape}')
-
-        # Load K-means labels for the sample
-        sample_kmeans_labels_df = pd.read_csv(os.path.join(matrix_dir, 'thresholding_clusters', sample, f'lineage_markers_{n_clusters_thresholding}clusters.csv')) 
-        #print(f'Sample kmeans labels df head: {sample_kmeans_labels_df.head()}')
-        sample_kmeans_labels = sample_kmeans_labels_df[threshold_channel_names].to_numpy()
-        print(f'Sample kmeans labels: {sample_kmeans_labels.shape}')
-
-        assert sample_matrix.shape[0] == sample_kmeans_labels.shape[0], \
-    f"Mismatch: Sample matrix has {sample_matrix.shape[0]} rows, while kmeans labels have {sample_kmeans_labels.shape[0]}."
-
-        threshold_indices = [channel_names.index(channel) for channel in threshold_channel_names if channel in channel_names]
-        print(threshold_indices)
     
-        # Iterate over channels in the thresholding dictionary
-        for channel_index, channel in enumerate(threshold_channel_names):
-            if channel in ['MPO', 'Ecadherin', 'DAPI']:
-                continue
-            print(channel, channel_index, threshold_indices[channel_index])
-            
-            if channel in threshold_dict.get(sample, {}):  # Check if the sample is in the threshold_dict
-                # Get the corresponding thresholding mapping for the current channel
-                threshold_mapping = threshold_dict[sample][channel]
-                print(threshold_mapping)
-
-                if 'upper_cutoff' in threshold_mapping and 'lower_cutoff' in threshold_mapping:
-                    lower_cutoff = threshold_mapping['lower_cutoff']
-                    upper_cutoff = threshold_mapping['upper_cutoff']
-                    #print(f"Applying lower cutoff of {lower_cutoff} and upper cutoff of {upper_cutoff} for {channel}")
-                    sample_matrix[sample_matrix[:, threshold_indices[channel_index]] < lower_cutoff, threshold_indices[channel_index]] = 0
-                    sample_matrix[sample_matrix[:, threshold_indices[channel_index]] > upper_cutoff, threshold_indices[channel_index]] = 0
-
-                # Check if the channel uses only lower cutoff thresholding
-                elif 'lower_cutoff' in threshold_mapping:
-                    lower_cutoff = threshold_mapping['lower_cutoff']
-                    #print(f"Applying lower cutoff of {lower_cutoff} for {channel}")
-                    sample_matrix[sample_matrix[:, threshold_indices[channel_index]] < lower_cutoff, threshold_indices[channel_index]] = 0
-
-                # Check if the channel uses upper cutoff in addition to cluster-based thresholding
-                elif 'upper_cutoff' in threshold_mapping:
-                    upper_cutoff = threshold_mapping['upper_cutoff']
-                    #print(f"Applying cluster-based + upper cutoff (of {upper_cutoff}) thresholding for {channel}")
-
-                    # Apply cluster-based thresholding
-                    for index, label in enumerate(sample_kmeans_labels[:, channel_index]):
-                        if label in threshold_mapping and threshold_mapping[label] == 'negative':
-                            sample_matrix[index, threshold_indices[channel_index]] = 0
-                
-                    # Apply upper cutoff thresholding
-                    sample_matrix[sample_matrix[:, threshold_indices[channel_index]] > upper_cutoff, threshold_indices[channel_index]] = 0
-
-                # Apply cluster-based thresholding (only clusters 0, 1, 2)
-                else:
-                    #print(f"Applying cluster-based thresholding for {channel}")
-                    for index, label in enumerate(sample_kmeans_labels[:, channel_index]):
-                        # If the mapping value is 'negative', set the matrix value to 0, If it’s positive, keep the original value (do nothing)
-                        if label in threshold_mapping and threshold_mapping[label] == 'negative':
-                            sample_matrix[index, threshold_indices[channel_index]] = 0
-
-        # Update the matrix for this sample
-        matrix[sample_indices] = sample_matrix
-        print('Matrix shape after processing:', matrix.shape)
-
-    #check how many 0s are in each column of thresholded channels
-    for channel_index, channel in enumerate(threshold_channel_names):
-        print(f'Channel: {channel}, Index {threshold_indices[channel_index]}, Number of 0s: {np.sum(matrix[:, threshold_indices[channel_index]] == 0)}')
-
-    return matrix
-
 def assign_heterogeneous_celltype(cell_types_df, matrix, thresholding_dict, channel_names):
     
     print("Cell types df shape: ", cell_types_df.shape)
@@ -531,9 +454,3 @@ def split_mixed_celltype(cell_type_name, cell_types_df, thresholded_matrix, chan
         print('')
 
     return cell_types_df, split_cells_stats
-            
-    
-
-
-
-
