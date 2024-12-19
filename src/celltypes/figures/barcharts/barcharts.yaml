@@ -1,0 +1,80 @@
+cell_types_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_12-2-24/celltypes/27_clusters
+
+custom_colors:
+  Tumor cells: skyblue
+  Endothelial cells: yellow
+  Neutrophils: orange
+  Helper T cells: lightgreen
+  Cytotoxic T cells: darkgreen
+  T cells (other): turquoise
+  B cells: royalblue
+  Immune cells (mixed): purple
+  Macrophages (CD163-): lightpink
+  Macrophages (CD163+): magenta
+  Stromal cells (undefined): lightgray
+
+response_status:
+  20231019-4475-1E_Scan2: Responsive
+  20231019-0413-3D_Scan1: Responsive
+  20230922-5689-1P_Scan1: Nonresponsive
+  20230908-8710-3H-1_Scan1: Nonresponsive
+  20230908-1872-4C-1_Scan2: Responsive
+  20230810_0488_3K_Scan1: Responsive
+  20230720-3660-2G-1_Scan1: Responsive
+
+recurrence_status:
+  20231019-4475-1E_Scan2: Recurrent
+  20231019-0413-3D_Scan1: Recurrent
+  20231012-9784-6H_Scan1: Nonrecurrent
+  20231012-9390-1I_Scan1: Nonrecurrent
+  20231012-3535-1T_Scan2: Nonrecurrent
+  20231003-5988-4I_Scan1: Nonrecurrent
+  20231003-2630-3P_Scan1: Nonrecurrent
+  20231003-1160-3S_Scan1: Nonrecurrent
+  20230922-7331-1H_Scan1: Nonrecurrent
+  20230922-5689-1P_Scan1: Recurrent
+  20230922-3869-1O_Scan1: Nonrecurrent
+  20230908-8710-3H-1_Scan1: Recurrent
+  20230908-6103-1J-1_Scan2: Nonrecurrent
+  20230908-1872-4C-1_Scan2: Recurrent
+  20230810_0488_3K_Scan1: Recurrent
+  20230720-4309-4G-1_Scan1: Nonrecurrent
+  20230720-3660-2G-1_Scan1: Recurrent
+
+grade_status:
+  20231019-4475-1E_Scan2: Grade 2
+  20231019-0413-3D_Scan1: Grade 1
+  20231012-9784-6H_Scan1: Grade 1
+  20231012-9390-1I_Scan1: Grade 1
+  20231012-3535-1T_Scan2: Grade 2
+  20231003-5988-4I_Scan1: Grade 2
+  20231003-2630-3P_Scan1: Grade 1
+  20231003-1160-3S_Scan1: Grade 1
+  20230922-7331-1H_Scan1: Grade 1
+  20230922-5689-1P_Scan1: Grade 1
+  20230922-3869-1O_Scan1: Grade 1
+  20230908-8710-3H-1_Scan1: Grade 2
+  20230908-6103-1J-1_Scan2: Grade 2
+  20230908-1872-4C-1_Scan2: Grade 2
+  20230810_0488_3K_Scan1: Grade 1
+  20230720-4309-4G-1_Scan1: Grade 1
+  20230720-3660-2G-1_Scan1: Grade 1
+
+stage_status:
+  20231019-4475-1E_Scan2: IIIC1
+  20231019-0413-3D_Scan1: IVB
+  20231012-9784-6H_Scan1: IIIA
+  20231012-9390-1I_Scan1: 1A
+  20231012-3535-1T_Scan2: 1A
+  20231003-5988-4I_Scan1: 1B
+  20231003-2630-3P_Scan1: 1A
+  20231003-1160-3S_Scan1: 1A
+  20230922-7331-1H_Scan1: 1A
+  20230922-5689-1P_Scan1: 1A
+  20230922-3869-1O_Scan1: 1A
+  20230908-8710-3H-1_Scan1: IIIC1
+  20230908-6103-1J-1_Scan2: IIIC1
+  20230908-1872-4C-1_Scan2: 1A
+  20230810_0488_3K_Scan1: IIIC1
+  20230720-4309-4G-1_Scan1: 1B
+  20230720-3660-2G-1_Scan1: 1B
