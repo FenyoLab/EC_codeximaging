@@ -11,11 +11,11 @@ def pca_by_marker_indiv(pca_path, marker_path, matrix_path, plot_dir, channel_na
     markers = np.load(marker_path)
     matrix = np.load(matrix_path)
     
-    channels_of_interest = ['CD4', 'CD20', 'CD163', 'CD68']
-    percentile_dict = find_first_positive_percentile(matrix, channels_of_interest, channel_names, plot_dir)
+    channels_of_interest = ['CD4', 'CD20', 'CD163', 'CD68', 'CD8', 'CD3e']
+    percentile_dict = find_first_positive_percentile(matrix_path, channels_of_interest, channel_names, plot_dir)
 
     for i, marker in enumerate(channel_names):
-        if marker != 'CD20':
+        if marker != 'CD8':
             continue 
         print(marker)
         marker_color = markers[:, i]
@@ -40,7 +40,7 @@ def pca_by_marker_indiv(pca_path, marker_path, matrix_path, plot_dir, channel_na
         plt.savefig(plot_file_path, bbox_inches='tight')
         plt.close()
 
-save_path = '/gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_11-14-24'
+save_path = '/gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_12-2-24'
 pca_coord_path = os.path.join(save_path, 'pca/coord.npy')
 marker_path = os.path.join(save_path, 'normalized_matrix/matrix_normal.npy')
 matrix_path = os.path.join(save_path, 'thresholded_matrix/matrix.npy')

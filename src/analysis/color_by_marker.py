@@ -7,6 +7,17 @@ import sys
 import pandas as pd
 from matplotlib.colors import LinearSegmentedColormap
 
+def main():
+    save_path = '/gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_12-2-24'
+    pca_path = os.path.join(save_path, 'pca/coord.npy')
+    marker_path = os.path.join(save_path, 'normalized_matrix/matrix_normal.npy')
+    matrix_path = os.path.join(save_path, 'thresholded_matrix/matrix.npy')
+    plot_dir = os.path.join(save_path, 'analysis_figures')
+    channel_names = ['DAPI', 'MPO', 'Ecadherin', 'PDL1', 'CD163', 'PD1', 'CD47', 'GAL3', 'PARP1', 'LAG3', 'CD4', 'PI3KCA', 'TIM3', 'CD68', 'ER', 'PR', 'MSH2', 'CD8', 'MSH6', 'bCatenin1', 'HLAABC', 'MLH1', 'Ki67', 'CD20', 'ARID1A', 'IFNG', 'CD31', 'PMS', 'CD44', 'PanCytokeratin', 'CD3e']
+
+    pca_by_marker(pca_path, marker_path, matrix_path, plot_dir, channel_names)
+
+
 def pca_by_marker(pca_path, marker_path, matrix_path, plot_dir, channel_names = None, cols = 5):
 
     if os.path.exists(f'{plot_dir}/pca_by_marker.png'):  #if clustering already exists, skip
@@ -22,7 +33,7 @@ def pca_by_marker(pca_path, marker_path, matrix_path, plot_dir, channel_names = 
     #fig, axes = subplots(rows, cols, figsize=(cols * 50, rows * 40), font_size = 5)
     fig, axes = plt.subplots(rows, cols, figsize=(cols * 5, rows * 4))
 
-    channels_of_interest = ['CD4', 'CD20', 'CD163', 'CD68'] 
+    channels_of_interest = ['CD4', 'CD20', 'CD163', 'CD68', 'CD8', 'CD3e'] 
     percentile_dict = find_first_positive_percentile(matrix_path, channels_of_interest, channel_names, plot_dir)
 
     for marker_i, channel in enumerate(channel_names):
@@ -39,6 +50,9 @@ def pca_by_marker(pca_path, marker_path, matrix_path, plot_dir, channel_names = 
             print(f'upper percentile: {percentile_dict[channel]}')
             percentiles = [5, percentile_dict[channel]]
         elif channel == 'CD20':
+            print(f'upper percentile: {percentile_dict[channel]}')
+            percentiles = [5, percentile_dict[channel]]
+        elif channel == 'CD8':
             print(f'upper percentile: {percentile_dict[channel]}')
             percentiles = [5, percentile_dict[channel]]
         else:
@@ -88,15 +102,6 @@ def find_first_positive_percentile(matrix_path, channels_of_interest, channel_na
         json.dump(percentile_dict, json_file, indent=4)
 
     return percentile_dict
-
-save_path = '/gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_11-14-24'
-pca_path = os.path.join(save_path, 'pca/coord.npy')
-marker_path = os.path.join(save_path, 'normalized_matrix/matrix_normal.npy')
-matrix_path = os.path.join(save_path, 'thresholded_matrix/matrix.npy')
-plot_dir = os.path.join(save_path, 'analysis_figures')
-channel_names = ['DAPI', 'MPO', 'Ecadherin', 'PDL1', 'CD163', 'PD1', 'CD47', 'GAL3', 'PARP1', 'LAG3', 'CD4', 'PI3KCA', 'TIM3', 'CD68', 'ER', 'PR', 'MSH2', 'CD8', 'MSH6', 'bCatenin1', 'HLAABC', 'MLH1', 'Ki67', 'CD20', 'ARID1A', 'IFNG', 'CD31', 'PMS', 'CD44', 'PanCytokeratin', 'CD3e']
-
-pca_by_marker(pca_path, marker_path, matrix_path, plot_dir, channel_names)
 
 def umap_by_marker(umap_path, marker_path, plot_dir, channel_names = None, cols = 5):
     
