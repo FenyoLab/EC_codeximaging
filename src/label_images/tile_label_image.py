@@ -5,22 +5,16 @@ import zarr
 import tifffile as tiff
 import matplotlib.pyplot as plt
 
-def main():
-    data_dir = '/gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_256/data'
-    label_images_dir = '/gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/label_images'
-
-    create_tile_label_image(data_dir, label_images_dir)
-
-def create_tile_label_image(data_dir, label_images_dir, tiles_dir='tiles_11_13', tile_size=256):
+def create_tile_label_image(data_dir, label_images_dir, tiles_dir, tile_size=256):
 
     for sample in os.listdir(label_images_dir):
         sample_dir = os.path.join(label_images_dir, sample)
         image_dir = os.path.join(data_dir, sample)
         
         label_image_path = os.path.join(sample_dir, 'tile_label_image.tiff') #if matrix already exists, skip
-        #if os.path.exists(label_image_path):
-        #    print(f'Tile label image already exists for sample {sample}, skipping')
-        #    continue
+        if os.path.exists(label_image_path):
+            print(f'Tile label image already exists for sample {sample}, skipping')
+            continue
         
         print(f"Processing sample: {sample}")
 
@@ -39,6 +33,3 @@ def create_tile_label_image(data_dir, label_images_dir, tiles_dir='tiles_11_13',
         tiff.imwrite(label_image_path, label_image)
         print(f'Tile label image created for sample {sample}')
         print('')
-
-if __name__ == '__main__':
-    main()

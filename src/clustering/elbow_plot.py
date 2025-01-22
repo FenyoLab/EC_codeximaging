@@ -3,19 +3,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 
-def main(): 
-    out_dir = '/gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_12-2-24'
-    normalized_matrix_dir = 'normalized_matrix'
-    elbow_save_path = os.path.join(out_dir, 'clustering')
-
-    # Load the data
-    matrix = np.load(os.path.join(out_dir, normalized_matrix_dir, 'matrix_normal_filtered_markers.npy'))
-    cell_sample_names = np.load(os.path.join(out_dir, normalized_matrix_dir, 'cell_sample_names_filtered.npy'))
-    print(matrix.shape, cell_sample_names.shape)
-
-    subset_matrix = get_data_subset(cell_sample_names, matrix)
-    create_elbow_plot(subset_matrix, elbow_save_path)
-
 def get_data_subset(cell_sample_names, matrix):
     """
     Extracts 10% of rows for each unique sample from the matrix.
@@ -60,6 +47,3 @@ def create_elbow_plot(matrix, save_path):
 
     plt.savefig(f'{save_path}/subset_elbow_plot.png')
     plt.close()
-
-if __name__ == "__main__":
-    main()
