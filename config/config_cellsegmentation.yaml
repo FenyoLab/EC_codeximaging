@@ -47,54 +47,71 @@ omero_image_dict:
   20230720-3660-2G-1_Scan1: 
     image_id: 597642
     roi_id: 1231686
+    tile_roi_id: 1234393
   20230720-4309-4G-1_Scan1: 
     image_id: 597780
     roi_id: 1231684
+    tile_roi_id: 1234391
   20230810_0488_3K_Scan1: 
     image_id: 601969 
     roi_id: 1231674
+    tile_roi_id: 1234381
   20230908-1872-4C-1_Scan2: 
     image_id: 611987
     roi_id: 1231682
+    tile_roi_id: 1234389
   20230908-6103-1J-1_Scan2: 
     image_id: 612242
     roi_id: 1231679
+    tile_roi_id: 1234386
   20230908-8710-3H-1_Scan1: 
     image_id: 611002
     roi_id: 1231688
+    tile_roi_id: 1234395
   20230922-3869-1O_Scan1: 
     image_id: 614300
     roi_id: 1231675
+    tile_roi_id: 1234382
   20230922-5689-1P_Scan1: 
     image_id: 615142
     roi_id: 1231678
+    tile_roi_id: 1234385
   20230922-7331-1H_Scan1: 
     image_id: 615004
     roi_id: 1231689
+    tile_roi_id: 1234396
   20231003-1160-3S_Scan1: 
     image_id: 617515
     roi_id: 1231685
+    tile_roi_id: 1234392
   20231003-2630-3P_Scan1: 
     image_id: 617353
     roi_id: 1231681
+    tile_roi_id: 1234388
   20231003-5988-4I_Scan1: 
     image_id: 616589
     roi_id: 1231680
+    tile_roi_id: 1234387
   20231012-3535-1T_Scan2: 
     image_id: 619802
     roi_id: 1231676
+    tile_roi_id: 1234383
   20231012-9390-1I_Scan1: 
     image_id: 619234
     roi_id: 1231690
+    tile_roi_id: 1234397
   20231012-9784-6H_Scan1: 
     image_id: 618713
     roi_id: 1231677
+    tile_roi_id: 1234384
   20231019-0413-3D_Scan1: 
     image_id: 620931
     roi_id: 1231683
+    tile_roi_id: 1234390
   20231019-4475-1E_Scan2: 
     image_id: 620498
     roi_id: 1231687
+    tile_roi_id: 1234394
 
 #lineage markers cluster identity  
 lineage_markers_cluster_dict:
