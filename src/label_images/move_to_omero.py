@@ -5,7 +5,7 @@ import subprocess
 import sys
 import getpass
 
-def move_label_images_to_omero(label_images_dir, base_dir, image_id_dict, label_image_dir_name = "label_images", date = None):
+def move_label_images_to_omero(label_images_dir, base_dir, image_id_dict, label_image_dir_name = "label_images", image_name = 'label_image', date = None):
 
     password = os.getenv('PASSWORD')
     kerberosid = os.getenv('KERBEROSID')
@@ -35,8 +35,8 @@ def move_label_images_to_omero(label_images_dir, base_dir, image_id_dict, label_
         os.chdir(sample_dir)
         print(f"Current directory: {os.getcwd()}")
 
-        original_label_image_path = os.path.join(label_images_dir, sample, 'label_image.zarr')
-        copied_label_image_path = os.path.join(research_drive_dir, label_image_dir_name, sample_dir, 'label_image.zarr')
+        original_label_image_path = os.path.join(label_images_dir, sample, f'{image_name}.zarr')
+        copied_label_image_path = os.path.join(research_drive_dir, label_image_dir_name, sample_dir, f'{image_name}.zarr')
         backup_path = os.path.join(research_drive_dir, label_image_dir_name, sample_dir, 'backup.zarr')
         
         if os.path.exists(backup_path):
@@ -46,8 +46,8 @@ def move_label_images_to_omero(label_images_dir, base_dir, image_id_dict, label_
             copy_directory(copied_label_image_path, backup_path)
             print(f"Label image successfully copied with backup for {sample}")
 
-        labels_path = os.path.join('label_image.zarr', '0', 'labels')
-        zero_path = os.path.join('label_image.zarr', '0', '0')
+        labels_path = os.path.join(f'{image_name}.zarr', '0', 'labels')
+        zero_path = os.path.join(f'{image_name}.zarr', '0', '0')
 
         # Check which directory exists and perform actions accordingly
         if os.path.isdir(labels_path):
@@ -55,7 +55,6 @@ def move_label_images_to_omero(label_images_dir, base_dir, image_id_dict, label_
         
         elif os.path.isdir(zero_path):
             print(f"Uploading label image with roi_converter_ngff")
-            image_name = f'cell_label_image'
             image_id = image_id_dict.get(sample, {}).get('image_id')
             print(sample, image_id)
             server_directory = os.path.join('/omero', base_dir, label_image_dir_name, sample_dir)
@@ -90,9 +89,9 @@ def omero_login(user, password, server="omero.nyumc.org", port_number=4064):
         print("OMERO login failed.")
         sys.exit("Terminating script due to unsuccessful login.")
 
-def run_roi_converter_ngff(image_id, name, kerberosid, password, server_directory, server="omelpdcpvm01.nyumc.org", port=4064):
+def run_roi_converter_ngff(image_id, image_name, kerberosid, password, server_directory, server="omelpdcpvm01.nyumc.org", port=4064):
 
-    command = f'ROI_Converter_NGFF -i label_image.zarr/0 -r {image_id} -n {name} --server {server} --port {port} --user {kerberosid} --server_directory {server_directory} --password {password}'
+    command = f'ROI_Converter_NGFF -i {image_name}.zarr/0 -r {image_id} -n {image_name} --server {server} --port {port} --user {kerberosid} --server_directory {server_directory} --password {password}'
     subprocess.call(command, shell=True, executable='/bin/bash')
     del password 
 
