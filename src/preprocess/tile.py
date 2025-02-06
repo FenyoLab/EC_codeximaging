@@ -9,6 +9,14 @@ from skimage.draw import polygon
 from PIL import Image
 import pdb
 import cv2
+from shapely.geometry.polygon import Polygon
+from shapely.geometry import Polygon, Point
+from shapely.geometry import MultiPolygon
+from tqdm import tqdm
+from shapely.strtree import STRtree
+import matplotlib.pyplot as plt
+from skimage.draw import polygon, polygon_perimeter
+
 
 def gen_tiles(data_path: str, slideID: str, tiles_dir: None, ref_channel: int, ROI_path:str, tile_size: int = 128, selected_region: str = None, ROI_rm: str = None) -> np.ndarray:
     
@@ -29,17 +37,11 @@ def gen_tiles(data_path: str, slideID: str, tiles_dir: None, ref_channel: int, R
     if isinstance(slide, str):
         if os.path.exists(slide):
             slide = zarr.load(slide)
-            #slide = zarr.open(slide, mode='r')
-            #slide = da.from_zarr(slide)
-            #pdb.set_trace()
-            # Convert the Dask array slice into a NumPy array using compute
-            #slide = slide[ref_channel].compute()  # This will load the data into memory as NumPy
         else:
             print(f'{slideID} zarr file DNE')
             return None
-    #pdb.set_trace()
+
     # Generate and save thumbnail
-    thumbnail_path = os.path.join(output_path, f"thumbnail_{tile_size // 4}.png")
     thumbnail = gen_thumbnail(slide, slideID, ref_channel, scaling_factor=tile_size // 4)
     save_img(output_path, 'thumbnail', tile_size // 4, thumbnail)
     
@@ -53,14 +55,17 @@ def gen_tiles(data_path: str, slideID: str, tiles_dir: None, ref_channel: int, R
         print("Mask doesn't exist, generating it and saving")
         mask = gen_mask(thumbnail, slideID)
         save_img(output_path, 'mask', tile_size // 4, mask)
-    
+
     # Generate and save tile positions
     positions_file = os.path.join(output_path, f'positions_{tile_size}.csv')
     if not os.path.exists(positions_file):
         print("Positions and mask with artifacts removed don't exist, generating it and saving")
         positions, tile_img = gen_tile_positions(output_path, slide, mask, mask_path, slideID, selected_region,ROI_rm, ROI_path, tile_size=tile_size)
-        #check if positions and/or tile_img are None type (not generated)... if so, move to the next sample! 
         save_img(output_path, 'tile_img', tile_size, tile_img)
+           
+        positions = gen_tile_positions_subset(ROI_path, selected_region, positions, slideID, ROI_rm, tile_size)
+        #check if positions and/or tile_img are None type (not generated)... if so, move to the next sample! 
+        
         #save_img(output_path, 'mask', tile_size // 4, mask_artifactsrm)
         with open(positions_file, 'w') as f:
             f.write(' ,h,w\n')
@@ -117,7 +122,6 @@ def gen_tile_positions(output_path: str, slide: zarr, mask: np.ndarray, mask_pat
     grid_height, grid_width = slide_height // tile_size, slide_width // tile_size
     #assert abs(mask.shape[0] / mask.shape[1] - slide_height / slide_width) < 0.01
     
-
      # Original dimensions
     original_width = slide.shape[1]
     original_height = slide.shape[2]
@@ -133,82 +137,82 @@ def gen_tile_positions(output_path: str, slide: zarr, mask: np.ndarray, mask_pat
     #pdb.set_trace()
 
     # List all files in the ROI directory
-    all_files = os.listdir(ROI_path)
+    #all_files = os.listdir(ROI_path)
 
-    # Filter files containing slideID in their name
-    ROIfile_name = [f for f in all_files if slideID in f]
-    #pdb.set_trace()
-    if not ROIfile_name:
-        print(f"No ROI file found containing the slideID: {slideID}")
-        print("Generating positions on entire slide and not removing artifacts")
+    # # Filter files containing slideID in their name
+    # ROIfile_name = [f for f in all_files if slideID in f]
+    # #pdb.set_trace()
+    # if not ROIfile_name:
+    #     print(f"No ROI file found containing the slideID: {slideID}")
+    #     print("Generating positions on entire slide and not removing artifacts")
         
-    else:
-        print(ROIfile_name)
-        ROIs_path = os.path.join(ROI_path, ROIfile_name[0])
-        ROIdata = pd.read_csv(ROIs_path)
+    # else:
+    #     print(ROIfile_name)
+    #     ROIs_path = os.path.join(ROI_path, ROIfile_name[0])
+    #     ROIdata = pd.read_csv(ROIs_path)
  
-        if selected_region is not None: #this is the region we want to include in the analysis
-            #first keep only endometrium!! 
-            #data_subset = ROIdata.loc[ROIdata.Text == selected_region] 
-            data_subset = ROIdata.loc[ROIdata.Text.isin(selected_region)]
+    #     if selected_region is not None: #this is the region we want to include in the analysis
+    #         #first keep only endometrium!! 
+    #         #data_subset = ROIdata.loc[ROIdata.Text == selected_region] 
+    #         data_subset = ROIdata.loc[ROIdata.Text.isin(selected_region)]
     
-            data_subset_coords = data_subset['all_points']
+    #         data_subset_coords = data_subset['all_points']
 
-            data_subset_coords_list = data_subset_coords.str.split(' ', expand=False)
+    #         data_subset_coords_list = data_subset_coords.str.split(' ', expand=False)
         
-            ROIs_list = []
-            for ROI in data_subset_coords_list:
-                #print(ROI)
-                # Convert the list of strings to a NumPy array of floats (if it's in the format 'x,y')
-                data_subset_coords_array = np.array([list(map(float, coord.split(','))) for coord in ROI])
-                data_subset_coords_array_rescaled = data_subset_coords_array * [scale_x, scale_y]
-                ROIs_list.append(data_subset_coords_array_rescaled)
+    #         ROIs_list = []
+    #         for ROI in data_subset_coords_list:
+    #             #print(ROI)
+    #             # Convert the list of strings to a NumPy array of floats (if it's in the format 'x,y')
+    #             data_subset_coords_array = np.array([list(map(float, coord.split(','))) for coord in ROI])
+    #             data_subset_coords_array_rescaled = data_subset_coords_array * [scale_x, scale_y]
+    #             ROIs_list.append(data_subset_coords_array_rescaled)
 
-            for ROI in ROIs_list:
-                clipped_indices_x = np.clip(ROI[:,0].astype(int), 0, mask.shape[1] - 1)
-                clipped_indices_y = np.clip(ROI[:,1].astype(int), 0, mask.shape[0] - 1)
-                # Create a boolean mask where the mask values are not 0
-                not_zero_mask = mask[clipped_indices_y, clipped_indices_x] != 0
-                # Update mask only where the original values were not 0
-                mask[clipped_indices_y[not_zero_mask], clipped_indices_x[not_zero_mask]] = 1
-                cc, rr = polygon(clipped_indices_x, clipped_indices_y)
-                not_zero_mask_rr_cc = mask[rr, cc] != 0
-                mask[rr[not_zero_mask_rr_cc], cc[not_zero_mask_rr_cc]] = 1
+    #         for ROI in ROIs_list:
+    #             clipped_indices_x = np.clip(ROI[:,0].astype(int), 0, mask.shape[1] - 1)
+    #             clipped_indices_y = np.clip(ROI[:,1].astype(int), 0, mask.shape[0] - 1)
+    #             # Create a boolean mask where the mask values are not 0
+    #             not_zero_mask = mask[clipped_indices_y, clipped_indices_x] != 0
+    #             # Update mask only where the original values were not 0
+    #             mask[clipped_indices_y[not_zero_mask], clipped_indices_x[not_zero_mask]] = 1
+    #             cc, rr = polygon(clipped_indices_x, clipped_indices_y)
+    #             not_zero_mask_rr_cc = mask[rr, cc] != 0
+    #             mask[rr[not_zero_mask_rr_cc], cc[not_zero_mask_rr_cc]] = 1
 
-            mask[mask == 255] = 0
-            img = (np.clip(mask, 0, 1) * 255).astype(np.uint8)
-            save_img(output_path, 'mask_selected_region', tile_size // 4, img)
-        else:
-            print("no selected region... utilizing entire slide for analysis")
+    #         mask[mask == 255] = 0
+    #         img = (np.clip(mask, 0, 1) * 255).astype(np.uint8)
+    #         save_img(output_path, 'mask_selected_region', tile_size // 4, img)
+    #     else:
+    #         print("no selected region... utilizing entire slide for analysis")
 
-        #Now remove Artifacts!!!
-        data_subset = ROIdata.loc[ROIdata.Text.isin(ROI_rm)]
+    #     #Now remove Artifacts!!!
+    #     data_subset = ROIdata.loc[ROIdata.Text.isin(ROI_rm)]
 
-        #create a new column indicating whether or not the row was an integer
-        # ROIdata['Text_numeric'] = pd.to_numeric(ROIdata['Text'], errors='coerce')
-        # #these are just the artifact ROIs!!
-        # data_subset = ROIdata.dropna(subset=['Text_numeric'])
+    #     #create a new column indicating whether or not the row was an integer
+    #     # ROIdata['Text_numeric'] = pd.to_numeric(ROIdata['Text'], errors='coerce')
+    #     # #these are just the artifact ROIs!!
+    #     # data_subset = ROIdata.dropna(subset=['Text_numeric'])
 
-        data_subset_coords = data_subset['all_points']
-        data_subset_coords_list = data_subset_coords.str.split(' ', expand=False)
+    #     data_subset_coords = data_subset['all_points']
+    #     data_subset_coords_list = data_subset_coords.str.split(' ', expand=False)
         
-        ROIs_list = []
-        for ROI in data_subset_coords_list:
-            #print(ROI)
-            # Convert the list of strings to a NumPy array of floats (if it's in the format 'x,y')
-            data_subset_coords_array = np.array([list(map(float, coord.split(','))) for coord in ROI])
-            data_subset_coords_array_rescaled = data_subset_coords_array * [scale_x, scale_y]
-            ROIs_list.append(data_subset_coords_array_rescaled)
+    #     ROIs_list = []
+    #     for ROI in data_subset_coords_list:
+    #         #print(ROI)
+    #         # Convert the list of strings to a NumPy array of floats (if it's in the format 'x,y')
+    #         data_subset_coords_array = np.array([list(map(float, coord.split(','))) for coord in ROI])
+    #         data_subset_coords_array_rescaled = data_subset_coords_array * [scale_x, scale_y]
+    #         ROIs_list.append(data_subset_coords_array_rescaled)
 
-        for ROI in ROIs_list:
-            clipped_indices_x = np.clip(ROI[:,0].astype(int), 0, mask.shape[1] - 1)
-            clipped_indices_y = np.clip(ROI[:,1].astype(int), 0, mask.shape[0] - 1)
-            mask[clipped_indices_y, clipped_indices_x] = 0
-            cc, rr = polygon(clipped_indices_x, clipped_indices_y)
-            mask[rr, cc] = 0
+    #     for ROI in ROIs_list:
+    #         clipped_indices_x = np.clip(ROI[:,0].astype(int), 0, mask.shape[1] - 1)
+    #         clipped_indices_y = np.clip(ROI[:,1].astype(int), 0, mask.shape[0] - 1)
+    #         mask[clipped_indices_y, clipped_indices_x] = 0
+    #         cc, rr = polygon(clipped_indices_x, clipped_indices_y)
+    #         mask[rr, cc] = 0
         
-        img = (np.clip(mask, 0, 1) * 255).astype(np.uint8)
-        save_img(output_path, 'mask_artrm', tile_size // 4, img)
+    #     img = (np.clip(mask, 0, 1) * 255).astype(np.uint8)
+    #     save_img(output_path, 'mask_artrm', tile_size // 4, img)
 
     mask_pixellevel = resize(mask, (grid_height, grid_width), order=0, anti_aliasing=False)
     tile_img = np.where(mask_pixellevel > threshold, 1, 0)
@@ -216,3 +220,107 @@ def gen_tile_positions(output_path: str, slide: zarr, mask: np.ndarray, mask_pat
     positions = np.array(list(zip(hs, ws))) * tile_size
 
     return positions, tile_img
+
+def gen_tile_positions_subset(ROI_path, selected_region, positions, slideID, ROI_rm, tile_size):
+
+    #List all files in the ROI directory
+    all_files = os.listdir(ROI_path)
+
+    # Filter files containing slideID in their name
+    ROIfile_name = [f for f in all_files if slideID in f]
+    if not ROIfile_name:
+        print(f"No ROI file found containing the slideID: {slideID}")
+        print("Generating positions on entire slide and not removing artifacts")
+        return positions
+        
+    else:
+        print(ROIfile_name)
+        ROIs_path = os.path.join(ROI_path, ROIfile_name[0])
+        ROIdata = pd.read_csv(ROIs_path)
+
+        tile_positions = []  # Initialize once, outside the loop
+        coords_to_keep = []
+        coords_to_rm = []
+ 
+        if selected_region is not None: #this is the region we want to include in the analysis
+            
+            #first keep only tumor regions!! 
+            data_selected_region = ROIdata.loc[ROIdata.Text.isin(selected_region)]
+    
+            data_selected_region_coords = data_selected_region['all_points']
+            data_selected_region_coords_list = data_selected_region_coords.str.split(' ', expand=False)
+
+            for idx, ROI_selected_region in enumerate(data_selected_region_coords_list):
+
+                #print(idx)
+                # Convert the list of strings to a NumPy array of floats (if it's in the format 'x,y')
+                data_subset_coords_array = np.array([list(map(float, coord.split(','))) for coord in ROI_selected_region])
+                
+                 # Extract x and y coordinates
+                x_vals, y_vals = data_subset_coords_array[:, 0], data_subset_coords_array[:, 1] #x,y [w,h]
+
+                # Define your polygon with coordinates
+                roi_polygon = Polygon(zip(y_vals, x_vals)) #flip the coordinates so it matches the ]positions file which is [h,w]
+
+                coords_to_keep.append(roi_polygon)
+            
+        if ROI_rm is not None:
+            
+            #Now remove Artifacts!!!
+            data_ROI_rm = ROIdata.loc[ROIdata.Text.isin(ROI_rm)]
+            data_ROI_rm_coords = data_ROI_rm ['all_points']
+            data_ROI_rm_coords_list = data_ROI_rm_coords.str.split(' ', expand=False)
+            
+            for idx,ROI_rm in enumerate(data_ROI_rm_coords_list):
+                #print(idx)
+                # Convert the list of strings to a NumPy array of floats (if it's in the format 'x,y')
+                data_subset_coords_array = np.array([list(map(float, coord.split(','))) for coord in ROI_rm])
+                
+                 # Extract x and y coordinates
+                x_vals, y_vals = data_subset_coords_array[:, 0], data_subset_coords_array[:, 1] #x,y [w,h]
+
+                # Define your polygon with coordinates
+                roi_polygon = Polygon(zip(y_vals, x_vals)) #flip the coordinates so it matches the ]positions file which is [h,w]
+
+                coords_to_rm.append(roi_polygon)
+
+        # Use STRtree for faster spatial queries
+        keep_tree = STRtree(coords_to_keep)
+        rm_tree = STRtree(coords_to_rm)
+        
+        for row in tqdm(positions):
+            #top_left_x, top_left_y = row['w'], row['h']  # Assuming the CSV has 'h' and 'w' columns for positions
+            top_left_x, top_left_y = row[0], row[1] #we want to keep the same format as the positions file [h,w]
+            # For each position, check if the top-left coordinates of the tile fall within the ROI
+            tile_polygon = Polygon([
+                (top_left_x, top_left_y),
+                (top_left_x + tile_size, top_left_y),
+                (top_left_x + tile_size, top_left_y + tile_size),
+                (top_left_x, top_left_y + tile_size)
+            ])
+            
+            # Query the spatial index to find any polygons that overlap the tile polygon's bounding box
+            overlapping_polygons_keep = keep_tree.query(tile_polygon)
+            overlapping_polygons_rm = rm_tree.query(tile_polygon)
+
+            if len(overlapping_polygons_keep) != 0:
+                # Check for actual intersection (whether they overlap)
+                for idx in overlapping_polygons_keep:
+                    poly = coords_to_keep[idx]
+                    if tile_polygon.intersects(poly):  # Checks if they overlap
+                        #print(f'Tile polygon intersects with polygon: {poly}')
+                        tile_positions.append([top_left_x, top_left_y])
+            if len(overlapping_polygons_rm) != 0:
+                # Check for actual intersection (whether they overlap)
+                for idx in overlapping_polygons_rm:
+                    poly = coords_to_rm[idx]
+                    if tile_polygon.intersects(poly):
+                        try:    
+                            tile_positions.remove([top_left_x, top_left_y])  # Only remove if present
+                            #print(f'Tile at position ({top_left_x}, {top_left_y}) intersects with remove ROI')
+                        except ValueError:
+                            pass  # If position is not in the list, do nothing
+
+        return np.array(tile_positions)       
+
+     
