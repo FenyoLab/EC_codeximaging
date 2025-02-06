@@ -3,6 +3,8 @@
 import os
 import zarr
 import pandas as pd
+import numpy as np  
+import pdb
 
 def load_zarr_w_channel(root_path, sample_name):
     sample_zarr_path = f'{root_path}/{sample_name}/data.zarr'
@@ -22,9 +24,9 @@ def read_channel_file(channel_file):
     else:
         channels = None
     # Print in a nice format
-    print('Reading image channels:')
-    for channel in enumerate(channels):
-        print(f'{channel[0]}: {channel[1]}')
+    #print('Reading image channels:')
+    # for channel in enumerate(channels):
+    #     print(f'{channel[0]}: {channel[1]}')
     return channels
 
 def get_file_name_list(root_path, file_ext):
@@ -65,3 +67,21 @@ def visualize_color_yaml_file(color_file, save_path):
     # Dark background for entire figure
     fig.patch.set_facecolor('black')
     fig.savefig(color_save_path, bbox_inches='tight')
+
+def vis_multiplex(data, channels, color_dict, strength_dict = None):
+    pdb.set_trace()
+    # Initialize black image
+    image = np.zeros((data.shape[1], data.shape[2], 3))
+    data = np.array(data).astype(np.float32) / 255
+    for channel, color in color_dict.items():
+        channel_index = np.where(np.array(channels) == channel)[0][0]
+        if strength_dict:
+            strength = strength_dict[channel]
+        else:
+            strength = 1
+        # From 0-255 to 0-1
+        color = np.array(color) / 255
+        for channel_i in range(3):
+            image[:, :, channel_i] = np.maximum(image[:, :, channel_i], image[channel_i] * color[channel_i] * strength)
+    image = (image * 255).clip(0, 255).astype(np.uint8)
+    return image

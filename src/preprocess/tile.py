@@ -58,7 +58,7 @@ def gen_tiles(data_path: str, slideID: str, tiles_dir: None, ref_channel: int, R
 
     # Generate and save tile positions
     positions_file = os.path.join(output_path, f'positions_{tile_size}.csv')
-    if os.path.exists(positions_file):
+    if not os.path.exists(positions_file):
         print("Positions and mask with artifacts removed don't exist, generating it and saving")
         positions, tile_img = gen_tile_positions(output_path, slide, mask, mask_path, slideID, selected_region,ROI_rm, ROI_path, tile_size=tile_size)
         save_img(output_path, 'tile_img', tile_size, tile_img)
@@ -231,6 +231,7 @@ def gen_tile_positions_subset(ROI_path, selected_region, positions, slideID, ROI
     if not ROIfile_name:
         print(f"No ROI file found containing the slideID: {slideID}")
         print("Generating positions on entire slide and not removing artifacts")
+        return positions
         
     else:
         print(ROIfile_name)
@@ -251,7 +252,7 @@ def gen_tile_positions_subset(ROI_path, selected_region, positions, slideID, ROI
 
             for idx, ROI_selected_region in enumerate(data_selected_region_coords_list):
 
-                print(idx)
+                #print(idx)
                 # Convert the list of strings to a NumPy array of floats (if it's in the format 'x,y')
                 data_subset_coords_array = np.array([list(map(float, coord.split(','))) for coord in ROI_selected_region])
                 
@@ -271,7 +272,7 @@ def gen_tile_positions_subset(ROI_path, selected_region, positions, slideID, ROI
             data_ROI_rm_coords_list = data_ROI_rm_coords.str.split(' ', expand=False)
             
             for idx,ROI_rm in enumerate(data_ROI_rm_coords_list):
-                print(idx)
+                #print(idx)
                 # Convert the list of strings to a NumPy array of floats (if it's in the format 'x,y')
                 data_subset_coords_array = np.array([list(map(float, coord.split(','))) for coord in ROI_rm])
                 
