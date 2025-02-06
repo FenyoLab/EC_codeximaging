@@ -38,7 +38,7 @@ def split_by_sample(segmentation_data_dir, label_images_dir):
         sample_metadata = sample_metadata.reset_index(drop=True)
         sample_metadata.index += 1
         sample_metadata['label_image_cell_index'] = sample_metadata.index
-        sample_metadata_subset = sample_metadata[['cell_label', 'tile_x', 'tile_y', 'slide_id', 'label_image_cell_index']]
+        sample_metadata_subset = sample_metadata[['cell_label', 'tile_h', 'tile_w', 'slide_id', 'label_image_cell_index']]
 
         np.save(sample_masks_path, sample_masks)
         np.save(os.path.join(sample_dir, 'tile_positions.npy'), sample_tile_positions)

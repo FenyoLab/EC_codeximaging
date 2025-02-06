@@ -12,6 +12,7 @@ def clustering_analysis(save_path, n_clusters, channel_names, lineage_markers, o
     pca_coord_path = os.path.join(save_path, 'pca/coord.npy')
     sample_names_path = os.path.join(save_path, 'normalized_matrix/cell_sample_names_filtered.npy')
     normal_matrix_path = os.path.join(save_path, 'normalized_matrix/matrix_normal.npy')
+    thresholded_matrix_path = os.path.join(save_path, 'thresholded_matrix/matrix.npy')
     kmeans_labels_path = os.path.join(save_path, f'clustering/{n_clusters}_clusters/kmeans_labels.npy')
     cluster_centroids_df_path = os.path.join(output_path_bycluster, 'cluster_centroids_df.csv')
 
@@ -20,5 +21,5 @@ def clustering_analysis(save_path, n_clusters, channel_names, lineage_markers, o
     sample_per_cluster.proportion_per_cluster(sample_names_path, kmeans_labels_path, output_path_bycluster, n_clusters)
     
     color_by_sample.pca_by_sample(pca_coord_path, sample_names_path, output_path, n_clusters)
-    color_by_marker.pca_by_marker(pca_coord_path, normal_matrix_path, output_path, channel_names)
+    color_by_marker.pca_by_marker(pca_coord_path, normal_matrix_path, thresholded_matrix_path, output_path, channel_names)
     color_by_cluster.pca_by_cluster(pca_coord_path, kmeans_labels_path, output_path_bycluster, n_clusters)

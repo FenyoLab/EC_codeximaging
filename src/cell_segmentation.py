@@ -26,7 +26,7 @@ def get_cell_segmentations(data_path, tile_size, batch_size, tiles_dir, save_pat
     dataloader = load_dataset(data_path, tile_size, batch_size, tiles_dir, tissue_type='ecad-_')
     get_matrix(dataloader, save_path, num_biomarkers, channel_names, tissue_type='ecad-_')
 
-    combine_matrices(save_path, data_path)
+    combine_matrices(save_path, data_path, tiles_dir)
 
     end_time = time.time()  # Record the end time
     elapsed_time = end_time - start_time
@@ -94,7 +94,7 @@ def get_matrix(dataloader, output_path, num_biomarkers, channel_names, tissue_ty
         tile_positions.extend([loc.numpy() for loc in locations]) 
         
         img_transposed = img.permute(0, 2, 3, 1).numpy()
-        print("Nuclear and membrane marker indices:", "DAPI-", channel_names.index('DAPI'), "Ecadherin-", channel_names.index('Ecadherin'))
+        #print("Nuclear and membrane marker indices:", "DAPI-", channel_names.index('DAPI'), "Ecadherin-", channel_names.index('Ecadherin'))
         img_filtered = img_transposed[:, :, :, [channel_names.index('DAPI'), channel_names.index('Ecadherin')]] 
         
         if tissue_type == 'ecad+_':
@@ -113,13 +113,13 @@ def get_matrix(dataloader, output_path, num_biomarkers, channel_names, tissue_ty
             
         for i, tile in enumerate(img_transposed):
             slide_id = labels[i] #cell level
-            tile_x = locations[i][0].item() #cell level
-            tile_y = locations[i][1].item() #cell level
+            tile_h = locations[i][0].item() #cell level
+            tile_w = locations[i][1].item() #cell level
                 
             prediction = np.squeeze(segmentation_prediction[i])
 
             intensity_matrix, metadata = get_tile_intensity(tile, prediction, num_biomarkers,
-                                                            slide_id, tile_x, tile_y, tissue_type)
+                                                            slide_id, tile_h, tile_w, tissue_type)
             #add tissue type 
             #print("intensity_matrix shape: ", intensity_matrix.shape)
             #print("metadata length: ", len(metadata))
@@ -145,7 +145,7 @@ def get_matrix(dataloader, output_path, num_biomarkers, channel_names, tissue_ty
     np.save(os.path.join(tissue_output_path, 'cell_sample_names.npy'), np.array(cell_sample_names, dtype=str))
 
 
-def get_tile_intensity(image, prediction, num_biomarkers, slide_id, tile_x, tile_y, tissue_type):
+def get_tile_intensity(image, prediction, num_biomarkers, slide_id, tile_h, tile_w, tissue_type):
     '''gets information needed on a cell level for each tile
     returns this information for the mean intensity matrix + metadata'''
     from skimage.measure import regionprops
@@ -174,8 +174,8 @@ def get_tile_intensity(image, prediction, num_biomarkers, slide_id, tile_x, tile
             "area": region.area,
             "perimeter": region.perimeter,
             "axis_ratio": axis_ratio,
-            "tile_x": int(tile_x),
-            "tile_y": int(tile_y),
+            "tile_h": int(tile_h),           
+            "tile_w": int(tile_w),
             "slide_id": slide_id,
             "tissue_type": tissue_type
         }
@@ -196,7 +196,7 @@ def load_data(prefix, output_path):
         'segmentation_masks': np.load(os.path.join(base_path, 'segmentation_masks.npy')),
     }
 
-def order_data(matrix, metadata, cell_sample_names, data_path):
+def order_data(matrix, metadata, cell_sample_names, tiles_dir, data_path):
     print("Original data shapes:")
     print(f"Matrix: {matrix.shape}, Metadata: {metadata.shape}, Cell sample names: {cell_sample_names.shape}")
 
@@ -220,36 +220,36 @@ def order_data(matrix, metadata, cell_sample_names, data_path):
         sample_metadata = sample_metadata.reset_index(drop=True)
 
         # Load tile positions for that sample
-        tile_positions_path = os.path.join(data_path, sample, 'tiles/positions_256.csv')
+        tile_positions_path = os.path.join(data_path, sample, tiles_dir, 'positions_256.csv')
         sample_tile_positions = pd.read_csv(tile_positions_path)
         
-        print('First row of metadata (before reordering):', sample_metadata[['tile_x', 'tile_y']].head(1))
+        print('First row of metadata (before reordering):', sample_metadata[['tile_h', 'tile_w']].head(1))
         print('First 5 rows of tile positions file:', sample_tile_positions[['h', 'w']].head())
 
-        # Create tuples for (tile_x, tile_y) and (h, w) for ordering
-        sample_metadata['tile_xy'] = list(zip(sample_metadata['tile_x'], sample_metadata['tile_y']))
+        # Create tuples for (tile_h, tile_w) and (h, w) for ordering
+        sample_metadata['tile_hw'] = list(zip(sample_metadata['tile_h'], sample_metadata['tile_w']))
         sample_tile_positions['hw'] = list(zip(sample_tile_positions['h'], sample_tile_positions['w']))
 
         # Ensure all tile positions in metadata are found in the tile_positions file
-        assert set(sample_metadata['tile_xy']).issubset(set(sample_tile_positions['hw'])), \
+        assert set(sample_metadata['tile_hw']).issubset(set(sample_tile_positions['hw'])), \
             f"Tile positions mismatch for sample {sample}"
 
         # Use Categorical to align metadata ordering with tile_positions
-        sample_metadata['tile_xy'] = pd.Categorical(
-            sample_metadata['tile_xy'],
+        sample_metadata['tile_hw'] = pd.Categorical(
+            sample_metadata['tile_hw'],
             categories=sample_tile_positions['hw'],
             ordered=True
         )
 
         # Sort metadata and reorder the matrix accordingly
-        ordered_metadata = sample_metadata.sort_values(['tile_xy', 'cell_label'])
+        ordered_metadata = sample_metadata.sort_values(['tile_hw', 'cell_label'])
         ordered_matrix = sample_matrix[ordered_metadata.index.to_numpy()]
 
         # Verify that the matrix and metadata are still aligned
         assert ordered_matrix.shape[0] == ordered_metadata.shape[0], \
             f"Mismatch after reordering for sample {sample}"
 
-        print('First row of reordered metadata:', ordered_metadata[['tile_x', 'tile_y']].head(1))
+        print('First row of reordered metadata:', ordered_metadata[['tile_h', 'tile_w']].head(1))
 
         # Append the reordered data to the containers
         reordered_matrix_list.append(ordered_matrix)
@@ -258,7 +258,7 @@ def order_data(matrix, metadata, cell_sample_names, data_path):
     
     # Concatenate all reordered data at once for better performance
     reordered_matrix = np.vstack(reordered_matrix_list)
-    reordered_metadata = pd.concat(reordered_metadata_list, ignore_index=True).drop(columns=['tile_xy'])
+    reordered_metadata = pd.concat(reordered_metadata_list, ignore_index=True).drop(columns=['tile_hw'])
     reordered_cell_sample_names = np.hstack(reordered_cell_sample_names_list)
 
     # Ensure final shapes match expected dimensions
@@ -279,7 +279,7 @@ def save_data(output_path, matrix, metadata, cell_sample_names, tile_positions, 
     np.save(os.path.join(output_path, 'tile_sample_names.npy'), tile_sample_names)
     np.save(os.path.join(output_path, 'segmentation_masks.npy'), segmentation_masks)
 
-def combine_matrices(output_path, data_path):
+def combine_matrices(output_path, data_path, tiles_dir):
     # Load data
     ecad_pos = load_data('ecad+_', output_path)
     ecad_neg = load_data('ecad-_', output_path)
@@ -292,7 +292,7 @@ def combine_matrices(output_path, data_path):
     tile_sample_names = np.concatenate([ecad_pos['tile_sample_names'], ecad_neg['tile_sample_names']])
     segmentation_masks = np.concatenate([ecad_pos['segmentation_masks'], ecad_neg['segmentation_masks']])
 
-    reordered_matrix, reordered_metadata, reordered_cell_sample_names = order_data(matrix, metadata, cell_sample_names, data_path)
+    reordered_matrix, reordered_metadata, reordered_cell_sample_names = order_data(matrix, metadata, cell_sample_names, tiles_dir, data_path)
 
     # Save combined data
     save_data(output_path, reordered_matrix, reordered_metadata, reordered_cell_sample_names, tile_positions, tile_sample_names, segmentation_masks)
