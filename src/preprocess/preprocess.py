@@ -2,13 +2,12 @@ import os
 from tqdm import tqdm
 import utils.helper as utils
 import pdb
-from utils import helper
 from types import SimpleNamespace
 
 def run_preprocess(config_yaml):
     
     # Load the configuration
-    run_config = helper.load_yaml_file(config_yaml)
+    run_config = utils.load_yaml_file(config_yaml)
     config = SimpleNamespace(**run_config)
 
     data_path = f'{config.output_path}/data'
