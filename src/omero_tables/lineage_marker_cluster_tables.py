@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn.cluster import KMeans
 from src.omero_tables.create_omero_table import create_omero_table
+import pdb
 
 
 def lineage_marker_cluster_tables(segmentation_data_dir, channel_names, thresholding_channel_names, omero_dict, save_dir, n_clusters, table_name):   
