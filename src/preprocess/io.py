@@ -36,10 +36,6 @@ def tiff_to_zarr(input_path, output_path, file_name, input_ext, common_channels,
     # Read the TIFF file... this works if the data is not too big!
     with tifffile.TiffFile(input_file) as tif:
         img_data = tif.asarray().astype(int)
-    
-    
-     # Check if channels matches the number of channels given
-    assert img_data.shape[0] == len(channels), f'Number of channels in the file does not match the number of channels provided. File has {len(img_data.shape)} channels and {len(channels)} channels were provided.'
 
     with open(output_channel_file, 'w') as file:
         file.write('channel,marker\n')
