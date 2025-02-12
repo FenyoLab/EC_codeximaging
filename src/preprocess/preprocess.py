@@ -43,8 +43,6 @@ def zarr_conversion(common_channel_file, input_path, input_ext, output_path, dat
     print('Converting tiff to zarr')
     for file_name in tqdm(file_names):
         print(file_name)
-        #if file_name == '20231003-0413-3C_Scan1' or file_name == '20230805_Fenyo_4G_Scan3' or file_name == "20230806_Fenyo_2G_Scan2":
-            #continue
         io.tiff_to_zarr(input_path, data_path, file_name, input_ext, common_channels)
     # Plot global QC histogram
     #print('Generating global QC histogram')
