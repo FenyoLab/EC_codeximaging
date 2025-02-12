@@ -15,16 +15,14 @@ from utils import helper
 
 def main():
     #import config
-    config_yaml= 'config/config_cellsegmentation.yaml'
+    config_yaml= '../../config/config_cellsegmentation.yaml'
     run_config = helper.load_yaml_file(config_yaml)
     config = SimpleNamespace(**run_config)
 
-    annotations_dir = '/gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/registration/annotations'
+    annotations_dir = '/gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/preprocessing/registration/annotations'
     omero_dict = config.omero_image_dict
 
     for sample in os.listdir(annotations_dir):
-        if sample != '20230908-8710-3H-1_Scan1':
-            continue
         print(f'Processing sample {sample}')
         sample_dir = os.path.join(annotations_dir, sample)
         os.chdir(sample_dir)

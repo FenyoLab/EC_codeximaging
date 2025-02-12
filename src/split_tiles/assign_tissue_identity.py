@@ -11,9 +11,6 @@ def new_positions(mean_data_dir, clusters_dir, positions_dir, tiles_dir, tile_si
         sample_positions_path = os.path.join(positions_dir, sample, tiles_dir)
         os.makedirs(sample_positions_path, exist_ok=True)
         positions_df_path = os.path.join(sample_positions_path, f'ecad+_positions_{tile_size}.csv')
-        if os.path.exists(positions_df_path):
-            print(f'Tissue identities already assigned for sample {sample}')
-            continue
         
         print(f'Processing samples {sample}')
 
