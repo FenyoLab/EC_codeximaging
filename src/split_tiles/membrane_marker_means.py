@@ -3,20 +3,21 @@ import sys
 import torch
 import numpy as np
 from types import SimpleNamespace
+import matplotlib.pyplot as plt
 
 sys.path.append('../..')
 from utils import helper
 
-def get_top5_means_ecadherin(data_path, tile_size, batch_size, tiles_dir, channel_names, mean_data_dir):
+def get_top5_means_membrane_marker(data_path, tile_size, batch_size, tiles_dir, channel_names, mean_data_dir, membrane_marker_name = 'Ecadherin'):
 
     top5_mean_data_path=os.path.join(mean_data_dir, 'top5percent_means.npy')
     if os.path.exists(top5_mean_data_path):
-        print('Means of top 5 percent of ecadherin tiles already exist, skipping')
+        print('Means of top 5 percent of membrane marker tiles already exist, skipping')
         return
 
     os.makedirs(mean_data_dir, exist_ok=True)
-    ecadherin_index = channel_names.index('Ecadherin')
-    print('Ecadherin index:', ecadherin_index)
+    membrane_marker_index = channel_names.index(membrane_marker_name)
+    print(f'{membrane_marker_name} index:', membrane_marker_index)
     #load dataset
     dataloader = load_dataset(data_path, tile_size, batch_size, tiles_dir)
 
@@ -29,7 +30,7 @@ def get_top5_means_ecadherin(data_path, tile_size, batch_size, tiles_dir, channe
             print("Batch index:", idx)
         
         img, (labels, locations) = batch
-        img_filtered = img[:, ecadherin_index, :, :] 
+        img_filtered = img[:, membrane_marker_index, :, :] 
 
         means = []
         for n in range(len(img_filtered)): #iterate through each batch
