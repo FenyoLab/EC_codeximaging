@@ -8,10 +8,8 @@ def biomarker_mean_tables(segmentation_data_dir, channel_names, omero_dict, save
 
     matrix = np.load(os.path.join(segmentation_data_dir, 'matrix.npy'))
     cell_sample_names = np.load(os.path.join(segmentation_data_dir, 'cell_sample_names.npy'))
-    
-    unique_samples = np.unique(cell_sample_names)
 
-    for sample in unique_samples:
+    for sample in np.unique(cell_sample_names):
         os.makedirs(os.path.join(save_dir, sample), exist_ok =True)
         table_path = os.path.join(save_dir, sample, f'{table_name}.csv')
         if os.path.exists(table_path):
