@@ -216,3 +216,4 @@ main_biomarker_tables_to_omero_spatial.py
 config/config_cellphenotyping.yaml
 main_biomarker_tables_mh.py
 main_cell_phenotyping_analysis.py
+src/spatial_analysis/
