@@ -22,7 +22,7 @@ def threshold_markers(data_dir, channel_names, threshold_dict, threshold_channel
         print(f'Sample matrix shape: {sample_matrix.shape}')
 
         # Load K-means labels for the sample
-        sample_kmeans_labels_df = pd.read_csv(os.path.join(data_dir, 'thresholding_clusters', sample, f'lineage_markers_{n_clusters}clusters.csv')) 
+        sample_kmeans_labels_df = pd.read_csv(os.path.join(data_dir, 'omero_tables', sample, f'lineage_markers_{n_clusters}clusters.csv')) 
         sample_kmeans_labels = sample_kmeans_labels_df[threshold_channel_names].to_numpy()
         print(f'Sample kmeans labels: {sample_kmeans_labels.shape}')
 

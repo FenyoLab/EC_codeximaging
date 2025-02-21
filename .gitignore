@@ -171,6 +171,7 @@ cython_debug/
 *.tiff
 *.qptiff
 *.out
+*.err
 *.code-workspace
 
 out*/

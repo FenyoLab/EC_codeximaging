@@ -218,7 +218,7 @@ def assign_final_celltypes(celltypes_dir, mixed_celltypes, percentile_thresholds
     print(cell_types_df['cell_type'].value_counts())
 
     cell_types_df.to_csv(os.path.join(celltypes_dir, 'cell_types.csv'))
-    print(f"Cell types assigned and saved at {os.path.join(celltypes_dir, 'cell_types_final.csv')}")
+    print(f"Cell types assigned and saved at {os.path.join(celltypes_dir, 'cell_types.csv')}")
 
 if __name__ == '__main__':
     main()

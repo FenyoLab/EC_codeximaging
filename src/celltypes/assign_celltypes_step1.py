@@ -51,6 +51,14 @@ def assign_celltypes(save_path, thresholded_matrix_path, n_clusters_celltypes, c
     print('Cell types after assigning heterogeneous cell types:')
     print(cell_types_df['cell_type'].value_counts())
 
+    #if no B cell cluster, create one
+    #cell_types_df, B_cells_stats = add_B_cells(cell_types_df, thresholded_matrix, thresholding_dict, channel_names)
+    #print('Cell types after creating B cell type:')
+    #print(cell_types_df['cell_type'].value_counts())
+
+    #with open(os.path.join(output_path, 'B_cells_stats.json'), 'w') as json_file:
+    #    json.dump(B_cells_stats, json_file, indent=4)
+
     cell_type_stats = {}
     
     for cell_type_name in ['B cells', 'Helper T cells', 'Cytotoxic T cells', 'T cells (other)', 'Macrophages', 'Stromal cells (undefined)']:
@@ -124,6 +132,45 @@ def assign_heterogeneous_celltype(cell_types_df, matrix, thresholding_dict, chan
         }
         
     return cell_types_df, heterogenous_cells_stats 
+
+def add_B_cells(cell_types_df, matrix, thresholding_dict, channel_names):
+
+    print("Cell types df shape: ", cell_types_df.shape)
+    print("Cell matrix shape: ", matrix.shape)
+    print('CD20 channel index:', channel_names.index('CD20'))
+
+    assert cell_types_df.shape[0] == matrix.shape[0], "Number of cells in cell types df and matrix do not match"
+
+    B_cells_stats = {}
+
+    for sample in np.unique(cell_types_df['slide_id'].values):
+        print(f'Processing sample {sample}')
+        #get heterogeneous cells for each sample
+        sample_cells = cell_types_df[(cell_types_df['slide_id'] == sample)]
+        print(f"Sample cells shape: {sample_cells.shape}")
+        print(f"Sample indices spread: {sample_cells.index[0]} ... {sample_cells.index[-1]}")
+
+        sample_arr = matrix[sample_cells.index - 1, channel_names.index('CD20')]
+        print(f"Sample arr shape: {sample_arr.shape}")
+
+        assert sample_cells.shape[0] == sample_arr.shape[0], "Number of cells in heterogenous cell types df and matrix do not match"
+
+        cd20_threshold = thresholding_dict.get(sample, {}).get('CD20', {}).get('lower_cutoff', None)
+
+        if cd20_threshold is not None:
+            # Identify cells above the threshold
+            b_cell_mask = sample_arr > cd20_threshold
+            
+            # Rename those cells as "B cell"
+            cell_types_df.loc[sample_cells.index[b_cell_mask], 'cell_type'] = 'B cells'
+        
+        B_cells_stats[sample] = {
+            'cd20_threshold': int(cd20_threshold),
+            'num_cells': int(sample_cells.shape[0]),
+            'num_b_cells': int(np.sum(b_cell_mask))
+        }
+    
+    return cell_types_df, B_cells_stats
 
 def split_mixed_celltype(cell_type_name, cell_types_df, thresholded_matrix, channel_names):
 
