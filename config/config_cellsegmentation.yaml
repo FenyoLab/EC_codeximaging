@@ -1,13 +1,13 @@
 #basic input parameters
 tile_size: 256
 batch_size: 64
-tiles_dir: tiles_11_13
+tiles_dir: tiles
 num_channels: 31
 n_clusters_celltypes: 27
 n_clusters_preprocessing: 3
 n_clusters_thresholding: 3
 random_state: 2024
-
+membrane_marker: 'Ecadherin'
 channel_names: ['DAPI', 'MPO', 'Ecadherin', 'PDL1', 'CD163', 'PD1', 'CD47', 'GAL3', 'PARP1', 'LAG3', 'CD4', 'PI3KCA', 'TIM3', 'CD68', 'ER', 'PR', 'MSH2', 'CD8', 'MSH6', 'bCatenin1', 'HLAABC', 'MLH1', 'Ki67', 'CD20', 'ARID1A', 'IFNG', 'CD31', 'PMS', 'CD44', 'PanCytokeratin', 'CD3e']
 
 lineage_markers: ['DAPI', 'MPO', 'Ecadherin', 'CD163', 'CD4', 'CD68', 'CD8', 'CD20', 'CD31', 'CD3e'] 
@@ -18,10 +18,13 @@ samples_to_remove: null
 #base paths
 segmentation_data_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/raw_segmentation_data
 label_images_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/label_images
-out_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_12-2-24
+out_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_2-11-25
 
 data_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_256/data
 qptiff_data_dir: /gpfs/data/proteomics/data/Endometrial_mIF/qptiff_dat
+
+new_data_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_256/data_new
+new_segmentation_data_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/raw_segmentation_data_new
 
 #specific paths: main_cell_segmentation
 tiles_split_dir: tiles_split
@@ -56,10 +59,13 @@ omero_image_dict:
     image_id: 601969 
     roi_id: 1231674
     tile_roi_id: 1234381
+  20230812_4475_1Q_Scan1:
+    image_id: 602107
+    roi_id: 1235209
   20230908-1872-4C-1_Scan2: 
     image_id: 611987
-    roi_id: 1231682
-    tile_roi_id: 1234389
+    roi_id: 1235250 #1231682 - old roi
+    #tile_roi_id: 1234389
   20230908-6103-1J-1_Scan2: 
     image_id: 612242
     roi_id: 1231679
@@ -80,6 +86,12 @@ omero_image_dict:
     image_id: 615004
     roi_id: 1231689
     tile_roi_id: 1234396
+  20230922-7331-1J_Scan1:
+    image_id: 615474
+    roi_id: 1235251
+  20231003-0413-3C_Scan1:
+    image_id: 615971
+    roi_id: 1235249
   20231003-1160-3S_Scan1: 
     image_id: 617515
     roi_id: 1231685
@@ -188,30 +200,69 @@ lineage_markers_cluster_dict:
       2: positive 
     DAPI: 7.45
     Ecadherin: 4
-  20230908-1872-4C-1_Scan2: 
+  20230812_4475_1Q_Scan1:
     MPO: 
     CD163: 
-      0: negative
-      1: negative
-      2: positive
+      lower_cutoff: 3
     CD4: 
       0: negative
       1: negative
       2: positive
     CD68: 
-      lower_cutoff: 35
-    CD8:
+      lower_cutoff: 30
+    CD8: 
+      lower_cutoff: 8
+    CD20: 
+      lower_cutoff: 14
+    CD3e: 
+      lower_cutoff: 24
+    DAPI: 10.5
+    Ecadherin: 2.5
+  20230908-1872-4C-1_Scan2: 
+    MPO: 
+    CD163: 
       0: negative
       1: positive
-      2: positive 
-    CD20: 
+      2: negative
+    CD4: 
       0: negative
       1: negative
-      2: negative
-    CD3e: 
-      lower_cutoff: 7 
+      2: positive
+    CD68: 
+      0: negative
+      1: negative
+      2: positive
+    CD8:
+      lower_cutoff: 10
+    CD20: 
+      lower_cutoff: 20
+    CD3e:  
+      lower_cutoff: 15
     DAPI: 8.5
-    Ecadherin: 4
+    Ecadherin: 4 
+    #MPO: 
+    #CD163: 
+    #  0: negative
+    #  1: negative
+    #  2: positive
+    #CD4: 
+    #  0: negative
+    #  1: negative
+    #  2: positive
+    #CD68: 
+    #  lower_cutoff: 35
+    #CD8:
+    #  0: negative
+    #  1: positive
+    #  2: positive 
+    #CD20: 
+    #  0: negative
+    #  1: negative
+    #  2: negative
+    #CD3e: 
+    #  lower_cutoff: 7 
+    #DAPI: 8.5
+    #Ecadherin: 4
   20230908-6103-1J-1_Scan2: 
     MPO: 
     CD163: 
@@ -329,6 +380,47 @@ lineage_markers_cluster_dict:
       2: positive
     DAPI: 7.5
     Ecadherin: 6
+  20230922-7331-1J_Scan1:
+    MPO: 
+    CD163: 
+      lower_cutoff: 5
+    CD4: 
+      0: negative
+      1: positive
+      2: negative
+    CD68: 
+      lower_cutoff: 30
+    CD8: 
+      lower_cutoff: 18
+    CD20: 
+      lower_cutoff: 12
+    CD3e: 
+      lower_cutoff: 25
+    DAPI: 7.5
+    Ecadherin: 5
+  20231003-0413-3C_Scan1:
+    MPO: 
+    CD163: 
+      lower_cutoff: 4
+      upper_cutoff: 20
+    CD4: 
+      0: negative
+      1: positive
+      2: negative
+    CD68: 
+      lower_cutoff: 50
+    CD8: 
+      0: negative
+      1: positive
+      2: positive
+    CD20: 
+      lower_cutoff: 5
+    CD3e: 
+      0: negative
+      1: positive
+      2: positive
+    DAPI: 8
+    Ecadherin: 7
   20231003-1160-3S_Scan1: 
     MPO: 
     CD163: 

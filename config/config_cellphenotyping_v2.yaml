@@ -1,0 +1,177 @@
+#for the new data
+
+n_clusters_celltypes: 27
+channel_names: ['DAPI', 'MPO', 'Ecadherin', 'PDL1', 'CD163', 'PD1', 'CD47', 'GAL3', 'PARP1', 'LAG3', 'CD4', 'PI3KCA', 'TIM3', 'CD68', 'ER', 'PR', 'MSH2', 'CD8', 'MSH6', 'bCatenin1', 'HLAABC', 'MLH1', 'Ki67', 'CD20', 'ARID1A', 'IFNG', 'CD31', 'PMS', 'CD44', 'PanCytokeratin', 'CD3e']
+all_channel_names: ['DAPI', 'MPO', 'pJAK1', 'E-cadherin', 'PD-L1', 'CD163', 'PD-1', 'CD56', 'CD47', 'MAL', 'GAL3', 'PARP1', 'LAG3', 'Her2', 'CD4', 'PI3KCA', 'TIM3', 'CD68', 'ER', 'PR', 'MSH2', 'CD8', 'STAT1', 'MSH6', 'b-Catenin1', 'HLA-ABC', 'MLH1', 'Ki67', 'CD20', 'ARID1A', 'IFNG', 'CD31', 'PMS', 'CD44', 'Pan-Cytokeratin', 'CD3e']
+mixed_celltypes : ['CD4+ and CD8+ T cells', 'CD20+ and CD3e+ cells', 'CD20+ and CD4+ cells', 'CD20+ and CD8+ cells']
+mixed_celltype_markers: ['CD4', 'CD8', 'CD20', 'CD3e']
+
+out_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_2-11-25
+segmentation_data_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/raw_segmentation_data_new
+data_dir: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_256/data_new
+
+thresholded_dir: thresholded_matrix
+clustering_dir: clustering
+celltypes_dir: celltypes
+
+cluster_celltype_labels:
+  0: Artifact
+  1: Heterogeneous
+  2: Heterogeneous
+  3: Tumor cells
+  4: Tumor cells
+  5: Endothelial cells
+  6: Neutrophils
+  7: Cytotoxic T cells
+  8: Tumor cells
+  9: Macrophages
+  10: Tumor cells
+  11: Helper T cells
+  12: Macrophages
+  13: Tumor cells
+  14: Heterogeneous
+  15: Heterogeneous
+  16: Tumor cells
+  17: Endothelial cells
+  18: Tumor cells
+  19: Cytotoxic T cells
+  20: Tumor cells
+  21: Endothelial cells
+  22: T cells (other)
+  23: Tumor cells
+  24: Helper T cells
+  25: Neutrophils
+  26: Tumor cells
+  27: Tumor cells
+
+marker_celltype_dict:
+  B cells: CD20
+  Cytotoxic T cells: CD8
+  Helper T cells: CD4
+  T cells (other): CD3e
+
+lineage_markers_cluster_dict:
+  20230812_4475_1Q_Scan1:
+    MPO: 
+    CD163: 
+      lower_cutoff: 3
+    CD4: 
+      0: negative
+      1: negative
+      2: positive
+    CD68: 
+      lower_cutoff: 30
+    CD8: 
+      lower_cutoff: 8
+    CD20: 
+      lower_cutoff: 14
+    CD3e: 
+      lower_cutoff: 24
+    DAPI: 10.5
+    Ecadherin: 2.5
+  20230908-1872-4C-1_Scan2: 
+    MPO: 
+    CD163: 
+      0: negative
+      1: positive
+      2: negative
+    CD4: 
+      0: negative
+      1: negative
+      2: positive
+    CD68: 
+      0: negative
+      1: negative
+      2: positive
+    CD8:
+      lower_cutoff: 10
+    CD20: 
+      lower_cutoff: 20
+    CD3e:  
+      lower_cutoff: 15
+    DAPI: 8.5
+    Ecadherin: 4 
+  20230922-7331-1J_Scan1:
+    MPO: 
+    CD163: 
+      lower_cutoff: 5
+    CD4: 
+      0: negative
+      1: positive
+      2: negative
+    CD68: 
+      lower_cutoff: 30
+    CD8: 
+      lower_cutoff: 18
+    CD20: 
+      lower_cutoff: 12
+    CD3e: 
+      lower_cutoff: 25
+    DAPI: 7.5
+    Ecadherin: 5
+  20231003-0413-3C_Scan1:
+    MPO: 
+    CD163: 
+      lower_cutoff: 4
+      upper_cutoff: 20
+    CD4: 
+      0: negative
+      1: positive
+      2: negative
+    CD68: 
+      lower_cutoff: 50
+    CD8: 
+      0: negative
+      1: positive
+      2: positive
+    CD20: 
+      lower_cutoff: 5
+    CD3e: 
+      0: negative
+      1: positive
+      2: positive
+    DAPI: 8
+    Ecadherin: 7
+
+stricter_threshold_dict:
+  20230812_4475_1Q_Scan1:
+    CD20: 15
+    CD8: 17
+    CD4: 21
+    CD3e: 30
+  20230908-1872-4C-1_Scan2: 
+    CD20: 20 
+    CD8: 18
+    CD4: 24
+    CD3e: 30 
+  20230922-7331-1J_Scan1:
+    CD20: 25
+    CD8: 30
+    CD4: 25
+    CD3e: 35
+  20231003-0413-3C_Scan1: 
+    CD20: 6
+    CD8: 25
+    CD4: 23
+    CD3e: 19
+
+percentile_thresholds_dict:
+  20230812_4475_1Q_Scan1:
+    CD8: 50
+    CD4: 25
+    CD20: 75
+  20230908-1872-4C-1_Scan2: 
+    CD8: 50
+    CD4: 25
+    CD20: 5
+    CD3e: 100
+  20230922-7331-1J_Scan1:
+    CD8: 50
+    CD4: 25
+    CD20: 50
+    CD3e: 75
+  20231003-0413-3C_Scan1: 
+    CD8: 50 
+    CD4: 25
+    CD20: 75
+    CD3e: 75
