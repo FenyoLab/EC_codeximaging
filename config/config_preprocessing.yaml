@@ -1,24 +1,25 @@
-#parameters needed for run_preprocessing 
+# parameters needed for run_preprocessing 
 data_type: WSI # 'TMA' or 'WSI'
-input_ext: qptiff #qptiff
+input_ext: tiff # qptiff or tiff
 input_pixel_per_um: 2
 inference_window_um: 64
-input_path: /gpfs/data/proteomics/data/Endometrial_mIF/qptiff_dat #dir with qptiffs 
-output_path: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_256 #this is where the output dir will be
-common_channel_file: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_256/data/common_channels_cell_segmentation.txt
-selected_channel_color_file: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_256/selected_channels_w_color.yaml
-channel_strength_file: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_256/channels_vis_strength.yaml
+input_path: /gpfs/data/proteomics/home/ca3261/cervical_cancer/sample_imgs/Image/697372/Export # dir with input 
+output_path: /gpfs/data/proteomics/home/ca3261/sample_out/out_256 # this is where the output dir will be
+common_channel_file: /gpfs/data/proteomics/home/ca3261/sample_out/out_256/data/common_channels_cell_segmentation.txt
+selected_channel_color_file: /gpfs/data/proteomics/home/ca3261/sample_out/out_256/selected_channels_w_color.yaml
+channel_strength_file: /gpfs/data/proteomics/home/ca3261/sample_out/out_256/channels_vis_strength.yaml
 
-ref_channel: 0 #this is the channel to be used for background removal!!
-#this is the path to the annotations folder. These are all the ROIs drawn on the qptiff images. 
-#utilize EC_codeximaging/src/preprocess/ExportROIsFromOmero.js to download annotations from all the qptiffs on omero
-ROI_path: /gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/preprocessing/qptiff_annotations # ROI for removing unwanted regions.. change this to annotations path. I need to edit my script so it goes into each slide to get annotations 
+ref_channel: 0 # this is the channel to be used for background removal!!
+# this is the path to the annotations folder. These are all the ROIs drawn on the qptiff images. 
+# utilize /src/preprocess/ExportROIsFromOmero.js to download annotations from all the qptiffs on omero
+ROI_path: /gpfs/data/proteomics/home/ca3261/sample_out/roi_annotations # ROI for removing unwanted regions.. change this to annotations path. I need to edit my script so it goes into each slide to get annotations 
 selected_region: 
   - tumor # regions for visualization 
   - TUMOR 
   - tumor involving adenomyosis 
+  - tumor-test
 ROI_rm: #these are the names of the ROIs you want to remove 
   - artifact  
 
-tiles_dir: tiles_11_13 #this is the name of the tiles directory
+tiles_dir: tiles_test # this is the name of the tiles directory
 

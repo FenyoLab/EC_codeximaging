@@ -1,3 +1,5 @@
+import sys
+sys.path.append('/gpfs/data/proteomics/projects/miniconda3/envs/canvas/lib/python3.10/site-packages') 
 import os
 import zarr
 import numpy as np
@@ -62,6 +64,7 @@ def gen_tiles(data_path: str, slideID: str, tiles_dir: None, ref_channel: int, R
         print("Positions and mask with artifacts removed don't exist, generating it and saving")
         positions, tile_img = gen_tile_positions(output_path, slide, mask, mask_path, slideID, selected_region,ROI_rm, ROI_path, tile_size=tile_size)
         save_img(output_path, 'tile_img', tile_size, tile_img)
+        print(f'Generated {len(positions)} positions before filtering')
            
         positions = gen_tile_positions_subset(ROI_path, selected_region, positions, slideID, ROI_rm, tile_size)
         #check if positions and/or tile_img are None type (not generated)... if so, move to the next sample! 
@@ -133,86 +136,6 @@ def gen_tile_positions(output_path: str, slide: zarr, mask: np.ndarray, mask_pat
     # Calculate scaling factors
     scale_x = mask_width / original_width
     scale_y = mask_height / original_height
-
-    #pdb.set_trace()
-
-    # List all files in the ROI directory
-    #all_files = os.listdir(ROI_path)
-
-    # # Filter files containing slideID in their name
-    # ROIfile_name = [f for f in all_files if slideID in f]
-    # #pdb.set_trace()
-    # if not ROIfile_name:
-    #     print(f"No ROI file found containing the slideID: {slideID}")
-    #     print("Generating positions on entire slide and not removing artifacts")
-        
-    # else:
-    #     print(ROIfile_name)
-    #     ROIs_path = os.path.join(ROI_path, ROIfile_name[0])
-    #     ROIdata = pd.read_csv(ROIs_path)
- 
-    #     if selected_region is not None: #this is the region we want to include in the analysis
-    #         #first keep only endometrium!! 
-    #         #data_subset = ROIdata.loc[ROIdata.Text == selected_region] 
-    #         data_subset = ROIdata.loc[ROIdata.Text.isin(selected_region)]
-    
-    #         data_subset_coords = data_subset['all_points']
-
-    #         data_subset_coords_list = data_subset_coords.str.split(' ', expand=False)
-        
-    #         ROIs_list = []
-    #         for ROI in data_subset_coords_list:
-    #             #print(ROI)
-    #             # Convert the list of strings to a NumPy array of floats (if it's in the format 'x,y')
-    #             data_subset_coords_array = np.array([list(map(float, coord.split(','))) for coord in ROI])
-    #             data_subset_coords_array_rescaled = data_subset_coords_array * [scale_x, scale_y]
-    #             ROIs_list.append(data_subset_coords_array_rescaled)
-
-    #         for ROI in ROIs_list:
-    #             clipped_indices_x = np.clip(ROI[:,0].astype(int), 0, mask.shape[1] - 1)
-    #             clipped_indices_y = np.clip(ROI[:,1].astype(int), 0, mask.shape[0] - 1)
-    #             # Create a boolean mask where the mask values are not 0
-    #             not_zero_mask = mask[clipped_indices_y, clipped_indices_x] != 0
-    #             # Update mask only where the original values were not 0
-    #             mask[clipped_indices_y[not_zero_mask], clipped_indices_x[not_zero_mask]] = 1
-    #             cc, rr = polygon(clipped_indices_x, clipped_indices_y)
-    #             not_zero_mask_rr_cc = mask[rr, cc] != 0
-    #             mask[rr[not_zero_mask_rr_cc], cc[not_zero_mask_rr_cc]] = 1
-
-    #         mask[mask == 255] = 0
-    #         img = (np.clip(mask, 0, 1) * 255).astype(np.uint8)
-    #         save_img(output_path, 'mask_selected_region', tile_size // 4, img)
-    #     else:
-    #         print("no selected region... utilizing entire slide for analysis")
-
-    #     #Now remove Artifacts!!!
-    #     data_subset = ROIdata.loc[ROIdata.Text.isin(ROI_rm)]
-
-    #     #create a new column indicating whether or not the row was an integer
-    #     # ROIdata['Text_numeric'] = pd.to_numeric(ROIdata['Text'], errors='coerce')
-    #     # #these are just the artifact ROIs!!
-    #     # data_subset = ROIdata.dropna(subset=['Text_numeric'])
-
-    #     data_subset_coords = data_subset['all_points']
-    #     data_subset_coords_list = data_subset_coords.str.split(' ', expand=False)
-        
-    #     ROIs_list = []
-    #     for ROI in data_subset_coords_list:
-    #         #print(ROI)
-    #         # Convert the list of strings to a NumPy array of floats (if it's in the format 'x,y')
-    #         data_subset_coords_array = np.array([list(map(float, coord.split(','))) for coord in ROI])
-    #         data_subset_coords_array_rescaled = data_subset_coords_array * [scale_x, scale_y]
-    #         ROIs_list.append(data_subset_coords_array_rescaled)
-
-    #     for ROI in ROIs_list:
-    #         clipped_indices_x = np.clip(ROI[:,0].astype(int), 0, mask.shape[1] - 1)
-    #         clipped_indices_y = np.clip(ROI[:,1].astype(int), 0, mask.shape[0] - 1)
-    #         mask[clipped_indices_y, clipped_indices_x] = 0
-    #         cc, rr = polygon(clipped_indices_x, clipped_indices_y)
-    #         mask[rr, cc] = 0
-        
-    #     img = (np.clip(mask, 0, 1) * 255).astype(np.uint8)
-    #     save_img(output_path, 'mask_artrm', tile_size // 4, img)
 
     mask_pixellevel = resize(mask, (grid_height, grid_width), order=0, anti_aliasing=False)
     tile_img = np.where(mask_pixellevel > threshold, 1, 0)
