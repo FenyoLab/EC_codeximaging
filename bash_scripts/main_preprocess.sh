@@ -9,7 +9,7 @@
 #SBATCH --time=4:00:00
 #SBATCH --gres=gpu:4
 
-# source ~/.bashrc
+# source ~/.bashrc - note make specific script so that it is bashrc independent
 source /gpfs/share/apps/miniconda3/gpu/4.9.2/etc/profile.d/conda.sh
 conda activate /gpfs/data/proteomics/projects/miniconda3/envs/canvas
 conda info
