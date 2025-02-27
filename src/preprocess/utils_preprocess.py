@@ -1,8 +1,6 @@
 import importlib
 import os
-#import torch
 import numpy as np
-
 
 def convert_to_float(image):
     if image.max() > 1:
@@ -24,7 +22,6 @@ def rescale_image(image, percentile=(2, 98)):
 def convert_to_hed(image, enhance=[0, 1, 2], percentile=None):
     from skimage.color import rgb2hed, hed2rgb
     hed = rgb2hed(image[:, :, 0:3])
-    #h = hed[:, :, 0]
     if enhance is not None:
         if percentile is None:
             percentile = (0, 100)
@@ -50,7 +47,6 @@ def rgb2hed_transform(arr, conv_matrix, gpu=True):
             arr_cls = cp
         else:
             arr_cls = np
-        #print(arr.shape)
         arr = arr.astype(arr_cls.float16)
         arr = arr_cls.multiply(arr, 1.0 / 255, dtype=arr_cls.float16)
         arr_cls.maximum(arr, 1e-6, out=arr)
@@ -90,7 +86,6 @@ def customized_rgb2hed(rgb, chunk_size=1000):
    
     return stains
 
-
 def parallel_rgb2hed(rgb, num_processes=4, num_chunks=32):
     """
     With cpu acceleration
@@ -112,7 +107,6 @@ def parallel_rgb2hed(rgb, num_processes=4, num_chunks=32):
                       bar_format='{l_bar}{bar:10}{r_bar}'))
     
     return np.concatenate(result_list, axis=0)
-
 
 def data_split(df,
                id='beaker_id',
@@ -157,7 +151,6 @@ def data_split(df,
     print('Validation samples: ' + str(val_sizes))
     print('Testing samples: ' + str(tst_sizes))
 
-
     print('Collapsing ids in each split.')
     trn = np.concatenate(trn)
     val = np.concatenate(val)
@@ -171,13 +164,11 @@ def data_split(df,
         return df
     else:
         return trn, val, tst
-    
 
 def import_with_str(module_name, object_name):
     module = importlib.import_module(module_name)
     obj = getattr(module, object_name)
     return obj
-
 
 def get_img_in_dir(root_dir):
     imgs = []
@@ -192,26 +183,7 @@ def get_img_in_dir(root_dir):
                     imgs.append(img_id)
     return imgs
 
-
 def split_id(id_str):
     code, number, sample, seg = id_str.split('-')
     beaker_id = '-'.join((code, str(number)))
     return beaker_id, sample, seg
-
-
-# def threshold_by_max(tensor, threshold=32):
-#     num_dims = tensor.dim()
-#     pix_max = torch.amax(tensor, dim=tuple(range(1, num_dims)))
-#     label = (pix_max >= threshold).int().float()
-#     return pix_max, label
-
-# def threshold_by_top(tensor, threshold=32):
-#     flattened_tensor = tensor.view(tensor.shape[0], -1)
-#     pix = torch.quantile(flattened_tensor, 0.9999,dim=1, interpolation='nearest')
-#     label = (pix >= threshold).int().float()
-#     return pix, label
-    
-
-
-    
-

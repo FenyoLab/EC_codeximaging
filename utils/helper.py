@@ -1,5 +1,4 @@
 # Description: Helper functions for project
-
 import os
 import zarr
 import pandas as pd
@@ -23,17 +22,13 @@ def read_channel_file(channel_file):
             channels = f.read().splitlines()
     else:
         channels = None
-    # Print in a nice format
-    #print('Reading image channels:')
-    # for channel in enumerate(channels):
-    #     print(f'{channel[0]}: {channel[1]}')
     return channels
 
 def get_file_name_list(root_path, file_ext):
     file_names = []
     for file_name in os.listdir(root_path):
         if file_name.endswith(file_ext):
-            file_names.append(file_name.split('.')[0])
+            file_names.append(file_name[:-len(file_ext)-1])
     return file_names
 
 def load_yaml_file(yaml_file):

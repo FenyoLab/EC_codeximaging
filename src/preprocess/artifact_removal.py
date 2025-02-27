@@ -12,21 +12,11 @@ import cv2
 from shapely.geometry import Point
 from shapely.geometry.polygon import Polygon
 
-
 def run_artifact_removal(config_yaml):
-
-    # data_path = '/gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_256/data'
-    # slide_id = '20230908-1872-4C-1_Scan2'
-    # tiles_dir = 'tiles' 
-    # ROI_path = '/gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/preprocessing/qptiff_annotations'
-    # selected_region = ['tumor', 'TUMOR', 'tumor involving adenomyosis']
-
     get_rois_for_positions(data_path, slide_id, tiles_dir, ROI_path, tile_size=256, selected_region=selected_region)
-
 
 def get_rois_for_positions(data_path: str, slide_id: str, tiles_dir: None, ROI_path: str, tile_size: int = 256, selected_region: str = None):
     '''Get the ROIs for corresponding tiles for a given slide'''
-    
     print("slideID: ", slide_id)
 
     output_path = os.path.join(f'{data_path}/{slide_id}/{tiles_dir}')
@@ -62,7 +52,7 @@ def get_rois_for_positions(data_path: str, slide_id: str, tiles_dir: None, ROI_p
         print("data_subset_roi_ids: ", data_subset_roi_ids)
 
         if len(data_subset_roi_ids) == 1:
-            #add a new column to positions with the roi_id
+            # Add a new column to positions with the roi_id
             positions['roi_id'] = data_subset_roi_ids.iloc[0]
             print("positions with roi id shape: ", positions.shape)
             print("positions with roi id: ", positions.head())
@@ -89,7 +79,6 @@ def get_rois_for_positions(data_path: str, slide_id: str, tiles_dir: None, ROI_p
                         (top_left_x + tile_size, top_left_y + tile_size),
                         (top_left_x, top_left_y + tile_size)
                     ])
-                    #breakpoint()
         
                     if roi_polygon.intersects(tile_polygon):
                         print(f'Tile at position ({top_left_x}, {top_left_y}) intersects with ROI {roi_id}')
@@ -97,7 +86,7 @@ def get_rois_for_positions(data_path: str, slide_id: str, tiles_dir: None, ROI_p
 
             # At this point, roi_for_positions contains all the roi_ids
             roi_positions_df = pd.DataFrame(roi_positions, columns=['top_left_y', 'top_left_x', 'roi_id'])
-            #rename top_left_x to w and top_left_y to h
+            # Rename top_left_x to w and top_left_y to h
             roi_positions_df.rename(columns={'top_left_y': 'h', 'top_left_x': 'w'}, inplace=True)
             roi_positions_df = roi_positions_df.sort_values(by=['h', 'w'], ascending=[True, True]).reset_index(drop=True)
             print("roi_positions_df shape: ", roi_positions_df.shape)
@@ -107,7 +96,6 @@ def get_rois_for_positions(data_path: str, slide_id: str, tiles_dir: None, ROI_p
             print("# of coord pairs not in both positions files:", len(not_in_roi_positions))
             print(positions.head()) 
             print(roi_positions_df.head())
-            #breakpoint()
 
             if roi_positions_df.shape[0] == positions.shape[0]:
                 positions_with_rois_file = os.path.join(output_path, f'positions_with_rois_{tile_size}.csv')
@@ -118,10 +106,8 @@ def get_rois_for_positions(data_path: str, slide_id: str, tiles_dir: None, ROI_p
                 duplicates = roi_positions_df.duplicated(subset=['h', 'w'], keep=False)
                 if duplicates.any():
                     print(roi_positions_df[duplicates])
-                    #breakpoint()
                 else:
                     print("No duplicates found")
-                    #breakpoint()
                 
                 # Check if there are any missing positions
                 positions_set = set(zip(positions['h'], positions['w']))
@@ -139,6 +125,3 @@ def get_rois_for_positions(data_path: str, slide_id: str, tiles_dir: None, ROI_p
                 roi_positions_df.to_csv(positions_with_rois_file)
 
 run_rois()
-
-'''missing_indices
-Index([6797, 11028, 11102, 11179, 11692], dtype='int64', name=' ')'''

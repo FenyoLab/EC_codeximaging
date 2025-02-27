@@ -100,4 +100,3 @@ def get_tile_region(channel_img, root_path, sample_name, tile_size):
         tile_regions.append(tile_region)
     tile_regions_flat = np.concatenate(tile_regions).flatten()
     return tile_regions_flat
-
