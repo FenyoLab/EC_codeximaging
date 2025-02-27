@@ -2,7 +2,6 @@ import os
 import numpy as np
 import pandas as pd
 
-
 def add_rois_to_metadata(metadata_path, roi_dir, tiles_dir, output_file):
     metadata = pd.read_csv(metadata_path, index_col=0)
     print('Original metadata shape:', metadata.shape)

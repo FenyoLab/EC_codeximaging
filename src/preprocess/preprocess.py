@@ -43,7 +43,3 @@ def zarr_conversion(common_channel_file, input_path, input_ext, output_path, dat
     for file_name in tqdm(file_names):
         print(file_name)
         io.tiff_to_zarr(input_path, data_path, file_name, input_ext, common_channels)
-    # Plot global QC histogram
-    #print('Generating global QC histogram')
-    #qc.global_hist(data_path, file_names, qc_path)
-

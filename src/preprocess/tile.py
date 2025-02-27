@@ -1,5 +1,4 @@
 import sys
-sys.path.append('/gpfs/data/proteomics/projects/miniconda3/envs/canvas/lib/python3.10/site-packages') 
 import os
 import zarr
 import numpy as np
@@ -21,14 +20,13 @@ from skimage.draw import polygon, polygon_perimeter
 
 
 def gen_tiles(data_path: str, slideID: str, tiles_dir: None, ref_channel: int, ROI_path:str, tile_size: int = 128, selected_region: str = None, ROI_rm: str = None) -> np.ndarray:
-    
     print("slideID: ", slideID)
     ''' Generate tiles for a given slide '''
 
     output_path = os.path.join(f'{data_path}/{slideID}/{tiles_dir}')
     os.makedirs(output_path, exist_ok=True)
 
-    #check if the positions file is created, if it is, there's no need to regenerate!!
+    # Check if the positions file is created, if it is, there's no need to regenerate!!
     if os.path.exists(os.path.join(output_path, f'positions_{tile_size}.csv')):
         print(f"{slideID} positions exists.. moving on to next slide")
         return None 
@@ -67,9 +65,8 @@ def gen_tiles(data_path: str, slideID: str, tiles_dir: None, ref_channel: int, R
         print(f'Generated {len(positions)} positions before filtering')
            
         positions = gen_tile_positions_subset(ROI_path, selected_region, positions, slideID, ROI_rm, tile_size)
-        #check if positions and/or tile_img are None type (not generated)... if so, move to the next sample! 
+        # Check if positions and/or tile_img are None type (not generated)... if so, move to the next sample! 
         
-        #save_img(output_path, 'mask', tile_size // 4, mask_artifactsrm)
         with open(positions_file, 'w') as f:
             f.write(' ,h,w\n')
             for i, (h, w) in enumerate(positions):
@@ -103,7 +100,7 @@ def gen_mask(thumbnail: np.ndarray, slideID, threshold: int = .3) -> np.ndarray:
 
 def gen_tile_positions(output_path: str, slide: zarr, mask: np.ndarray, mask_path, slideID: str, selected_region: str = None, ROI_rm: str = None, ROI_path: str = None, tile_size: int = 256, threshold: float = 0.1) -> np.ndarray:
     
-    # first smooth the mask!!! Removing unwanted holes 
+    # First smooth the mask!!! Removing unwanted holes 
     # Load the mask image in grayscale mode
     mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
 
@@ -112,7 +109,7 @@ def gen_tile_positions(output_path: str, slide: zarr, mask: np.ndarray, mask_pat
     # Apply morphological closing to fill small black spots
     mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
 
-    #Now remove the very small white dots, since they are typically in the background and shouldn't be included
+    # Now remove the very small white dots, since they are typically in the background and shouldn't be included
     kernel = np.ones((2, 2), np.uint8)
     mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
 
@@ -121,11 +118,9 @@ def gen_tile_positions(output_path: str, slide: zarr, mask: np.ndarray, mask_pat
     
     ''' Generate tiles for a given slide and mask '''
     _, slide_height, slide_width = slide.shape
-    #print(f'Slide_shape: {slide.shape}')
     grid_height, grid_width = slide_height // tile_size, slide_width // tile_size
-    #assert abs(mask.shape[0] / mask.shape[1] - slide_height / slide_width) < 0.01
     
-     # Original dimensions
+    # Original dimensions
     original_width = slide.shape[1]
     original_height = slide.shape[2]
 
@@ -145,8 +140,7 @@ def gen_tile_positions(output_path: str, slide: zarr, mask: np.ndarray, mask_pat
     return positions, tile_img
 
 def gen_tile_positions_subset(ROI_path, selected_region, positions, slideID, ROI_rm, tile_size):
-
-    #List all files in the ROI directory
+    # List all files in the ROI directory
     all_files = os.listdir(ROI_path)
 
     # Filter files containing slideID in their name
@@ -155,7 +149,6 @@ def gen_tile_positions_subset(ROI_path, selected_region, positions, slideID, ROI
         print(f"No ROI file found containing the slideID: {slideID}")
         print("Generating positions on entire slide and not removing artifacts")
         return positions
-        
     else:
         print(ROIfile_name)
         ROIs_path = os.path.join(ROI_path, ROIfile_name[0])
@@ -165,17 +158,15 @@ def gen_tile_positions_subset(ROI_path, selected_region, positions, slideID, ROI
         coords_to_keep = []
         coords_to_rm = []
  
-        if selected_region is not None: #this is the region we want to include in the analysis
+        if selected_region is not None: # This is the region we want to include in the analysis
             
-            #first keep only tumor regions!! 
+            # First keep only tumor regions!! 
             data_selected_region = ROIdata.loc[ROIdata.Text.isin(selected_region)]
     
             data_selected_region_coords = data_selected_region['all_points']
             data_selected_region_coords_list = data_selected_region_coords.str.split(' ', expand=False)
 
             for idx, ROI_selected_region in enumerate(data_selected_region_coords_list):
-
-                #print(idx)
                 # Convert the list of strings to a NumPy array of floats (if it's in the format 'x,y')
                 data_subset_coords_array = np.array([list(map(float, coord.split(','))) for coord in ROI_selected_region])
                 
@@ -183,19 +174,17 @@ def gen_tile_positions_subset(ROI_path, selected_region, positions, slideID, ROI
                 x_vals, y_vals = data_subset_coords_array[:, 0], data_subset_coords_array[:, 1] #x,y [w,h]
 
                 # Define your polygon with coordinates
-                roi_polygon = Polygon(zip(y_vals, x_vals)) #flip the coordinates so it matches the ]positions file which is [h,w]
+                roi_polygon = Polygon(zip(y_vals, x_vals)) # Flip the coordinates so it matches the ]positions file which is [h,w]
 
                 coords_to_keep.append(roi_polygon)
             
         if ROI_rm is not None:
-            
-            #Now remove Artifacts!!!
+            # Now remove Artifacts!!!
             data_ROI_rm = ROIdata.loc[ROIdata.Text.isin(ROI_rm)]
             data_ROI_rm_coords = data_ROI_rm ['all_points']
             data_ROI_rm_coords_list = data_ROI_rm_coords.str.split(' ', expand=False)
             
             for idx,ROI_rm in enumerate(data_ROI_rm_coords_list):
-                #print(idx)
                 # Convert the list of strings to a NumPy array of floats (if it's in the format 'x,y')
                 data_subset_coords_array = np.array([list(map(float, coord.split(','))) for coord in ROI_rm])
                 
@@ -203,7 +192,7 @@ def gen_tile_positions_subset(ROI_path, selected_region, positions, slideID, ROI
                 x_vals, y_vals = data_subset_coords_array[:, 0], data_subset_coords_array[:, 1] #x,y [w,h]
 
                 # Define your polygon with coordinates
-                roi_polygon = Polygon(zip(y_vals, x_vals)) #flip the coordinates so it matches the ]positions file which is [h,w]
+                roi_polygon = Polygon(zip(y_vals, x_vals)) # Flip the coordinates so it matches the ]positions file which is [h,w]
 
                 coords_to_rm.append(roi_polygon)
 
@@ -212,8 +201,8 @@ def gen_tile_positions_subset(ROI_path, selected_region, positions, slideID, ROI
         rm_tree = STRtree(coords_to_rm)
         
         for row in tqdm(positions):
-            #top_left_x, top_left_y = row['w'], row['h']  # Assuming the CSV has 'h' and 'w' columns for positions
-            top_left_x, top_left_y = row[0], row[1] #we want to keep the same format as the positions file [h,w]
+            # top_left_x, top_left_y = row['w'], row['h']  # Assuming the CSV has 'h' and 'w' columns for positions
+            top_left_x, top_left_y = row[0], row[1] # We want to keep the same format as the positions file [h,w]
             # For each position, check if the top-left coordinates of the tile fall within the ROI
             tile_polygon = Polygon([
                 (top_left_x, top_left_y),
@@ -231,7 +220,6 @@ def gen_tile_positions_subset(ROI_path, selected_region, positions, slideID, ROI
                 for idx in overlapping_polygons_keep:
                     poly = coords_to_keep[idx]
                     if tile_polygon.intersects(poly):  # Checks if they overlap
-                        #print(f'Tile polygon intersects with polygon: {poly}')
                         tile_positions.append([top_left_x, top_left_y])
             if len(overlapping_polygons_rm) != 0:
                 # Check for actual intersection (whether they overlap)
@@ -240,10 +228,8 @@ def gen_tile_positions_subset(ROI_path, selected_region, positions, slideID, ROI
                     if tile_polygon.intersects(poly):
                         try:    
                             tile_positions.remove([top_left_x, top_left_y])  # Only remove if present
-                            #print(f'Tile at position ({top_left_x}, {top_left_y}) intersects with remove ROI')
                         except ValueError:
                             pass  # If position is not in the list, do nothing
 
-        return np.array(tile_positions)       
-
+        return np.array(tile_positions)
      

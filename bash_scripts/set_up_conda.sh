@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # lab shared miniconda
 eval "$(/gpfs/data/proteomics/projects/miniconda3/bin/conda shell.bash hook)"
 

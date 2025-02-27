@@ -6,21 +6,19 @@
 // Replace the 7-digit omero image ID in the imgIds list with your image ID
 // Hit enter to run, it will ask you to save a csv file, your ROIs will be in there.
 
-
 var imgIds = [
     697372,
 ];
 const omeroUrls = {
     nyu: 'https://omero.nyumc.org',
 };
-// choose omero instance between the HMS and the IDP OMERO
+// Choose omero instance between the HMS and the IDP OMERO
 const whichOmero = 'nyu';
 
-// add 1 sec pause for each 10-download batch
+// Add 1 sec pause for each 10-download batch
 imgIds.forEach((el, idx) => setTimeout(() => export_roi_by_id(el, omeroUrls[whichOmero.toLowerCase()]), idx * 200));
 
 function export_roi_by_id(imgId, omeroUrl) {
-
     var omeroUrl = omeroUrl;
     var headers = ['Id', 'Name', 'Text', 'type', 'all_points', 'X', 'Y', 'RadiusX', 'RadiusY', 'Width', 'Height', 'all_transforms'];
     var url = `${omeroUrl}/api/v0/m/images/${imgId}/`;
@@ -36,7 +34,7 @@ function export_roi_by_id(imgId, omeroUrl) {
             .then(res => res.json())
             .then(resJson =>
                 resJson.data
-                    // exclude roi that does not contain shapes
+                    // Exclude roi that does not contain shapes
                     .filter(data => data.shapes)
                     .map(data => {
                         data.shapes[0].Name = data.Name || 'undefined';
@@ -44,7 +42,6 @@ function export_roi_by_id(imgId, omeroUrl) {
                         return data.shapes;
                     })
                     .reduce((acc, val) => acc.concat(val), [])
-                    // .filter(shape => shape['@type'].includes('Rect'))
                     .map(shape => {
                         shape.type = shape['@type'].split('#').pop();
                         shape.all_points = getPointsOfShape(shape);
@@ -126,6 +123,7 @@ function getPointsOfShape(shape) {
     all_points = all_points.map(point => point.join(',')).join(' ');
     return all_points;
 }
+
 function transformPoint(x, y, t) {
     t = t
         ? t
