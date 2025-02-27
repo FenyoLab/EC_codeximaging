@@ -6,12 +6,11 @@ import tifffile as tiff
 import matplotlib.pyplot as plt
 
 def create_tile_label_image(data_dir, label_images_dir, tiles_dir, tile_size=256):
-
     for sample in os.listdir(label_images_dir):
         sample_dir = os.path.join(label_images_dir, sample)
         image_dir = os.path.join(data_dir, sample)
         
-        label_image_path = os.path.join(sample_dir, 'tile_label_image.tiff') #if matrix already exists, skip
+        label_image_path = os.path.join(sample_dir, 'tile_label_image.tiff') # If matrix already exists, skip
         if os.path.exists(label_image_path):
             print(f'Tile label image already exists for sample {sample}, skipping')
             continue
@@ -25,7 +24,7 @@ def create_tile_label_image(data_dir, label_images_dir, tiles_dir, tile_size=256
         print("Label image shape:", label_image.shape)
 
         tile_positions_df = pd.read_csv(os.path.join(data_dir, sample, tiles_dir, 'positions_256.csv'), index_col=0)
-        tile_positions_df.index += 1 #add 1 to index
+        tile_positions_df.index += 1 # Add 1 to index
 
         for tile_index, (h, w) in tile_positions_df.iterrows():
             label_image[h:h + tile_size, w:w + tile_size] = tile_index
