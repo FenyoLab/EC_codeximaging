@@ -10,6 +10,7 @@
 #SBATCH --time=4:00:00
 #SBATCH --gres=gpu:4
 
+source .env
 module load condaenvs/new/deepcell
 
 cd ..

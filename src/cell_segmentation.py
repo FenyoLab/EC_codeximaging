@@ -7,8 +7,6 @@ import pandas as pd
 import torch
 from deepcell.applications import Mesmer
 
-os.environ.update({"DEEPCELL_ACCESS_TOKEN": "<token-from-users.deepcell.org>"})
-
 def get_cell_segmentations(data_path, tile_size, batch_size, tiles_dir, save_path, channel_names, num_biomarkers, membrane_marker = 'Ecadherin'):
     start_time = time.time()
 
