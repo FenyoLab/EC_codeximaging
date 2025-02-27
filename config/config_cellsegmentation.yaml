@@ -1,4 +1,5 @@
-# REMINDER: add deepcell API key in src/cell_segmentation.py
+# REMINDER: add deepcell API key in bash_scripts/.env like below
+# export DEEPCELL_ACCESS_TOKEN=<token-from-users.deepcell.org>
 # Basic input parameters
 tile_size: 256
 batch_size: 64
