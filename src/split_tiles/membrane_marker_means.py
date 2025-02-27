@@ -4,12 +4,10 @@ import torch
 import numpy as np
 from types import SimpleNamespace
 import matplotlib.pyplot as plt
-
 sys.path.append('../..')
 from utils import helper
 
 def get_top5_means_membrane_marker(data_path, tile_size, batch_size, tiles_dir, channel_names, mean_data_dir, membrane_marker_name = 'Ecadherin'):
-
     top5_mean_data_path=os.path.join(mean_data_dir, 'top5percent_means.npy')
     if os.path.exists(top5_mean_data_path):
         print('Means of top 5 percent of membrane marker tiles already exist, skipping')
@@ -18,7 +16,7 @@ def get_top5_means_membrane_marker(data_path, tile_size, batch_size, tiles_dir, 
     os.makedirs(mean_data_dir, exist_ok=True)
     membrane_marker_index = channel_names.index(membrane_marker_name)
     print(f'{membrane_marker_name} index:', membrane_marker_index)
-    #load dataset
+    # Load dataset
     dataloader = load_dataset(data_path, tile_size, batch_size, tiles_dir)
 
     top5percent_means = []
@@ -33,15 +31,11 @@ def get_top5_means_membrane_marker(data_path, tile_size, batch_size, tiles_dir, 
         img_filtered = img[:, membrane_marker_index, :, :] 
 
         means = []
-        for n in range(len(img_filtered)): #iterate through each batch
+        for n in range(len(img_filtered)): # Iterate through each batch
             tile = img_filtered[n,:,:]
-            #print(tile.shape)
             top5_cutoff = np.percentile(tile,95)
-            #print(top5_cutoff)
             top5_values = tile[tile >=top5_cutoff]
-            #print(len(top5_values))
             mean_top5 = torch.mean(top5_values).item()
-            #print(mean_top5)
             means.append(mean_top5)
         
         sample_names.append(labels)
@@ -53,13 +47,13 @@ def get_top5_means_membrane_marker(data_path, tile_size, batch_size, tiles_dir, 
     top5_means_arr=stacked_tensor_top5_means.numpy()
     print(top5_means_arr.shape)
 
-    #stack tile_positions and create array 
+    # Stack tile_positions and create array 
     stacked_tensor_tile_positions=torch.cat(tile_positions)
     tile_positions_arr=stacked_tensor_tile_positions.numpy()
     print(tile_positions_arr.shape)
 
-    #stack sample_names and create array 
-    sample_names_all = [item for sublist in sample_names for item in sublist] #this combines the list of IDs which all have different sizes because of the varying batch size into 1 list 
+    # Stack sample_names and create array 
+    sample_names_all = [item for sublist in sample_names for item in sublist] # This combines the list of IDs which all have different sizes because of the varying batch size into 1 list 
     sample_names_arr = np.array(sample_names_all)
     print(sample_names_arr.shape)
     
@@ -76,8 +70,7 @@ def load_dataset(data_path, tile_size, batch_size, tiles_dir, num_workers = 1):
             transforms.Resize(input_size, interpolation = 2),
             ])
     
-    #from src.data.imc_dataset import CANVASDatasetWithLocation, SlidesDataset
-    from ..data.imc_dataset import CANVASDatasetWithLocation, SlidesDataset #check this works
+    from ..data.imc_dataset import CANVASDatasetWithLocation, SlidesDataset
     dataset = SlidesDataset(data_path, tile_size = tile_size, tiles_dir = tiles_dir, transform = None, dataset_class = CANVASDatasetWithLocation, use_normalization=False)
 
     dataloader= torch.utils.data.DataLoader(
