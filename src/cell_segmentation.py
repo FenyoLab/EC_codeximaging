@@ -2,20 +2,17 @@ import os
 import time 
 import pdb
 from tqdm import tqdm
-
 import numpy as np
 import pandas as pd
 import torch
 from deepcell.applications import Mesmer
 
-os.environ.update({"DEEPCELL_ACCESS_TOKEN": "<token-from-users.deepcell.org>"})
-
 def get_cell_segmentations(data_path, tile_size, batch_size, tiles_dir, save_path, channel_names, num_biomarkers, membrane_marker = 'Ecadherin'):
     start_time = time.time()
 
-    os.makedirs(save_path, exist_ok = True) #create output directory
+    os.makedirs(save_path, exist_ok = True) # Create output directory
 
-    matrix_path = os.path.join(save_path, 'matrix.npy') #if matrix already exists, skip
+    matrix_path = os.path.join(save_path, 'matrix.npy') # If matrix already exists, skip
     if os.path.exists(matrix_path):
         print('Full matrix already exists, skipping')
         return
@@ -43,7 +40,6 @@ def load_dataset(data_path, tile_size, batch_size, tiles_dir = None, num_workers
             transforms.Resize(input_size, interpolation = 2),
             ])
     
-    #from ..data.imc_dataset import CANVASDatasetWithLocation, SlidesDataset
     from src.data.imc_dataset_v2 import CANVASDatasetWithLocation, SlidesDataset
     dataset = SlidesDataset(data_path, tile_size = tile_size, tiles_dir = tiles_dir, tissue_type = tissue_type, transform = None, dataset_class = CANVASDatasetWithLocation, use_normalization=False)
 
@@ -73,28 +69,22 @@ def get_matrix(dataloader, output_path, num_biomarkers, channel_names, membrane_
         print(f'{tissue_type} matrix already exists, skipping')
         return
 
-    model = load_model() #load segmentation model
+    model = load_model() # Load segmentation model
 
-    tile_sample_names = [] #on a tile level
-    tile_positions = [] # on a tile level 
-    segmentation_masks = [] # on a tile level 
-    metadata_list = []  # am i doing list? 
+    tile_sample_names = [] # On a tile level
+    tile_positions = [] # On a tile level 
+    segmentation_masks = [] # On a tile level 
+    metadata_list = []
 
-    num_biomarkers = num_biomarkers #num_biomarkers = 36
-    cell_biomarker_matrix = np.zeros((0, num_biomarkers)) #initialize matrix
+    num_biomarkers = num_biomarkers
+    cell_biomarker_matrix = np.zeros((0, num_biomarkers)) # Initialize matrix
 
     for idx, batch in enumerate(tqdm(dataloader)):
-        #if idx > 2: #for testing purposes
-        #    break
-        #print("Batch number: ", idx)
         img, (labels, locations) = batch
-        #if labels[0] != '20231019-0413-3D_Scan1':
-        #    continue
         tile_sample_names.extend(labels)
         tile_positions.extend([loc.numpy() for loc in locations]) 
         
         img_transposed = img.permute(0, 2, 3, 1).numpy()
-        #print('Dapi index:', channel_names.index('DAPI'), 'Membrane marker name and index:', membrane_marker, channel_names.index(membrane_marker))
 
         img_filtered = img_transposed[:, :, :, [channel_names.index('DAPI'), channel_names.index(membrane_marker)]] 
         
@@ -104,26 +94,21 @@ def get_matrix(dataloader, output_path, num_biomarkers, channel_names, membrane_
             segmentation_prediction = model.predict(img_filtered, image_mpp=0.5, compartment='nuclear', 
                                                 postprocess_kwargs_nuclear = {'pixel_expansion': 2})
 
-
         segmentation_prediction = np.squeeze(segmentation_prediction, axis=-1)
-        #print("segmentation_prediction squeezed shape: ", segmentation_prediction.shape)
         
         segmentation_masks.extend(segmentation_prediction)
 
-        batch_matrix = np.zeros((0, num_biomarkers)) #initialize matrix for batch
+        batch_matrix = np.zeros((0, num_biomarkers)) # Initialize matrix for batch
             
         for i, tile in enumerate(img_transposed):
-            slide_id = labels[i] #cell level
-            tile_h = locations[i][0].item() #cell level
-            tile_w = locations[i][1].item() #cell level
+            slide_id = labels[i] # Cell level
+            tile_h = locations[i][0].item() # Cell level
+            tile_w = locations[i][1].item() # Cell level
                 
             prediction = np.squeeze(segmentation_prediction[i])
 
             intensity_matrix, metadata = get_tile_intensity(tile, prediction, num_biomarkers,
                                                             slide_id, tile_h, tile_w, tissue_type)
-            #add tissue type 
-            #print("intensity_matrix shape: ", intensity_matrix.shape)
-            #print("metadata length: ", len(metadata))
             
             batch_matrix = np.vstack((batch_matrix, intensity_matrix))
             metadata_list.extend(metadata)
@@ -144,7 +129,6 @@ def get_matrix(dataloader, output_path, num_biomarkers, channel_names, membrane_
     np.save(os.path.join(tissue_output_path, 'segmentation_masks.npy'), np.array(segmentation_masks))
     np.save(os.path.join(tissue_output_path, 'matrix.npy'), cell_biomarker_matrix)
     np.save(os.path.join(tissue_output_path, 'cell_sample_names.npy'), np.array(cell_sample_names, dtype=str))
-
 
 def get_tile_intensity(image, prediction, num_biomarkers, slide_id, tile_h, tile_w, tissue_type):
     '''gets information needed on a cell level for each tile

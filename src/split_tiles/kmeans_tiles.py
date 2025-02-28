@@ -9,7 +9,6 @@ from skimage.transform import resize
 from skimage.io import imsave
 
 def cluster_tiles(mean_data_dir, n_clusters, clusters_dir):
-
     top5_means = np.load(os.path.join(mean_data_dir, 'top5percent_means.npy'))
     top5_means_reshaped = top5_means.reshape(-1, 1)
 
@@ -66,7 +65,7 @@ def create_cluster_masks(mean_data_dir, clusters_dir, data_dir, tile_size):
         
         print(f'Processing sample {sample}')
 
-        #load in zarr data 
+        # Load in zarr data 
         slide_path = f'{data_dir}/{sample}/data.zarr'
         print('Reading slide metadata...')
         slide = zarr.open(slide_path, mode='r')  # Opens the Zarr array in read-only mode
@@ -76,7 +75,7 @@ def create_cluster_masks(mean_data_dir, clusters_dir, data_dir, tile_size):
         grid_height, grid_width = slide_height // tile_size, slide_width // tile_size
         color_mask = np.zeros((slide_height, slide_width, 3), dtype=np.uint8)
 
-        #load in sample cluster data
+        # Load in sample cluster data
         kmeans_labels = np.load(os.path.join(clusters_dir, sample, 'kmeans_labels.npy'))
         kmeans_cluster_centers = np.load(os.path.join(clusters_dir, sample, 'kmeans_cluster_centers.npy'))
         unique_clusters = np.unique(kmeans_labels)
@@ -91,7 +90,7 @@ def create_cluster_masks(mean_data_dir, clusters_dir, data_dir, tile_size):
                 print(f'Higher Center {i}: {kmeans_cluster_centers[idx]}')
                 cluster_colors[idx] = [0, 255, 0]  # All other centers -> green
 
-        #filter tile pos for sample
+        # Filter tile pos for sample
         sample_indices = np.where(sample_names == sample)[0]
         sample_tile_positions = tile_positions[sample_indices]
 
@@ -102,7 +101,7 @@ def create_cluster_masks(mean_data_dir, clusters_dir, data_dir, tile_size):
             # Initialize an empty bw mask for this cluster
             bw_mask = np.zeros((slide_height, slide_width), dtype=np.uint8)
 
-            #filter tile pos for cluster
+            # Filter tile pos for cluster
             label_indices = np.where(kmeans_labels == cluster)[0]
             cluster_tile_positions = sample_tile_positions[label_indices]
             
@@ -111,18 +110,18 @@ def create_cluster_masks(mean_data_dir, clusters_dir, data_dir, tile_size):
                 w = pos[1]
                 # Assign the cluster color to the mask
                 color_mask[h:h+tile_size, w:w+tile_size] = cluster_colors.get(cluster, [0, 0, 0])
-                #assign white to bw mask
+                # Assign white to bw mask
                 bw_mask[h:h+tile_size, w:w+tile_size] = 1
             
-            #resize bw mask and save
+            # Resize bw mask and save
             bw_mask = resize(bw_mask, (grid_height, grid_width), order=0, anti_aliasing=False)
             img = (np.clip(bw_mask, 0, 1) * 255).astype(np.uint8)
             imsave(os.path.join(sample_save_path, f'cluster_{cluster}_mask.png'), img)
             print(f'Cluster {cluster} mask saved as img for sample {sample}')
         
-        #resize color mask and save
+        # Resize color mask and save
         color_mask = resize(color_mask, ((slide_height // tile_size)*2 , (slide_width // tile_size)*2, 3), order=0, anti_aliasing=False, preserve_range=True) #optional
-        color_mask = color_mask.astype(np.uint8)  #optional
+        color_mask = color_mask.astype(np.uint8)  # Optional
         imsave(combined_mask_path, color_mask)
         print(f'Combined cluster mask saved for sample {sample}')
 
