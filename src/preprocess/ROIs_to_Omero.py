@@ -2,7 +2,6 @@ import os
 import sys
 import pandas as pd
 import geojson
-
 import omero
 from omero.gateway import BlitzGateway
 from omero.model import RoiAnnotationLinkI, RoiI, FileAnnotationI
@@ -14,7 +13,7 @@ sys.path.append('../..')
 from utils import helper
 
 def main():
-    #import config
+    # Import config
     config_yaml= '../../config/config_cellsegmentation.yaml'
     run_config = helper.load_yaml_file(config_yaml)
     config = SimpleNamespace(**run_config)
@@ -31,9 +30,7 @@ def main():
         upload_rois_to_omero(sample, omero_dict)
         print('rois uploaded to omero')
 
-
 def upload_rois_to_omero(sample, omero_dict):   
-    
     password = os.getenv('PASSWORD')
     kerberosid = os.getenv('KERBEROSID')
 
@@ -42,7 +39,7 @@ def upload_rois_to_omero(sample, omero_dict):
     elif kerberosid is None:
         raise ValueError('No kerberos provided in environment variable KERBEROSID')
 
-    #omero login
+    # Omero login
     conn = BlitzGateway(kerberosid, password, host="omero.nyumc.org", port=4064)
     conn.connect()
     updateService = conn.getUpdateService()
@@ -73,11 +70,10 @@ def upload_rois_to_omero(sample, omero_dict):
     
     conn.close()
 
-
 def create_roi(img, shapes, updateService):
-    # create an ROI, link it to Image
+    # Create an ROI, link it to Image
     roi = omero.model.RoiI()
-    # use the omero.model.ImageI that underlies the 'image' wrapper
+    # Use the omero.model.ImageI that underlies the 'image' wrapper
     roi.setImage(img._obj)
     for shape in shapes:
         roi.addShape(shape)

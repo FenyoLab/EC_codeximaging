@@ -15,10 +15,10 @@ def create_thumbnail_from_tile_positions(data_dir, tile_dir, tile_size=256):
             continue
         print(f'Creating thumbnail for sample {sample}')
         
-        #load in tile positions
+        # Load in tile positions
         tile_positions = pd.read_csv(os.path.join(data_dir, sample, tile_dir, f'positions_{tile_size}.csv'))
 
-        #open slide - zarr data  
+        # Open slide - zarr data  
         slide_path = f'{data_dir}/{sample}/data.zarr'
         print('Reading slide metadata...')
         slide = zarr.open(slide_path, mode='r')  # Opens the Zarr array in read-only mode
@@ -37,11 +37,5 @@ def create_thumbnail_from_tile_positions(data_dir, tile_dir, tile_size=256):
         img = (np.clip(bw_mask, 0, 1) * 255).astype(np.uint8)
         save_path = os.path.join(data_dir, sample, f'{tile_dir}_roi_img')
         os.makedirs(save_path, exist_ok=True)
-        #imsave(f'tile_img_{tile_size}.png', img)
         imsave(os.path.join(save_path, f'tile_img_{tile_size}.png'), img)
         print(f'Thumbnail saved as img for sample {sample}')
-
-data_dir = '/gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/out_256/data'
-tile_dir = 'tiles_11_13'
-
-create_thumbnail_from_tile_positions(data_dir, tile_dir)
