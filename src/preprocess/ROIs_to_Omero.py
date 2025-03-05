@@ -18,7 +18,7 @@ def main():
     run_config = helper.load_yaml_file(config_yaml)
     config = SimpleNamespace(**run_config)
 
-    annotations_dir = '/gpfs/data/proteomics/projects/Endometrial_mIF/EC_codeximaging_results/preprocessing/registration/annotations'
+    annotations_dir = '/gpfs/data/proteomics/projects/Cervical_mIF/CC_codeximaging_results/annotations'
     omero_dict = config.omero_image_dict
 
     for sample in os.listdir(annotations_dir):
@@ -32,7 +32,7 @@ def main():
 
 def upload_rois_to_omero(sample, omero_dict):   
     password = os.getenv('PASSWORD')
-    kerberosid = os.getenv('KERBEROSID')
+    kerberosid = os.getenv('USER')
 
     if password is None:
         raise ValueError('No password provided in environment variable PASSWORD')
@@ -43,7 +43,7 @@ def upload_rois_to_omero(sample, omero_dict):
     conn = BlitzGateway(kerberosid, password, host="omero.nyumc.org", port=4064)
     conn.connect()
     updateService = conn.getUpdateService()
-
+    conn.setGroupForSession(959)
     image_id = omero_dict.get(sample, {}).get('image_id')
     image = conn.getObject("Image", image_id)
     print(image, image_id)

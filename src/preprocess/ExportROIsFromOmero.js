@@ -7,7 +7,7 @@
 // Hit enter to run, it will ask you to save a csv file, your ROIs will be in there.
 
 var imgIds = [
-    697372,
+    692515, 692533, 692518, 692539,
 ];
 const omeroUrls = {
     nyu: 'https://omero.nyumc.org',
