@@ -3,7 +3,6 @@ import numpy as np
 import pandas as pd
 
 def split_by_sample(segmentation_data_dir, label_images_dir):
-
     os.makedirs(label_images_dir, exist_ok=True)
 
     #load in tile info 
@@ -15,7 +14,7 @@ def split_by_sample(segmentation_data_dir, label_images_dir):
 
     print("Mask shape before swapping axes:", segmentation_masks.shape)
     segmentation_masks = segmentation_masks.swapaxes(1, 2)
-    print("Mask shape after swapping axes:", segmentation_masks.shape) #should be the same 
+    print("Mask shape after swapping axes:", segmentation_masks.shape) # Should be the same 
 
     for sample in np.unique(tile_sample_names):
         sample_dir = os.path.join(label_images_dir, sample)
@@ -44,7 +43,3 @@ def split_by_sample(segmentation_data_dir, label_images_dir):
         np.save(os.path.join(sample_dir, 'tile_positions.npy'), sample_tile_positions)
         sample_metadata_subset.to_csv(os.path.join(sample_dir, 'sample_metadata.csv'), index=False)
         print(f'Data split for sample {sample}')
-
-
-
-
