@@ -10,6 +10,7 @@
 #SBATCH --gres=gpu:4
 
 # conda set up and activation
+cd /gpfs/data/proteomics/home/lp2700/python_scripts/github_testing/CC_codeximaging/
 source set_up_conda.sh
 conda activate canvas
 conda info

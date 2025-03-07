@@ -21,7 +21,7 @@ def main():
     annotations_dir = '/gpfs/data/proteomics/projects/Cervical_mIF/CC_codeximaging_results/annotations'
     omero_dict = config.omero_image_dict
 
-    for sample in os.listdir(annotations_dir):
+    for sample in list(omero_dict.keys()): # os.listdir(annotations_dir):
         print(f'Processing sample {sample}')
         sample_dir = os.path.join(annotations_dir, sample)
         os.chdir(sample_dir)

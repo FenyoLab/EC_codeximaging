@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# set -e
+
 data_dir='/media/ssd02/lp2700/landing_pad/'
 
 move_data() {
@@ -25,4 +27,5 @@ move_data() {
 export -f move_data
 
 find "$data_dir" -type f -name "*.qptiff" -exec echo {} \; \
--exec bash -c 'move_data "$0" "$1"' {} $data_dir \; \
+-exec bash -c 'move_data "$0" "$1"' {} $data_dir \; 
+
