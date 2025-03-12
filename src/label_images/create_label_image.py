@@ -82,7 +82,7 @@ def create_label_slide(label_images_dir, data_dir, label_image_name):
     print("Tile positions shape:", tile_positions.shape)
 
     # Create blank label image
-    label_image = np.zeros(zarr_img.shape[1:], dtype=np.uint32)
+    label_image = np.zeros(zarr_img.shape[1:], dtype=np.uint16)
     print("Blank label image shape:", label_image.shape)
 
     # Place label tiles in correct position
@@ -95,6 +95,9 @@ def create_label_slide(label_images_dir, data_dir, label_image_name):
     
     print("Label image shape:", label_image.shape)
     print("# of Unique values in label image:", len(np.unique(label_image)))
+    print("datatype", type(label_image[0][0]))
+    label_image = label_image.astype(np.uint16)
+    print("datatype", type(label_image[0][0]))
 
     # Save the slide mask as tiff
     tiff.imwrite(os.path.join(label_images_dir, f'{label_image_name}.tiff'), label_image)
