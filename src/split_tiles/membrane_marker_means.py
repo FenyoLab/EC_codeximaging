@@ -9,6 +9,7 @@ sys.path.append('../..')
 from utils import helper
 
 def get_top5_means_membrane_marker(data_path, tile_size, batch_size, tiles_dir, channel_names, mean_data_dir, membrane_marker_name = 'Ecadherin'):
+    '''Function to get the mean values of the top 5% of pixels for the membrane marker'''
 
     top5_mean_data_path=os.path.join(mean_data_dir, 'top5percent_means.npy')
     if os.path.exists(top5_mean_data_path):

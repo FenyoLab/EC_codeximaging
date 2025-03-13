@@ -9,6 +9,7 @@ from skimage.transform import resize
 from skimage.io import imsave
 
 def cluster_tiles(mean_data_dir, n_clusters, clusters_dir):
+    '''Function to cluster tiles based on the top 5% of the mean values of the membrane marker'''
 
     top5_means = np.load(os.path.join(mean_data_dir, 'top5percent_means.npy'))
     top5_means_reshaped = top5_means.reshape(-1, 1)
@@ -53,6 +54,7 @@ def cluster_tiles(mean_data_dir, n_clusters, clusters_dir):
         print(f'kmeans labels and cluster centers saved for sample {sample}')
 
 def create_cluster_masks(mean_data_dir, clusters_dir, data_dir, tile_size):
+    '''Function to create cluster masks for each cluster and clusters combined in each sample'''
     sample_names = np.load(os.path.join(mean_data_dir, 'sample_names.npy'))
     tile_positions = np.load(os.path.join(mean_data_dir, 'tile_positions.npy'))
 
