@@ -11,16 +11,6 @@ from deepcell.applications import Mesmer
 os.environ.update({"DEEPCELL_ACCESS_TOKEN": "<token-from-users.deepcell.org>"})
 
 def get_cell_segmentations(data_path, tile_size, batch_size, tiles_dir, save_path, channel_names, num_biomarkers, membrane_marker = 'Ecadherin'):
-    '''Function to get cell segmentations for membrane_marker+ and membrane_marker- tissues
-    Inputs: data_path - str, path to the zarr data
-            tile_size - int, size of the tiles
-            batch_size - int, batch size for the dataloader
-            tiles_dir - str, name of the directory with the tiles info 
-            save_path - str, path to save the output
-            channel_names - list of str, names of the channels
-            num_biomarkers - int, number of biomarkers
-            membrane_marker - str, name of the membrane biomarker used for whole cell segmentation'''
-
     start_time = time.time()
 
     os.makedirs(save_path, exist_ok = True) #create output directory
@@ -30,15 +20,12 @@ def get_cell_segmentations(data_path, tile_size, batch_size, tiles_dir, save_pat
         print('Full matrix already exists, skipping')
         return
 
-    #load dataset for membrane_marker+ (whole-cell) tissue and extract cell data
-    dataloader = load_dataset(data_path, tile_size, batch_size, tiles_dir, tissue_type='membrane_marker+_')
-    extract_cell_data(dataloader, save_path, num_biomarkers, channel_names, membrane_marker, tile_size, tissue_type='membrane_marker+_')
+    dataloader = load_dataset(data_path, tile_size, batch_size, tiles_dir, tissue_type='ecad+_')
+    get_matrix(dataloader, save_path, num_biomarkers, channel_names, membrane_marker, tissue_type='ecad+_')
     
-    #load dataset for membrane_marker- (nuclear) tissue and extract cell data
-    dataloader = load_dataset(data_path, tile_size, batch_size, tiles_dir, tissue_type='membrane_marker-_')
-    extract_cell_data(dataloader, save_path, num_biomarkers, channel_names, membrane_marker, tile_size, tissue_type='membrane_marker-_')
+    dataloader = load_dataset(data_path, tile_size, batch_size, tiles_dir, tissue_type='ecad-_')
+    get_matrix(dataloader, save_path, num_biomarkers, channel_names, membrane_marker, tissue_type='ecad-_')
 
-    #combine matrices for membrane_marker+ and membrane_marker- tissues
     combine_matrices(save_path, data_path, tiles_dir)
 
     end_time = time.time()  # Record the end time
@@ -70,15 +57,15 @@ def load_dataset(data_path, tile_size, batch_size, tiles_dir = None, num_workers
 
 def load_model():
     ''' loads Mesmer model from deepcell for cell segmentation
-        called and used in extract_cell_data function'''
+        called and used in get_matrix function'''
     model = Mesmer(model=None)
     return model
 
-def extract_cell_data(dataloader, output_path, num_biomarkers, channel_names, membrane_marker, tile_size, tissue_type=''): 
+def get_matrix(dataloader, output_path, num_biomarkers, channel_names, membrane_marker, tissue_type=''): 
     ''''loops through the dataloader to extract:
             1. matrix with intensity values for each biomarker in each cell [shape: (num_cells, num_biomarkers)]
-            2. metadata csv with additional cell information including polygons for label image generation in omero [shape: (num_cells, num_features)]
-            3. tile_positions, tile_sample_names'''
+            2. metadata csv with additional cell information [shape: (num_cells, num_features)]
+            3. tile_positions, tile_sample_names, segmentation_masks to be used in omero downstream analysis'''
     
     tissue_output_path = os.path.join(output_path, tissue_type)
     os.makedirs(tissue_output_path, exist_ok=True)
@@ -90,8 +77,8 @@ def extract_cell_data(dataloader, output_path, num_biomarkers, channel_names, me
 
     tile_sample_names = [] #on a tile level
     tile_positions = [] # on a tile level 
-    #segmentation_masks = [] # on a tile level 
-    metadata_list = []   
+    segmentation_masks = [] # on a tile level 
+    metadata_list = []  # am i doing list? 
 
     num_biomarkers = num_biomarkers #num_biomarkers = 36
     cell_biomarker_matrix = np.zeros((0, num_biomarkers)) #initialize matrix
@@ -101,7 +88,7 @@ def extract_cell_data(dataloader, output_path, num_biomarkers, channel_names, me
         #    break
         #print("Batch number: ", idx)
         img, (labels, locations) = batch
-        #if labels[0] != '20231012-9390-1I_Scan1':
+        #if labels[0] != '20231019-0413-3D_Scan1':
         #    continue
         tile_sample_names.extend(labels)
         tile_positions.extend([loc.numpy() for loc in locations]) 
@@ -111,7 +98,7 @@ def extract_cell_data(dataloader, output_path, num_biomarkers, channel_names, me
 
         img_filtered = img_transposed[:, :, :, [channel_names.index('DAPI'), channel_names.index(membrane_marker)]] 
         
-        if tissue_type == 'membrane_marker+_':
+        if tissue_type == 'ecad+_':
             segmentation_prediction = model.predict(img_filtered, image_mpp=0.5)
         else:
             segmentation_prediction = model.predict(img_filtered, image_mpp=0.5, compartment='nuclear', 
@@ -121,7 +108,7 @@ def extract_cell_data(dataloader, output_path, num_biomarkers, channel_names, me
         segmentation_prediction = np.squeeze(segmentation_prediction, axis=-1)
         #print("segmentation_prediction squeezed shape: ", segmentation_prediction.shape)
         
-        #segmentation_masks.extend(segmentation_prediction)
+        segmentation_masks.extend(segmentation_prediction)
 
         batch_matrix = np.zeros((0, num_biomarkers)) #initialize matrix for batch
             
@@ -133,7 +120,7 @@ def extract_cell_data(dataloader, output_path, num_biomarkers, channel_names, me
             prediction = np.squeeze(segmentation_prediction[i])
 
             intensity_matrix, metadata = get_tile_intensity(tile, prediction, num_biomarkers,
-                                                            slide_id, tile_h, tile_w, tile_size, tissue_type)
+                                                            slide_id, tile_h, tile_w, tissue_type)
             #add tissue type 
             #print("intensity_matrix shape: ", intensity_matrix.shape)
             #print("metadata length: ", len(metadata))
@@ -154,11 +141,11 @@ def extract_cell_data(dataloader, output_path, num_biomarkers, channel_names, me
     metadata_df.to_csv(os.path.join(tissue_output_path, 'metadata.csv'), index = False)
     np.save(os.path.join(tissue_output_path, 'tile_positions.npy'), np.array(tile_positions))
     np.save(os.path.join(tissue_output_path, 'tile_sample_names.npy'), np.array(tile_sample_names))
-    #np.save(os.path.join(tissue_output_path, 'segmentation_masks.npy'), np.array(segmentation_masks))
+    np.save(os.path.join(tissue_output_path, 'segmentation_masks.npy'), np.array(segmentation_masks))
     np.save(os.path.join(tissue_output_path, 'matrix.npy'), cell_biomarker_matrix)
     np.save(os.path.join(tissue_output_path, 'cell_sample_names.npy'), np.array(cell_sample_names, dtype=str))
 
-def get_tile_intensity(image, prediction, num_biomarkers, slide_id, tile_h, tile_w, tile_size, tissue_type):
+def get_tile_intensity(image, prediction, num_biomarkers, slide_id, tile_h, tile_w, tissue_type):
     '''gets information needed on a cell level for each tile
     returns this information for the mean intensity matrix + metadata'''
     from skimage.measure import regionprops, find_contours
@@ -219,7 +206,7 @@ def get_tile_intensity(image, prediction, num_biomarkers, slide_id, tile_h, tile
     return intensity_matrix, metadata
 
 def load_data(prefix, output_path):
-    """Load data for a given prefix (e.g., 'membrane_marker+_', 'membrane_marker-_')."""
+    """Load data for a given prefix (e.g., 'ecad+_', 'ecad-_')."""
     base_path = os.path.join(output_path, prefix)
     return {
         'matrix': np.load(os.path.join(base_path, 'matrix.npy')),
@@ -227,11 +214,10 @@ def load_data(prefix, output_path):
         'cell_sample_names': np.load(os.path.join(base_path, 'cell_sample_names.npy')),
         'tile_positions': np.load(os.path.join(base_path, 'tile_positions.npy')),
         'tile_sample_names': np.load(os.path.join(base_path, 'tile_sample_names.npy')),
-        #'segmentation_masks': np.load(os.path.join(base_path, 'segmentation_masks.npy')),
+        'segmentation_masks': np.load(os.path.join(base_path, 'segmentation_masks.npy')),
     }
 
 def order_data(matrix, metadata, cell_sample_names, tiles_dir, data_path):
-    '''reorders the data based on the original tile positions'''
     print("Original data shapes:")
     print(f"Matrix: {matrix.shape}, Metadata: {metadata.shape}, Cell sample names: {cell_sample_names.shape}")
 
@@ -305,30 +291,29 @@ def order_data(matrix, metadata, cell_sample_names, tiles_dir, data_path):
 
     return reordered_matrix, reordered_metadata, reordered_cell_sample_names
 
-def save_data(output_path, matrix, metadata, cell_sample_names, tile_positions, tile_sample_names): #segmentation_masks
+def save_data(output_path, matrix, metadata, cell_sample_names, tile_positions, tile_sample_names, segmentation_masks):
     """Save combined data to output path."""
     np.save(os.path.join(output_path, 'matrix.npy'), matrix)
     metadata.to_csv(os.path.join(output_path, 'metadata.csv'), index=True)
     np.save(os.path.join(output_path, 'cell_sample_names.npy'), cell_sample_names)
     np.save(os.path.join(output_path, 'tile_positions.npy'), tile_positions)
     np.save(os.path.join(output_path, 'tile_sample_names.npy'), tile_sample_names)
-    #np.save(os.path.join(output_path, 'segmentation_masks.npy'), segmentation_masks)
+    np.save(os.path.join(output_path, 'segmentation_masks.npy'), segmentation_masks)
 
 def combine_matrices(output_path, data_path, tiles_dir):
-    """Combine all the membrane_marker+ and membrane_marker- data."""
     # Load data
-    membrane_marker_pos = load_data('membrane_marker+_', output_path)
-    membane_marker_neg = load_data('membrane_marker-_', output_path)
+    ecad_pos = load_data('ecad+_', output_path)
+    ecad_neg = load_data('ecad-_', output_path)
 
     # Combine matrices and metadata
-    matrix = np.vstack([membrane_marker_pos['matrix'], membane_marker_neg['matrix']])
-    metadata = pd.concat([membrane_marker_pos['metadata'], membane_marker_neg['metadata']], ignore_index=True)
-    cell_sample_names = np.concatenate([membrane_marker_pos['cell_sample_names'], membane_marker_neg['cell_sample_names']])
-    tile_positions = np.concatenate([membrane_marker_pos['tile_positions'], membane_marker_neg['tile_positions']])
-    tile_sample_names = np.concatenate([membrane_marker_pos['tile_sample_names'], membane_marker_neg['tile_sample_names']])
-    #segmentation_masks = np.concatenate([membrane_marker_pos['segmentation_masks'], membane_marker_neg['segmentation_masks']])
+    matrix = np.vstack([ecad_pos['matrix'], ecad_neg['matrix']])
+    metadata = pd.concat([ecad_pos['metadata'], ecad_neg['metadata']], ignore_index=True)
+    cell_sample_names = np.concatenate([ecad_pos['cell_sample_names'], ecad_neg['cell_sample_names']])
+    tile_positions = np.concatenate([ecad_pos['tile_positions'], ecad_neg['tile_positions']])
+    tile_sample_names = np.concatenate([ecad_pos['tile_sample_names'], ecad_neg['tile_sample_names']])
+    segmentation_masks = np.concatenate([ecad_pos['segmentation_masks'], ecad_neg['segmentation_masks']])
 
     reordered_matrix, reordered_metadata, reordered_cell_sample_names = order_data(matrix, metadata, cell_sample_names, tiles_dir, data_path)
 
     # Save combined data
-    save_data(output_path, reordered_matrix, reordered_metadata, reordered_cell_sample_names, tile_positions, tile_sample_names) #segmentation_masks
+    save_data(output_path, reordered_matrix, reordered_metadata, reordered_cell_sample_names, tile_positions, tile_sample_names, segmentation_masks)
