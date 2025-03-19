@@ -8,7 +8,10 @@
 #SBATCH --time=1:00:00
 #SBATCH --partition=cpu_short
 
-module load condaenvs/new/deepcell
+source ~/.bashrc
+conda activate omero
+
+source .env
 
 cd ../
 python main_biomarker_tables.py
