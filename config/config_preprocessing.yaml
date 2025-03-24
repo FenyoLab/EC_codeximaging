@@ -5,7 +5,7 @@ input_pixel_per_um: 2
 inference_window_um: 64
 input_path: /gpfs/data/proteomics/data/Cervical_mIF/qptiff_dat # Dir with input 
 output_path: /gpfs/data/proteomics/data/Cervical_mIF/output # This is where the output dir will be
-common_channel_file: /gpfs/data/proteomics/data/Cervical_mIF/common_channels_cell_segmentation.txt
+common_channel_file: /gpfs/data/proteomics/data/Cervical_mIF/output/data/common_channels_cell_segmentation.txt
 # selected_channel_color_file: /gpfs/data/proteomics/home/ca3261/sample_out/out_256/selected_channels_w_color.yaml
 # channel_strength_file: /gpfs/data/proteomics/home/ca3261/sample_out/out_256/channels_vis_strength.yaml
 
