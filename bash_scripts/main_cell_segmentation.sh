@@ -14,9 +14,5 @@ source .env
 source set_up_conda.sh
 module load condaenvs/new/deepcell
 
-cp -r /gpfs/data/proteomics/data/Cervical_mIF/output/data/20250225-Jharna-08153-A1_Scan1.er /gpfs/data/proteomics/data/Cervical_mIF/output/data_new/20250225-Jharna-08153-A1_Scan1.er
-
 cd ..
 python main_cell_segmentation.py
-
-rm -r /gpfs/data/proteomics/data/Cervical_mIF/output/data_new/20250225-Jharna-08153-A1_Scan1.er

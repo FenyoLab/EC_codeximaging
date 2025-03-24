@@ -4,7 +4,7 @@
 #SBATCH --ntasks=2
 #SBATCH --output=../logs/upload_to_omero_%j.txt
 #SBATCH --mem=100G
-#SBATCH --time=12:00:00
+#SBATCH --time=4:00:00
 #SBATCH --partition=data_mover
 
 # make sure you are in a datamover node and have mounted the research drive before running this
