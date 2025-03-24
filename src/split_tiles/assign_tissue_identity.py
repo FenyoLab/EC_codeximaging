@@ -37,8 +37,8 @@ def new_positions(mean_data_dir, clusters_dir, positions_dir, tiles_dir, tile_si
 
         membrane_marker_pos_positions_arr = np.array(membrane_marker_pos_positions)
         membrane_marker_neg_positions_arr = np.array(membrane_marker_neg_positions)
-        print("membrane marker positions length: ", len(membrane_marker_pos_positions_arr))
-        print("membrane marker positions length: ", len(membrane_marker_neg_positions_arr))
+        print("membrane marker pos positions length: ", len(membrane_marker_pos_positions_arr))
+        print("membrane marker neg positions length: ", len(membrane_marker_neg_positions_arr))
 
         membrane_marker_pos_positions_df = pd.DataFrame({'h': membrane_marker_pos_positions_arr[:, 0], 'w': membrane_marker_pos_positions_arr[:, 1]})
         membrane_marker_pos_positions_df.to_csv(os.path.join(sample_positions_path, f'membrane_marker_pos_positions_{tile_size}.csv'), index=True)

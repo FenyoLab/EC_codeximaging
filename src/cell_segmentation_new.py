@@ -86,8 +86,8 @@ def extract_cell_data(dataloader, output_path, num_biomarkers, channel_names, me
         img_transposed = img.permute(0, 2, 3, 1).numpy()
 
         img_filtered = img_transposed[:, :, :, [channel_names.index('DAPI'), channel_names.index(membrane_marker)]] 
-        img_filtered[:, :, :, 0] = img_filtered[:, :, :, 0] / np.max(img_filtered[:, :, :, 0])
-        img_filtered[:, :, :, 1] = img_filtered[:, :, :, 1] / np.max(img_filtered[:, :, :, 1])
+        # img_filtered[:, :, :, 0] = img_filtered[:, :, :, 0] / np.max(img_filtered[:, :, :, 0])
+        # img_filtered[:, :, :, 1] = img_filtered[:, :, :, 1] / np.max(img_filtered[:, :, :, 1])
 
         if tissue_type == 'membrane_marker_pos':
             segmentation_prediction = model.predict(img_filtered, image_mpp=0.5)
@@ -283,7 +283,7 @@ def save_data(output_path, matrix, metadata, cell_sample_names, tile_positions, 
 def combine_matrices(output_path, data_path, tiles_dir):
     # Load data
     membrane_marker_pos = load_data('membrane_marker_pos', output_path)
-    membrane_marker_neg = load_data('membrane_marker_pos', output_path)
+    membrane_marker_neg = load_data('membrane_marker_neg', output_path)
 
     # Combine matrices and metadata
     matrix = np.vstack([membrane_marker_pos['matrix'], membrane_marker_neg['matrix']])

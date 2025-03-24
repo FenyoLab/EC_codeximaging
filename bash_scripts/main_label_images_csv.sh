@@ -8,6 +8,7 @@
 #SBATCH --partition=data_mover
 
 # make sure you are in a datamover node and have mounted the research drive before running this
+# can also run directly on datamover node in terminal if research drive access is weird
 source set_up_conda.sh
 module load condaenvs/new/omero2
 
