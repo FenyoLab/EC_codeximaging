@@ -15,7 +15,9 @@ custom_colors:
 
 response_status:
   20231019-4475-1E_Scan2: Responsive
+  20230812_4475_1Q_Scan1: Responsive
   20231019-0413-3D_Scan1: Responsive
+  20231003-0413-3C_Scan1: Responsive
   20230922-5689-1P_Scan1: Nonresponsive
   20230908-8710-3H-1_Scan1: Nonresponsive
   20230908-1872-4C-1_Scan2: Responsive
@@ -24,7 +26,9 @@ response_status:
 
 recurrence_status:
   20231019-4475-1E_Scan2: Recurrent
+  20230812_4475_1Q_Scan1: Recurrent
   20231019-0413-3D_Scan1: Recurrent
+  20231003-0413-3C_Scan1: Recurrent
   20231012-9784-6H_Scan1: Nonrecurrent
   20231012-9390-1I_Scan1: Nonrecurrent
   20231012-3535-1T_Scan2: Nonrecurrent
@@ -32,6 +36,7 @@ recurrence_status:
   20231003-2630-3P_Scan1: Nonrecurrent
   20231003-1160-3S_Scan1: Nonrecurrent
   20230922-7331-1H_Scan1: Nonrecurrent
+  20230922-7331-1J_Scan1: Nonrecurrent
   20230922-5689-1P_Scan1: Recurrent
   20230922-3869-1O_Scan1: Nonrecurrent
   20230908-8710-3H-1_Scan1: Recurrent
@@ -43,7 +48,9 @@ recurrence_status:
 
 grade_status:
   20231019-4475-1E_Scan2: Grade 2
+  20230812_4475_1Q_Scan1: Grade 2
   20231019-0413-3D_Scan1: Grade 1
+  20231003-0413-3C_Scan1: Grade 1
   20231012-9784-6H_Scan1: Grade 1
   20231012-9390-1I_Scan1: Grade 1
   20231012-3535-1T_Scan2: Grade 2
@@ -51,6 +58,7 @@ grade_status:
   20231003-2630-3P_Scan1: Grade 1
   20231003-1160-3S_Scan1: Grade 1
   20230922-7331-1H_Scan1: Grade 1
+  20230922-7331-1J_Scan1: Grade 1
   20230922-5689-1P_Scan1: Grade 1
   20230922-3869-1O_Scan1: Grade 1
   20230908-8710-3H-1_Scan1: Grade 2
@@ -62,7 +70,9 @@ grade_status:
 
 stage_status:
   20231019-4475-1E_Scan2: IIIC1
+  20230812_4475_1Q_Scan1: IIIC1
   20231019-0413-3D_Scan1: IVB
+  20231003-0413-3C_Scan1: IVB
   20231012-9784-6H_Scan1: IIIA
   20231012-9390-1I_Scan1: 1A
   20231012-3535-1T_Scan2: 1A
@@ -70,6 +80,7 @@ stage_status:
   20231003-2630-3P_Scan1: 1A
   20231003-1160-3S_Scan1: 1A
   20230922-7331-1H_Scan1: 1A
+  20230922-7331-1J_Scan1: 1A
   20230922-5689-1P_Scan1: 1A
   20230922-3869-1O_Scan1: 1A
   20230908-8710-3H-1_Scan1: IIIC1

@@ -15,18 +15,26 @@ def main():
     run_config = helper.load_yaml_file(config_yaml)
     config = SimpleNamespace(**run_config)
 
-    celltype_barchart(cell_types_dir = config.cell_types_dir, custom_colors_dict = config.custom_colors)
+    save_path = os.path.join(config.cell_types_dir, 'figures')
 
-def celltype_barchart(cell_types_dir, custom_colors_dict):
+    celltype_barchart(cell_types_dir = config.cell_types_dir, custom_colors_dict = config.custom_colors, save_path = save_path)
+
+def celltype_barchart(cell_types_dir, custom_colors_dict, save_path):
     #Load the cell types data
-    cell_types = pd.read_csv(os.path.join(cell_types_dir, 'cell_types_visuals.csv'), index_col=0)
-    cell_types = cell_types[cell_types['cell_type_visuals'] != 'Artifact'] #remove artifacts
+    cell_types = pd.read_csv(os.path.join(cell_types_dir, 'cell_types.csv'), index_col=0)
+    cell_types = cell_types[cell_types['cell_type'] != 'Artifact'] #remove artifacts
+    cell_types = cell_types.copy()  
+    cell_types['cell_type'] = cell_types['cell_type'].replace( #combine immune cell types for visualization
+        ['CD20+ and CD3e+ cells', 'CD20+ and CD4+ cells', 
+        'CD20+ and CD8+ cells', 'CD4+ and CD8+ T cells'], 
+        'Immune cells (mixed)'
+    )
 
     #cell types ordered for visualization
     custom_order = list(custom_colors_dict.keys())
 
     #Calculate proportions of cell types for each slide
-    proportions = cell_types.groupby(['slide_id', 'cell_type_visuals']).size().unstack(fill_value=0)
+    proportions = cell_types.groupby(['slide_id', 'cell_type']).size().unstack(fill_value=0)
     proportions = proportions.iloc[::-1]
     proportions = proportions[custom_order]
     proportions = proportions.div(proportions.sum(axis=1), axis=0)
@@ -58,7 +66,8 @@ def celltype_barchart(cell_types_dir, custom_colors_dict):
     ax.legend(title='Cell Types', bbox_to_anchor=(1.05, 1), loc='upper left', fontsize = 14)
     
     plt.tight_layout()
-    plt.savefig(os.path.join(cell_types_dir, 'figures/celltype_barchart.png'), dpi = 300)
+    print(f'Saving celltype_barchart to {save_path}')
+    plt.savefig(os.path.join(save_path, 'celltype_barchart.png'), dpi = 300)
 
 if __name__ == "__main__":
     main()

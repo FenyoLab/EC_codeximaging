@@ -14,19 +14,27 @@ def main():
     config_yaml= 'barcharts.yaml'
     run_config = helper.load_yaml_file(config_yaml)
     config = SimpleNamespace(**run_config)
-    group_name = 'TumorStage'
+    group_name = 'Recurrence'
+
+    save_path = os.path.join(config.cell_types_dir, 'figures')
 
     celltype_barchart_grouped(cell_types_dir = config.cell_types_dir, custom_colors_dict = config.custom_colors, 
-                            group_dict = config.stage_status, group_name = group_name)
+                            group_dict = config.recurrence_status, group_name = group_name, save_path = save_path)
 
-def celltype_barchart_grouped(cell_types_dir, custom_colors_dict, group_dict, group_name):
-    cell_types = pd.read_csv(os.path.join(cell_types_dir, 'cell_types_visuals.csv'), index_col=0)
-    cell_types = cell_types[cell_types['cell_type_visuals'] != 'Artifact']
+def celltype_barchart_grouped(cell_types_dir, custom_colors_dict, group_dict, group_name, save_path):
+    cell_types = pd.read_csv(os.path.join(cell_types_dir, 'cell_types.csv'), index_col=0)
+    cell_types = cell_types[cell_types['cell_type'] != 'Artifact']
+    cell_types = cell_types.copy()  
+    cell_types['cell_type'] = cell_types['cell_type'].replace( #combine immune cell types for visualization
+        ['CD20+ and CD3e+ cells', 'CD20+ and CD4+ cells', 
+        'CD20+ and CD8+ cells', 'CD4+ and CD8+ T cells'], 
+        'Immune cells (mixed)'
+    )
 
     custom_order = list(custom_colors_dict.keys())
 
     # Proportion calculations
-    proportions = cell_types.groupby(['cell_type_visuals', 'slide_id']).size().unstack(fill_value=0)
+    proportions = cell_types.groupby(['cell_type', 'slide_id']).size().unstack(fill_value=0)
     proportions = proportions.reindex(custom_order)
     proportions = proportions.div(proportions.sum(axis=0), axis=1)
 
@@ -51,7 +59,7 @@ def celltype_barchart_grouped(cell_types_dir, custom_colors_dict, group_dict, gr
     df_melted = (
         organized_df
         .reset_index()  # Convert index (cell types) into columns
-        .melt(id_vars=["cell_type_visuals"], var_name=[group_name, "Slide ID"], value_name="Proportion")
+        .melt(id_vars=["cell_type"], var_name=[group_name, "Slide ID"], value_name="Proportion")
     )
 
     # Get unique slide IDs for each group
@@ -60,7 +68,7 @@ def celltype_barchart_grouped(cell_types_dir, custom_colors_dict, group_dict, gr
     }
 
     # Get unique cell types
-    cell_types = df_melted["cell_type_visuals"].unique()
+    cell_types = df_melted["cell_type"].unique()
 
     # Initialize a figure with subplots (one for each group)
     if len(group_samples) > 3:
@@ -83,7 +91,8 @@ def celltype_barchart_grouped(cell_types_dir, custom_colors_dict, group_dict, gr
 
     # Save the figure
     plt.tight_layout()
-    plt.savefig(os.path.join(cell_types_dir, f'figures/celltypes_barchart_{group_name.lower()}.png'), dpi=300)
+    print(f'Saving celltypes_barchart_{group_name.lower()} to {save_path}')
+    plt.savefig(os.path.join(save_path, f'celltypes_barchart_{group_name.lower()}.png'), dpi=300)
 
 def plot_group(ax, data, cell_types, custom_colors_dict, slides, title):
     # Create a zero baseline for stacking
@@ -92,7 +101,7 @@ def plot_group(ax, data, cell_types, custom_colors_dict, slides, title):
     for cell_type in cell_types:
         # Get proportions for each slide and cell type
         proportions = [
-            data[(data["Slide ID"] == slide) & (data["cell_type_visuals"] == cell_type)]["Proportion"].sum()
+            data[(data["Slide ID"] == slide) & (data["cell_type"] == cell_type)]["Proportion"].sum()
             for slide in slides
         ]
         # Plot horizontal bars

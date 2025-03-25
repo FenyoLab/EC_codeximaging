@@ -10,7 +10,7 @@ def main():
     cell_types_dir = 'celltypes/27_clusters'
 
     matrix_path = os.path.join(out_dir, 'normalized_matrix/matrix_normal_filtered_markers.npy')
-    cell_types_path = os.path.join(out_dir, cell_types_dir, 'cell_types_visuals.csv')
+    cell_types_path = os.path.join(out_dir, cell_types_dir, 'cell_types.csv')
     channel_names =  ['DAPI', 'MPO', 'Ecadherin', 'CD163', 'CD4', 'CD68', 'CD8', 'CD20', 'CD31', 'CD3e']
     save_path = os.path.join(out_dir, cell_types_dir, 'figures')
     gen_heatmap(matrix_path, cell_types_path, save_path, channel_names)
@@ -23,12 +23,18 @@ def gen_heatmap(matrix_path, cell_types_df_path, save_path, channel_names):
     cell_types_df = pd.read_csv(cell_types_df_path, index_col=0)
     print(cell_types_df.shape)
 
-    cell_types = cell_types_df['cell_type_visuals'].values
+    cell_types = cell_types_df['cell_type'].values
     cell_types = cell_types[cell_types != 'Artifact']
     print(cell_types.shape)
 
     assert matrix.shape[0] == cell_types.shape[0], "Matrix and cell types do not have the same number of rows"
 
+    cell_types = np.where(
+        np.isin(cell_types, ['CD20+ and CD3e+ cells', 'CD20+ and CD4+ cells', 
+                              'CD20+ and CD8+ cells', 'CD4+ and CD8+ T cells']),
+        'Immune cells (mixed)', 
+        cell_types
+    )
     unique_cell_types = np.unique(cell_types)
     print(unique_cell_types)
 
