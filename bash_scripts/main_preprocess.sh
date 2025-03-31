@@ -1,13 +1,11 @@
 #!/bin/bash
 #SBATCH --job-name=preprocessing
+#SBATCH --mail-type=FAIL # Mail events (NONE, BEGIN, END, FAIL, ALL)
+#SBATCH --ntasks=2
 #SBATCH --output=../logs/preprocessing_%j.txt
-#SBATCH --partition gpu4_short,gpu8_short,gpu4_dev,gpu8_dev,gpu4_medium,gpu8_medium,gpu4_long,gpu8_long
-#SBATCH --nodes=1
-#SBATCH --cpus-per-task=1
-#SBATCH --ntasks-per-node=1
-#SBATCH --mem=300GB
+#SBATCH --mem=600GB
 #SBATCH --time=4:00:00
-#SBATCH --gres=gpu:4
+#SBATCH --partition=fn_medium,fn_short,fn_long
 
 # conda set up and activation
 source set_up_conda.sh
