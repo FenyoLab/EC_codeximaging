@@ -16,7 +16,6 @@ ROI_path: /gpfs/data/proteomics/data/Cervical_mIF/roi_annotations # ROI for remo
 selected_region: 
   - tumor # Regions for visualization 
   - TUMOR 
-  - tumor involving adenomyosis 
 ROI_rm: # These are the names of the ROIs you want to remove 
   - artifact  
   - potential-artifact
