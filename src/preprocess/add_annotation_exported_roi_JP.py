@@ -6,7 +6,7 @@ def delete_apple_nonsense(data_dir):
     file_list = os.listdir(data_dir)
     real_files = []
     for filly in file_list:
-        if not ("._"  in filly and ".DS" in filly):
+        if not ("._"  in filly or ".DS" in filly):
             real_files.append(filly)
     return real_files
 

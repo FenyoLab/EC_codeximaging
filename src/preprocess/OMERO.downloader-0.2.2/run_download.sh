@@ -12,7 +12,7 @@ source /gpfs/data/proteomics/home/lp2700/python_scripts/github_testing/CC_codexi
 
 data_dir='/gpfs/data/proteomics/data/Cervical_mIF/'
 mkdir $data_dir'downloads' # does this overwrite the folder 
-for variable in 701231 701509 692524 692536 #698744 698885 699026 699167 692515 692533 692518 692539
+for variable in 707635 707494 707353 692512 692527 692509 # 705910 705769 692545 692530 705632 705491 692551 692542 704478 704253 692548 692521 701231 701509 692524 692536 698744 698885 699026 699167 692515 692533 692518 692539
 do 
         echo $variable
 	/gpfs/data/proteomics/home/lp2700/data_gen/EC_mIF/OMERO.downloader-0.3.3/download.sh -b $data_dir'downloads' -s omero.nyumc.org -u $USER -w $PASSWORD -f binary Image:$variable

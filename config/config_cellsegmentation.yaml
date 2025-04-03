@@ -49,8 +49,13 @@ research_drive_dir: 'fenyolab/CC_codeximaging/cell_segmentation'
 
 # Omero image info # TODO - AUTOMATE
 omero_image_dict:
-  "20250305-Jharna-34933-A1_Scan1.er":
-    image_id: 701509
+  "20250318-Jharna-28873-A1_Scan1.er":
+    image_id: 707635
+  "20250318-Jharna-07291-1A_Scan1.er":
+    image_id: 707494
+  "20250318-Jharna-04738-A1_Scan1.er":
+    image_id: 707353
+
 
 # already processed
  # "20250305-Jharna-09002-A1_Scan1.er":
@@ -63,5 +68,20 @@ omero_image_dict:
    # image_id: 699026
  # "20250225-Jharna-10103-A1_Scan1.er":
    # image_id: 699167
+ # "20250305-Jharna-34933-A1_Scan1.er":
+   # image_id: 701509
+ # "20250305-Jharna-00862-6X_Scan1.er":
+   # image_id: 704253
+ # "20250305-Jharna-10285-A21_Scan1.er":
+   # image_id: 704478
+ # "20250311-Jharna-00438-1A_Scan1.er":
+   # image_id: 705910
+ # "20250311-Jharna-07688-A1_Scan1.er":
+   # image_id: 705491
+ # "20250311-Jharna-39367-A1_Scan1.er":
+   # image_id: 705632
+ # "20250311-Jharna-49411-1A_Scan1.er":
+   # image_id: 705769
+
 # Lineage markers cluster identity - leave empty when doing first cell segmentation and fill out for analysis
 lineage_markers_cluster_dict:
