@@ -44,8 +44,8 @@ celltypes_dir: celltypes
 omero_table_dir: omero_tables
 
 # Research drive
-mount_lab: fenyolab
-research_drive_dir: 'fenyolab/CC_codeximaging/cell_segmentation'
+omero_dir: 'fenyolab/CC_codeximaging/cell_segmentation'
+research_drive_dir: 'fenuolab-omero/CC_codeximaging/cell_segmentation'
 
 # Omero image info # TODO - AUTOMATE
 omero_image_dict:

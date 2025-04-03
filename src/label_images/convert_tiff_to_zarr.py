@@ -1,7 +1,7 @@
 import os
 import subprocess 
 
-def convert_tiff_to_zarr(label_images_dir, tiff_file='label_image.tiff', zarr_file='label_image.zarr'): #samples_to_remove = None,
+def convert_tiff_to_zarr(label_images_dir, tiff_file='label_image.tiff', zarr_file='label_image.zarr'):
     """
     Converts TIFF files to Zarr format in the specified directory.
     Parameters:

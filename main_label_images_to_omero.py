@@ -16,6 +16,7 @@ out_suffix = os.path.basename(config.out_dir)
 date = "_".join(out_suffix.split("_")[1:])
 
 move_to_omero.move_label_images_to_omero(label_images_dir = config.label_images_dir, 
-                                        base_dir = config.research_drive_dir, 
+                                        research_dir = config.research_drive_dir, 
+                                        omero_dir = config.omero_dir,
                                         image_id_dict = config.omero_image_dict, 
                                         image_name = 'cell_label_image', date = date)

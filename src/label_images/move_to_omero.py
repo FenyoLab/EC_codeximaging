@@ -5,8 +5,7 @@ import subprocess
 import sys
 import getpass
 
-def move_label_images_to_omero(label_images_dir, base_dir, image_id_dict, label_image_dir_name = "label_images", image_name = 'label_image', date = None):
-
+def move_label_images_to_omero(label_images_dir, research_dir, omero_dir, image_id_dict, label_image_dir_name = "label_images", image_name = 'label_image', date = None):
     password = os.getenv('PASSWORD')
     kerberosid = os.getenv('KERBEROSID')
 
@@ -15,7 +14,7 @@ def move_label_images_to_omero(label_images_dir, base_dir, image_id_dict, label_
     elif kerberosid is None:
         raise ValueError('No kerberos provided in environment variable KERBEROSID')
     
-    research_drive_dir = f'/mnt/{kerberosid}/{base_dir}'
+    research_drive_dir = f'/mnt/{kerberosid}/{research_dir}'
     print(research_drive_dir)
     os.chdir(research_drive_dir)
 
@@ -30,7 +29,7 @@ def move_label_images_to_omero(label_images_dir, base_dir, image_id_dict, label_
     for sample in sample_names:
         print(f'Processing sample {sample}')
 
-        sample_dir = f'{sample}_{date}' #add date to dir name for sample to preserve dir structure 
+        sample_dir = f'{sample}_{date}' # Add date to dir name for sample to preserve dir structure 
         os.makedirs(sample_dir, exist_ok =True)
         os.chdir(sample_dir)
         print(f"Current directory: {os.getcwd()}")
@@ -57,7 +56,7 @@ def move_label_images_to_omero(label_images_dir, base_dir, image_id_dict, label_
             print(f"Uploading label image with roi_converter_ngff")
             image_id = image_id_dict.get(sample, {}).get('image_id')
             print(sample, image_id)
-            server_directory = os.path.join('/omero', base_dir, label_image_dir_name, sample_dir)
+            server_directory = os.path.join('/omero', omero_dir, label_image_dir_name, sample_dir)
             print(server_directory)
 
             try:
@@ -78,7 +77,6 @@ def copy_directory(source, destination):
         sys.exit("Terminating script due to error in copying directory.")
     
 def omero_login(user, password, server="omero.nyumc.org", port_number=4064):
-
     # Log into OMERO
     login_command = f'omero login -u {user} -w {password} -s {server} -p {port_number}'
     result = subprocess.call(login_command, shell=True, executable='/bin/bash')
@@ -89,14 +87,11 @@ def omero_login(user, password, server="omero.nyumc.org", port_number=4064):
         print("OMERO login failed.")
         sys.exit("Terminating script due to unsuccessful login.")
 
-def run_roi_converter_ngff(image_id, image_name, kerberosid, password, server_directory, server="omelpdcpvm01.nyumc.org", port=4064):
-
-    command = f'ROI_Converter_NGFF -i {image_name}.zarr/0 -r {image_id} -n {image_name} --server {server} --port {port} --user {kerberosid} --server_directory {server_directory} --password {password}'
+def run_roi_converter_ngff(image_id, image_name, kerberosid, password, server_directory, server="omero.nyumc.org", port=4064):
+    command = f'ROI_Converter_NGFF -i {image_name}.zarr/0 -r {image_id} -n {image_name} --server {server} --port {port} --user {kerberosid} --server_directory {server_directory} --password {password} --debug'
+    print(command)
     subprocess.call(command, shell=True, executable='/bin/bash')
     del password 
 
-    
 if __name__ == '__main__':
     main()
-    
-

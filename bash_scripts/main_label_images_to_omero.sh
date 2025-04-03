@@ -7,11 +7,11 @@
 #SBATCH --time=4:00:00
 #SBATCH --partition=data_mover
 
-#make sure you are in a datamover node and have mounted the research drive before running this
-source ~/.bashrc
+# If backing up the data, make sure you are in a datamover node and have mounted the research drive before running this
+source set_up_conda.sh
 conda activate omero
 
 source .env
 
-cd ../
+cd ..
 python main_label_images_to_omero.py

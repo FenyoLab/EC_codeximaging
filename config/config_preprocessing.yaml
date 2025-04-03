@@ -3,22 +3,21 @@ data_type: WSI # 'TMA' or 'WSI'
 input_ext: qptiff # qptiff
 input_pixel_per_um: 2
 inference_window_um: 64
-input_path: /gpfs/data/proteomics/data/Cervical_mIF/qptiff_dat/ # Dir with input 
-output_path: /gpfs/data/proteomics/projects/Cervical_mIF/CC_codeximaging_results/preprocessing_outs/out_256 # This is where the output dir will be
-common_channel_file: /gpfs/data/proteomics/projects/Cervical_mIF/CC_codeximaging_results/preprocessing_outs/out_256/data/common_channels_cell_segmentation.txt
-selected_channel_color_file: /gpfs/data/proteomics/projects/Cervical_mIF/CC_codeximaging_results/preprocessing_outs/out_256/selected_channels_w_color.yaml
-channel_strength_file: /gpfs/data/proteomics/projects/Cervical_mIF/CC_codeximaging_results/preprocessing_outs/out_256/channels_vis_strength.yaml
+input_path: /gpfs/data/proteomics/data/Cervical_mIF/qptiff_dat # Dir with input 
+output_path: /gpfs/data/proteomics/data/Cervical_mIF/output # This is where the output dir will be
+common_channel_file: /gpfs/data/proteomics/data/Cervical_mIF/common_channels_cell_segmentation.txt
+# selected_channel_color_file: /gpfs/data/proteomics/home/ca3261/sample_out/out_256/selected_channels_w_color.yaml
+# channel_strength_file: /gpfs/data/proteomics/home/ca3261/sample_out/out_256/channels_vis_strength.yaml
 
 ref_channel: 0 # This is the channel to be used for background removal!!
 # Uhis is the path to the annotations folder. These are all the ROIs drawn on the qptiff images. 
 # Utilize /src/preprocess/ExportROIsFromOmero.js to download annotations from all the qptiffs on omero
-ROI_path: /gpfs/data/proteomics/projects/Cervical_mIF/CC_codeximaging_results/annotations # ROI for removing unwanted regions
+ROI_path: /gpfs/data/proteomics/data/Cervical_mIF/roi_annotations # ROI for removing unwanted regions
 selected_region: 
   - tumor # Regions for visualization 
   - TUMOR 
-  - tumor involving adenomyosis 
-  - tumor-test # For the test images
 ROI_rm: # These are the names of the ROIs you want to remove 
   - artifact  
+  - potential-artifact
 
-tiles_dir: tiles_test # This is the name of the tiles directory
+tiles_dir: tiles # This is the name of the tiles directory
