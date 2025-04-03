@@ -22,7 +22,7 @@ def create_ome_csv(sample, seg_data_path, save_path, channel_names):
 
     assert sample_metadata.shape[0] == sample_matrix.shape[0], 'Number of rows in sample_metadata and sample_matrix do not match'
 
-    #want only certain metadata columns
+    # Want only certain metadata columns
     sample_metadata = sample_metadata[['object', 'polygon', 'tile_polygon']].reset_index(drop=True)
     polygon_and_markers_df = add_markers(sample_metadata, sample_matrix, channel_names)
 

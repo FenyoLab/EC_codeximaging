@@ -86,8 +86,6 @@ def extract_cell_data(dataloader, output_path, num_biomarkers, channel_names, me
         img_transposed = img.permute(0, 2, 3, 1).numpy()
 
         img_filtered = img_transposed[:, :, :, [channel_names.index('DAPI'), channel_names.index(membrane_marker)]] 
-        # img_filtered[:, :, :, 0] = img_filtered[:, :, :, 0] / np.max(img_filtered[:, :, :, 0])
-        # img_filtered[:, :, :, 1] = img_filtered[:, :, :, 1] / np.max(img_filtered[:, :, :, 1])
 
         if tissue_type == 'membrane_marker_pos':
             segmentation_prediction = model.predict(img_filtered, image_mpp=0.5)
@@ -159,7 +157,7 @@ def get_tile_intensity(image, prediction, num_biomarkers, slide_id, tile_h, tile
         epsilon = 1e-10  # Small number to avoid division by zero
         axis_ratio = region.axis_major_length / (axis_minor_length if axis_minor_length > epsilon else epsilon)
 
-        #extract contour and convert to global coordinates
+        # Extract contour and convert to global coordinates
         contours = find_contours(cell_mask, level=0.5)
         cell_polygon = None
 

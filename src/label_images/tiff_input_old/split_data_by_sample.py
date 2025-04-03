@@ -5,7 +5,7 @@ import pandas as pd
 def split_by_sample(segmentation_data_dir, label_images_dir):
     os.makedirs(label_images_dir, exist_ok=True)
 
-    #load in tile info 
+    # Load in tile info 
     segmentation_masks = np.load(os.path.join(segmentation_data_dir, 'segmentation_masks.npy'))
     tile_positions = np.load(os.path.join(segmentation_data_dir, 'tile_positions.npy'))
     tile_sample_names = np.load(os.path.join(segmentation_data_dir, 'tile_sample_names.npy'))

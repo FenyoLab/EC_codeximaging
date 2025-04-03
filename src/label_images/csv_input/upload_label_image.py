@@ -14,7 +14,7 @@ def omero_label_image(omero_dir, base_dir, seg_data_path, image_id_dict, channel
             channel_names - list of str, names of the channels
             tile_size - int, size of the tiles'''
 
-    #get env variables 
+    # Get env variables 
     password = os.getenv('PASSWORD')
     kerberosid = os.getenv('KERBEROSID')
 
@@ -23,7 +23,7 @@ def omero_label_image(omero_dir, base_dir, seg_data_path, image_id_dict, channel
     elif kerberosid is None:
         raise ValueError('No kerberos provided in environment variable KERBEROSID')
 
-    #defines research drive path where the csv input will be saved
+    # Defines research drive path where the csv input will be saved
     research_drive_dir = f'/mnt/{kerberosid}/{base_dir}'
     print(f"Current directory: {os.getcwd()}")
     os.chdir(research_drive_dir)
@@ -32,19 +32,19 @@ def omero_label_image(omero_dir, base_dir, seg_data_path, image_id_dict, channel
     print("Logging into omero")
     omero_login(kerberosid, password)
 
-    #loop through each sample
+    # Loop through each sample
     cell_sample_names = np.load(os.path.join(seg_data_path, 'cell_sample_names.npy'))
     for sample in np.unique(cell_sample_names):
-        #create dir in research drive for each sample and cd into it
+        # Create dir in research drive for each sample and cd into it
         sample_research_drive_path = os.path.join(research_drive_dir, sample)
         os.makedirs(sample_research_drive_path, exist_ok =True)
         os.chdir(sample_research_drive_path)
         print(f"Current directory: {os.getcwd()}")
 
-        #create csv input to create label image
+        # Create csv input to create label image
         table_filename = create_ome_csv(sample, seg_data_path, sample_research_drive_path, channel_names)
 
-        #define additional variables for roi_converter_ngff
+        # Define additional variables for roi_converter_ngff
         roi_name = 'cell_label_image_csv'
         table_name = 'marker_intensities'
         zarr_filename = 'csv_tile_mask'

@@ -3,7 +3,7 @@ import numpy as np
 from types import SimpleNamespace
 from utils import helper
 
-#import config
+# Import config
 config_yaml= 'config/config_cellsegmentation.yaml'
 run_config = helper.load_yaml_file(config_yaml)
 config = SimpleNamespace(**run_config)

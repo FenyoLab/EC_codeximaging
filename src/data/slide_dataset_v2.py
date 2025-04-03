@@ -10,7 +10,6 @@ import pdb
 
 class SlideDataset(data.Dataset):
     ''' Dataset for slides '''
-
     def __init__(self, root_path = None, tile_size = None, tiles_dir = None, tissue_type = '', transform = None):
         ''' 
         Initialize the dataset 
@@ -29,27 +28,14 @@ class SlideDataset(data.Dataset):
     def __getitem__(self, index):
         image = self.read_region(self.tile_pos[index][0], self.tile_pos[index][1], self.tile_size, self.tile_size)
         image = image.astype(np.float32)
-        #print("pre transformed image")
-        #print(image.shape)
-        #print(type(image))
-        #print(np.min(image))
-        #print(np.max(image))
         if self.transform is not None:
-            #print("image is being transformed")
             transformed_image = self.transform(image)
         else:
-            #print("image is not being transformed")
             transformed_image = transforms.ToTensor()(image)
         label = None
         x = self.tile_pos[index][0]
         y = self.tile_pos[index][1]
-        #print("x:", x, "y:", y)
         img_id = index
-        #print("transformed image:")
-        #print(transformed_image.shape)
-        #print(torch.min(transformed_image))
-        #print(torch.max(transformed_image))
-        #breakpoint()
         return transformed_image, label, x, y, img_id
 
     def __len__(self):
@@ -73,11 +59,9 @@ class SlideDataset(data.Dataset):
 
     def load_tiles(self, tile_size, tiles_dir, tissue_type):
         ''' load tiles positions from disk '''
-        #print("tile size", tile_size)
         tile_path = f'{self.root_path}/{self.tiles_dir}/{tissue_type}_positions_{tile_size}.csv'
         print(tile_path)
         tile_pos = pd.read_csv(tile_path, index_col = 0).to_numpy()
-        #tile_pos[0]: array([ 1024, 19456,     0])
         return tile_pos
 
     # Generate tiles from mask
