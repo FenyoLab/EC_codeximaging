@@ -11,7 +11,7 @@ config = SimpleNamespace(**run_config)
 
 # Import python files
 from src.split_tiles import membrane_marker_means, kmeans_tiles, assign_tissue_identity
-from src.cell_segmentation import get_cell_segmentations
+from src.cell_segmentation_new import get_cell_segmentations
 
 segmentation_tile_positions_dir = os.path.join(config.segmentation_data_dir, config.tiles_split_dir)
 

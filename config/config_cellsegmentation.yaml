@@ -3,30 +3,30 @@
 # Basic input parameters
 tile_size: 256
 batch_size: 64
-tiles_dir: tiles_test
-num_channels: 31
+tiles_dir: tiles
+num_channels: 34
 n_clusters_celltypes: 27
 n_clusters_preprocessing: 3
 n_clusters_thresholding: 3
 random_state: 2024
-membrane_marker: 'Ecadherin'
-channel_names: ['DAPI', 'MPO', 'Ecadherin', 'PDL1', 'CD163', 'PD1', 'CD47', 'GAL3', 'PARP1', 'LAG3', 'CD4', 'PI3KCA', 'TIM3', 'CD68', 'ER', 'PR', 'MSH2', 'CD8', 'MSH6', 'bCatenin1', 'HLAABC', 'MLH1', 'Ki67', 'CD20', 'ARID1A', 'IFNG', 'CD31', 'PMS', 'CD44', 'PanCytokeratin', 'CD3e']
+membrane_marker: 'E-cadherin'
+channel_names: ['DAPI', 'CD45RO', 'CD4', 'MPO', 'CD68', 'E-cadherin', 'PD-L1', 'CD163', 'PD-1', 'PARP1', 'GAL3', 'CD8', 'CD47', 'PI3KCA', 'MSH2', 'IFNG', 'MSH6', 'HLADR', 'MLH1', 'CD40', 'CD34', 'TIM3', 'FOXP3', 'Granzyme B', 'PR', 'IDO1', 'TOX', 'CD20', 'ARID1A', 'CD31', 'PMS2', 'Ki67', 'Pan-Cytokeratin', 'CD3e']
 
-lineage_markers: ['DAPI', 'MPO', 'Ecadherin', 'CD163', 'CD4', 'CD68', 'CD8', 'CD20', 'CD31', 'CD3e'] 
+lineage_markers: ['CD3e', 'CD163', 'CD31', 'CD4', 'CD20', 'CD68', 'CD8', 'MPO', 'CD45RO', 'E-cadherin', 'DAPI', 'Pan-Cytokeratin', 'CD34'] 
 threshold_channel_names: ['MPO', 'CD163', 'CD4', 'CD68', 'CD8', 'CD20', 'CD3e']
-exclude_channel_names: ['pJAK1', 'CD56', 'MAL', 'Her2', 'STAT1']
+exclude_channel_names: []
 samples_to_remove: null
 
 # Base paths
-segmentation_data_dir: /gpfs/data/proteomics/home/ca3261/sample_out/raw_segmentation_data
-label_images_dir: /gpfs/data/proteomics/home/ca3261/sample_out/label_images
-out_dir: /gpfs/data/proteomics/home/ca3261/sample_out/out_2-26-25
+segmentation_data_dir: /gpfs/data/proteomics/data/Cervical_mIF/output/raw_segmentation_data
+label_images_dir: /gpfs/data/proteomics/data/Cervical_mIF/output/label_images
+out_dir: /gpfs/data/proteomics/data/Cervical_mIF/output/initial_run
 
-data_dir: /gpfs/data/proteomics/home/ca3261/sample_out/out_256/data
-qptiff_data_dir: /gpfs/data/proteomics/home/ca3261/cervical_cancer/sample_imgs/Repository/59/fenyod01_956/2025-02/24/11-18-37.317
+data_dir: /gpfs/data/proteomics/data/Cervical_mIF/output/data_new
+qptiff_data_dir: /gpfs/data/proteomics/data/Cervical_mIF/qptiff_dat
 
-new_data_dir: /gpfs/data/proteomics/home/ca3261/sample_out/out_256/data_new
-new_segmentation_data_dir: /gpfs/data/proteomics/home/ca3261/sample_out/raw_segmentation_data_new
+new_data_dir: /gpfs/data/proteomics/data/Cervical_mIF/output/data_new
+new_segmentation_data_dir: /gpfs/data/proteomics/data/Cervical_mIF/output/raw_segmentation_data_new
 
 # Specific paths: main_cell_segmentation
 tiles_split_dir: tiles_split
@@ -49,14 +49,10 @@ research_drive_dir: 'fenuolab-omero/CC_codeximaging/cell_segmentation'
 
 # Omero image info # TODO - AUTOMATE
 omero_image_dict:
-  "20250225-Jharna-02433-A1_Scan1.er": 
-    image_id: 698744
-  "20250225-Jharna-07611-A3_Scan1.er":
-    image_id: 698885
+  # "20250225-Jharna-02433-A1_Scan1.er": 
+  #   image_id: 698744
   "20250225-Jharna-08153-A1_Scan1.er":
     image_id: 699026
-  "20250225-Jharna-10103-A1_Scan1.er":
-    image_id: 699167
 
 # Lineage markers cluster identity - leave empty when doing first cell segmentation and fill out for analysis
 lineage_markers_cluster_dict:

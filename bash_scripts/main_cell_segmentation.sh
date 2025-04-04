@@ -11,6 +11,7 @@
 #SBATCH --gres=gpu:4
 
 source .env
+source set_up_conda.sh
 module load condaenvs/new/deepcell
 
 cd ..

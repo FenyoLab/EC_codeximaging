@@ -3,14 +3,14 @@ import numpy as np
 from types import SimpleNamespace
 from utils import helper
 
-#make sure you are in a datamover node and have mounted the research drive before running this
+# Make sure you are in a datamover node and have mounted the research drive before running this
 
-#load in config
+# Load in config
 config_yaml= 'config/config_cellsegmentation.yaml'
 run_config = helper.load_yaml_file(config_yaml)
 config = SimpleNamespace(**run_config)
 
-from src.label_images import move_to_omero
+from src.label_images.tiff_input_old import move_to_omero
 
 out_suffix = os.path.basename(config.out_dir)
 date = "_".join(out_suffix.split("_")[1:])
