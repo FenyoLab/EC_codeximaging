@@ -7,17 +7,19 @@ library(zeallot)
 
 #-----------------------------
 # EDIT THIS
-project_title <- "endometrial_test_normal" 
-cat("Project title:", project_title)
+
+# project_title
+project_title <- "project_title" 
 
 # markers in prior_marker_info must EXACTLY match markers in imaging_data
-prior_marker_info <- read.csv("/gpfs/home/yb2612/yb2612_fenyo/data/celesta/endometrial_test/prior_marker_info_3P_noCD20.csv")
+prior_marker_info <- read.csv("path/to/prior_marker_info.csv")
 
 # imaging_data cannot contain any markers with all 0 values
-imaging_data <- read.csv("/gpfs/home/yb2612/yb2612_fenyo/data/celesta/endometrial_test/imaging_data_3P_normal_noCD20.csv")
+imaging_data <- read.csv("path/to/imaging_data.csv")
 #-----------------------------
 
 # set/create output folder based on project title
+cat("Project title:", project_title)
 output_folder <- paste0("/gpfs/home/yb2612/yb2612_fenyo/results/celesta/",project_title)
 if (!dir.exists(output_folder)) {
   dir.create(output_folder)
@@ -31,7 +33,9 @@ cat("\nAll results saved to:", output_folder)
 cat("\n\n-------------------------------")
 cat("\nCreating CELESTA object...")
 cat("\n-------------------------------\n")
-CelestaObj <- CreateCelestaObject(project_title=project_title, prior_marker_info, imaging_data, transform_type=0)
+
+# set transform_type=1 for arcsinh normalization, otherwise 0 if imaging_data is already normalized
+CelestaObj <- CreateCelestaObject(project_title=project_title, prior_marker_info, imaging_data, transform_type=1)
 
 ### Filter out questionable cells. 
 ### **This step is optional.** We suggest starting without running this step to see whether there are many doublets/triplets.
