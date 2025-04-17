@@ -49,10 +49,8 @@ research_drive_dir: 'fenyolab/CC_codeximaging/cell_segmentation'
 
 # Omero image info 
 omero_image_dict:
-  "20250225-Jharna-02433-A1_Scan1.er": 
-    image_id: 698744
-  "20250225-Jharna-07611-A3_Scan1.er":
-    image_id: 698885
+  # "20250225-Jharna-02433-A1_Scan1.er": 
+  #   image_id: 698744
   "20250225-Jharna-08153-A1_Scan1.er":
     image_id: 699026
   "20250225-Jharna-10103-A1_Scan1.er":
