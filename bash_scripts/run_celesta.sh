@@ -9,6 +9,26 @@
 #SBATCH --time=12:00:00                       # Max time for short
 
 
+# edit this to activate the correct conda environment
+source /gpfs/data/hammelllab/yumi/lib/yumi_miniconda/etc/profile.d/conda.sh
+conda activate celesta
+echo "conda activated"
+
+# edit path to folder containing celesta script
 cd /gpfs/home/yb2612/yb2612_fenyo/scripts/R
-# Rscript celesta_phenotyping.R endometrial_1T_raw_noDAPI /gpfs/home/yb2612/yb2612_fenyo/data/celesta/endometrial_test/prior_marker_info_endometrial_noDAPI.csv /gpfs/home/yb2612/yb2612_fenyo/data/celesta/endometrial_test/imaging_data_1T_raw_noDAPI.csv 1
-Rscript celesta_phenotyping.R endometrial_3P_raw_noDAPI /gpfs/home/yb2612/yb2612_fenyo/data/celesta/endometrial_test/prior_marker_info_endometrial_noDAPI.csv /gpfs/home/yb2612/yb2612_fenyo/data/celesta/endometrial_test/imaging_data_3P_raw_noDAPI.csv 1
+
+# edit arguments
+Rscript celesta_phenotyping.R \
+  --project_title "endometrial_1T_raw_noDAPI_adjusted" \
+  --prior_marker_info "/gpfs/home/yb2612/yb2612_fenyo/data/celesta/endometrial_test/prior_marker_info_endometrial_noDAPI.csv" \
+  --imaging_data "/gpfs/home/yb2612/yb2612_fenyo/data/celesta/endometrial_test/imaging_data_1T_raw_noDAPI.csv" \
+  --output_dir "/gpfs/home/yb2612/yb2612_fenyo/results/celesta" \
+  --transform_type 1 \
+  --high_anchor 1 0.7 0.9 0.7 0.5 0.7 0.7 0.8 0.5 0.8 \
+  --high_iter 1 0.6 0.8 0.6 0.5 0.6 0.6 0.7 0.5 0.7 \
+  --low_anchor 1 1 1 1 1 1 1 1 1 1 \
+  --low_iter 1 1 1 1 1 1 1 1 1 1
+
+wait
+
+echo "All jobs completed."
