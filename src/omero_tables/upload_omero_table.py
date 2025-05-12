@@ -6,12 +6,12 @@ def upload_omero_table(table_dir, omero_dict, table_name, server="omero.nyumc.or
     
     #check that kerberos and password is in env
     password = os.getenv('PASSWORD')
-    kerberosid = os.getenv('KERBEROSID')
+    kerberosid = os.getenv('USER')
 
     if password is None:
         raise ValueError('No password provided in environment variable PASSWORD')
     elif kerberosid is None:
-        raise ValueError('No kerberos provided in environment variable KERBEROSID')
+        raise ValueError('No kerberos provided in environment variable USER')
     
     for sample in os.listdir(table_dir):
         #check if the table exists within the sample directory 

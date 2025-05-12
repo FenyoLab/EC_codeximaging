@@ -9,9 +9,9 @@
 #SBATCH --partition=fn_short
 
 source ~/.bashrc
-conda activate omero
-
 source .env
+
+conda activate omero
 
 cd ../
 python main_biomarker_tables_to_omero.py

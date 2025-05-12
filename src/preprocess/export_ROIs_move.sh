@@ -21,3 +21,4 @@ do
         echo $sample
     mv $sample /gpfs/data/proteomics/data/Cervical_mIF/roi_annotations/
 done
+

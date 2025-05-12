@@ -7,11 +7,11 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --mem=300GB
-#SBATCH --time=48:00:00
+#SBATCH --time=120:00:00
 #SBATCH --gres=gpu:4
 
 source .env
-source set_up_conda.sh
+# source set_up_conda.sh
 module load condaenvs/new/deepcell
 
 cd ..
