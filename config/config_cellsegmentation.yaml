@@ -18,15 +18,15 @@ exclude_channel_names: []
 samples_to_remove: null
 
 # Base paths
-segmentation_data_dir: /gpfs/data/proteomics/data/Cervical_mIF/output/raw_segmentation_data
+segmentation_data_dir: /gpfs/data/proteomics/data/Cervical_mIF/output/raw_segmentation_data_again
 label_images_dir: /gpfs/data/proteomics/data/Cervical_mIF/output/label_images
 out_dir: /gpfs/data/proteomics/data/Cervical_mIF/output/initial_run
 
-data_dir: /gpfs/data/proteomics/data/Cervical_mIF/output/data_new
+data_dir: /gpfs/data/proteomics/data/Cervical_mIF/output/data
 qptiff_data_dir: /gpfs/data/proteomics/data/Cervical_mIF/qptiff_dat
 
-new_data_dir: /gpfs/data/proteomics/data/Cervical_mIF/output/data_new
-new_segmentation_data_dir: /gpfs/data/proteomics/data/Cervical_mIF/output/raw_segmentation_data_new
+new_data_dir: /gpfs/data/proteomics/data/Cervical_mIF/output/data
+new_segmentation_data_dir: /gpfs/data/proteomics/data/Cervical_mIF/output/raw_segmentation_data_again
 
 # Specific paths: main_cell_segmentation
 tiles_split_dir: tiles_split
@@ -45,14 +45,42 @@ omero_table_dir: omero_tables
 
 # Research drive
 omero_dir: 'fenyolab/CC_codeximaging/cell_segmentation'
-research_drive_dir: 'fenuolab-omero/CC_codeximaging/cell_segmentation'
+research_drive_dir: 'fenyolab/CC_codeximaging/cell_segmentation'
 
-# Omero image info # TODO - AUTOMATE
+# Omero image info 
 omero_image_dict:
-  # "20250225-Jharna-02433-A1_Scan1.er": 
-  #   image_id: 698744
+  "20250225-Jharna-02433-A1_Scan1.er": 
+    image_id: 698744
   "20250225-Jharna-08153-A1_Scan1.er":
     image_id: 699026
+  "20250225-Jharna-10103-A1_Scan1.er":
+    image_id: 699167
+  "20250305-Jharna-00862-6X_Scan1.er":
+    image_id: 704253
+  "20250305-Jharna-09002-A1_Scan1.er":
+    image_id: 701231
+  "20250305-Jharna-10285-A21_Scan1.er":
+    image_id: 704478
+  "20250305-Jharna-34933-A1_Scan1.er":
+    image_id: 701509
+  "20250311-Jharna-00438-1A_Scan1.er":
+    image_id: 705910
+  "20250311-Jharna-07688-A1_Scan1.er":
+    image_id: 705491
+  "20250311-Jharna-39367-A1_Scan1.er":
+    image_id: 705632
+  "20250311-Jharna-49411-1A_Scan1.er":
+    image_id: 705769
+  "20250318-Jharna-04738-A1_Scan1.er":
+    image_id: 707353
+  "20250318-Jharna-07291-1A_Scan1.er":
+    image_id: 707494
+  "20250318-Jharna-28873-A1_Scan1.er":
+    image_id: 707635
+
+
+# already done
+
 
 # Lineage markers cluster identity - leave empty when doing first cell segmentation and fill out for analysis
 lineage_markers_cluster_dict:

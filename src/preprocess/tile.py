@@ -230,6 +230,6 @@ def gen_tile_positions_subset(ROI_path, selected_region, positions, slideID, ROI
                             tile_positions.remove([top_left_x, top_left_y])  # Only remove if present
                         except ValueError:
                             pass  # If position is not in the list, do nothing
-
+        #drop duplcates tile_positions -- add
         return np.array(tile_positions)
      

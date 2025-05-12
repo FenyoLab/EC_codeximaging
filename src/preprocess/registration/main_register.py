@@ -10,8 +10,13 @@ import csv_to_geojson, geojson_to_csv
 import registration
 
 #sample = sample_qptiff name 
+def modify_imput_name(bash_input):
+    new_name = os.path.splitext(bash_input)[0]
+    return new_name
 
-def run_registration(sample):
+
+def run_registration(bash_input):
+    sample = modify_imput_name(bash_input)
     image_dir = '../data/images'
     annotations_dir = '../data/annotations'
 
