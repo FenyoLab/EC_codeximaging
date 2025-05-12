@@ -51,32 +51,46 @@ research_drive_dir: 'fenyolab/CC_codeximaging/cell_segmentation'
 omero_image_dict:
   "20250225-Jharna-02433-A1_Scan1.er": 
     image_id: 698744
+    cell_label_image_csv: 1238322
   "20250225-Jharna-08153-A1_Scan1.er":
     image_id: 699026
+    cell_label_image_csv: 1238323
   "20250225-Jharna-10103-A1_Scan1.er":
     image_id: 699167
+    cell_label_image_csv: 1238324
   "20250305-Jharna-00862-6X_Scan1.er":
     image_id: 704253
+    cell_label_image_csv: 1238325
   "20250305-Jharna-09002-A1_Scan1.er":
     image_id: 701231
+    cell_label_image_csv: 1238326
   "20250305-Jharna-10285-A21_Scan1.er":
     image_id: 704478
+    cell_label_image_csv: 1238327
   "20250305-Jharna-34933-A1_Scan1.er":
     image_id: 701509
+    cell_label_image_csv: 1238328
   "20250311-Jharna-00438-1A_Scan1.er":
     image_id: 705910
+    cell_label_image_csv: 1238329
   "20250311-Jharna-07688-A1_Scan1.er":
     image_id: 705491
+    cell_label_image_csv: 1238330
   "20250311-Jharna-39367-A1_Scan1.er":
     image_id: 705632
+    cell_label_image_csv: 1238331
   "20250311-Jharna-49411-1A_Scan1.er":
     image_id: 705769
+    cell_label_image_csv: 1238332
   "20250318-Jharna-04738-A1_Scan1.er":
     image_id: 707353
+    cell_label_image_csv: 1238333
   "20250318-Jharna-07291-1A_Scan1.er":
     image_id: 707494
+    cell_label_image_csv: 1238334
   "20250318-Jharna-28873-A1_Scan1.er":
     image_id: 707635
+    cell_label_image_csv: 1238335
 
 
 # already done
