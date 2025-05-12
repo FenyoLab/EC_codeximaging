@@ -13,7 +13,7 @@ def upload_omero_table(table_dir, omero_dict, table_name, server="omero.nyumc.or
     elif kerberosid is None:
         raise ValueError('No kerberos provided in environment variable USER')
     
-    for sample in os.listdir(table_dir):
+    for sample in omero_dict.keys():
         #check if the table exists within the sample directory 
         if f'{table_name}.csv' not in os.listdir(os.path.join(table_dir, sample)):
             print(f'{table_name} not found in {sample}')
@@ -22,7 +22,7 @@ def upload_omero_table(table_dir, omero_dict, table_name, server="omero.nyumc.or
         print(f'Processing sample {sample}')
         table_path = os.path.join(table_dir, sample, f'{table_name}.csv')
         image_id = omero_dict.get(sample, {}).get('image_id')
-        roi_value = omero_dict.get(sample, {}).get('roi_id')
+        roi_value = omero_dict.get(sample, {}).get('cell_label_image_csv')
         ann_id = omero2pandas.upload_table(
             table_path, table_name, 
             links=[("Image", image_id), ("Roi", roi_value)], 
