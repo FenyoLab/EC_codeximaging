@@ -1,8 +1,47 @@
 # Guide to CELESTA
 
-## Setting up a `celesta` conda environment
+## Activating conda environment
 
-There are a couple of tricky things about installing CELESTA. 
+```bash
+source bash_scripts/set_up_software_conda.sh
+conda activate celesta
+```
+
+Note that this activates the miniconda in `software/` rather than `projects/` (which has some permission issues).
+
+## Setting up `celesta` environment
+If anything goes wrong with the existing `celesta` environment, or you want to create it in `projects/` rather than `software/`, you can either create it from a YAML or from scratch.
+
+Make sure to activate your desired miniconda installation before proceeding.
+
+### From YAML
+
+```bash
+conda env create -f /gpfs/data/proteomics/home/yb2612_fenyo/yaml/celesta_jupyter.yaml
+```
+
+If that worked, open up R and run the following:
+
+```R
+install.packages("rlang")
+install.packages("devtools")
+devtools::install_github("plevritis/CELESTA")
+````
+
+Finally, try loading CELESTA in R:
+
+```R
+library(CELESTA)
+```
+
+### From scratch
+
+```bash
+conda create -n celesta -c conda-forge r-base=4.4.2 -y
+conda activate celesta
+```
+
+Now there are a couple of tricky things about installing CELESTA from scratch.
 
 First is that it relies on `devtools`, which can be a pain to install properly. Thanks to Amit Kohli and Matthew J. Oldach for their instructions in https://stackoverflow.com/questions/20923209/problems-installing-the-devtools-package. Below is what worked for me:
 
