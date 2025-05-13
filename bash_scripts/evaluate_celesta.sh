@@ -14,16 +14,11 @@ conda activate celesta
 cd ../
 
 # edit arguments
-Rscript celesta_phenotyping.R \
-  --project_title "endometrial_1T_test" \
-  --prior_marker_info "/gpfs/data/proteomics/home/yb2612/data/celesta/endometrial_test/prior_marker_info_endometrial_noDAPI.csv" \
-  --imaging_data "/gpfs/data/proteomics/home/yb2612/data/celesta/endometrial_test/imaging_data_1T_raw_noDAPI.csv" \
-  --output_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
-  --transform_type 1 \
-  --high_anchor 1 0.8 0.9 0.7 0.7 0.7 0.7 0.5 0.5 0.8 \
-  --high_iter 1 0.7 0.8 0.6 0.6 0.6 0.6 0.5 0.5 0.7 \
-  --low_anchor 1 1 1 1 1 1 1 1 1 1 \
-  --low_iter 1 1 1 1 1 1 1 1 1 1
+Rscript evaluate_celesta.R \
+  --project_title "endometrial_1T_raw_arcsinh_initial" \
+  --celesta_results "/gpfs/home/yb2612/yb2612_fenyo/results/celesta/endometrial_1T_raw_arcsinh_initial/endometrial_1T_raw_arcsinh_initial_final_cell_type_assignment.csv" \
+  --metadata "/gpfs/home/yb2612/yb2612_fenyo/data/celesta/endometrial_test/metadata_1T.csv" \
+  --output_dir "/gpfs/home/yb2612/yb2612_fenyo/results/evaluate_celesta" \
 
 wait
 

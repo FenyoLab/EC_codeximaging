@@ -1,23 +1,30 @@
 # Guide to CELESTA
 
-## Activating conda environment
+## Activating `celesta` conda environment
 
 ```bash
-source bash_scripts/set_up_software_conda.sh
+source bash_scripts/set_up_conda.sh
 conda activate celesta
 ```
 
-Note that this activates the miniconda in `software/` rather than `projects/` (which has some permission issues).
+## Setting up `celesta` conda environment
 
-## Setting up `celesta` environment
-If anything goes wrong with the existing `celesta` environment, or you want to create it in `projects/` rather than `software/`, you can either create it from a YAML or from scratch.
+If for some reason you need to recreate the `celesta` environment, you can either create it from a YAML file or from scratch.
 
-Make sure to activate your desired miniconda installation before proceeding.
+First make sure you are directing conda to your own cache folder. Otherwise you will likely run into a bunch of permission errors. In your `~/.condarc` file, add a line like this (change to your own cache path):
+
+```bash
+pkgs_dirs:
+  - /gpfs/data/proteomics/home/yb2612/conda/pkgs
+```
+
+Now you can proceed with setting up the environment.
 
 ### From YAML
 
 ```bash
-conda env create -f /gpfs/data/proteomics/home/yb2612_fenyo/yaml/celesta_jupyter.yaml
+source bash_scripts/set_up_conda.sh
+conda env create -f /gpfs/data/proteomics/home/yb2612/yaml/celesta_proteomics.yaml --prefix=/gpfs/data/proteomics/projects/miniconda3/envs/celesta
 ```
 
 If that worked, open up R and run the following:
@@ -26,7 +33,42 @@ If that worked, open up R and run the following:
 install.packages("rlang")
 install.packages("devtools")
 devtools::install_github("plevritis/CELESTA")
-````
+```
+
+You might be asked to update packages. I usually update all. If you encounter this error with `s2`:
+
+```txt
+CMake build of Abseil failed
+** Abseil can be installed with:
+** - apt-get install libabsl-dev
+** - dnf install abseil-cpp-devel
+** - brew install abseil
+** If a system install of Abseil is not possible, cmake is required to build
+** the internal vendored copy.
+ERROR: configuration failed for package ‘s2’
+* removing ‘/gpfs/data/proteomics/projects/miniconda3/envs/celesta/lib/R/library/s2’
+* restoring previous ‘/gpfs/data/proteomics/projects/miniconda3/envs/celesta/lib/R/library/s2’
+
+The downloaded source packages are in
+	‘/tmp/RtmpKHftcQ/downloaded_packages’
+Updating HTML index of packages in '.Library'
+Making 'packages.html' ... done
+Warning message:
+In install.packages("s2") :
+  installation of package ‘s2’ had non-zero exit status
+```
+
+You can solve this by doing:
+
+```bash
+conda install -c conda-forge cmake
+```
+
+Then in R, try installing `s2`:
+
+```R
+install.packages("s2")
+```
 
 Finally, try loading CELESTA in R:
 
@@ -61,6 +103,7 @@ conda install -c conda-forge r-sf r-spdep -y
 If that worked, open up R and run the following:
 
 ```R
+install.packages("argparse")
 install.packages("rlang")
 install.packages("devtools")
 devtools::install_github("plevritis/CELESTA")
@@ -79,15 +122,19 @@ CELESTA requires the following:
 1. Prior marker info (CSV)
 2. Imaging data (CSV)
 
+See https://github.com/plevritis-lab/CELESTA for more details.
+
 ## Running CELESTA
 
-Open `bash_scripts/run_celesta.sh`, enter arguments as needed, and run. 
+Clone the `CC_codeximaging` repo and navigate to `bash_scripts`. 
+
+Open `run_celesta.sh`, edit arguments as needed, and run.
 
 The actual R script is in `celesta_phenotyping.R`.
 
 ## Inspecting CELESTA results
 
-Results will be saved to the `output_dir/project_title` folder as you specified in `run_celesta.sh`. This will include the following:
+Results will be saved to the `output_dir/project_title` folder specified in `run_celesta.sh`. This will include the following:
 * Final Celesta object (RDS)
 * Final cell assignments (CSV)
 * Cell assignment plot
