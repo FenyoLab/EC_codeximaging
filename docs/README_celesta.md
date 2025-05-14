@@ -1,145 +1,60 @@
 # Guide to CELESTA
 
-## Activating `celesta` conda environment
-
-```bash
-source bash_scripts/set_up_conda.sh
-conda activate celesta
-```
-
-## Setting up `celesta` conda environment
-
-If for some reason you need to recreate the `celesta` environment, you can either create it from a YAML file or from scratch.
-
-First make sure you are directing conda to your own cache folder. Otherwise you will likely run into a bunch of permission errors. In your `~/.condarc` file, add a line like this (change to your own cache path):
-
-```bash
-pkgs_dirs:
-  - /gpfs/data/proteomics/home/yb2612/conda/pkgs
-```
-
-Now you can proceed with setting up the environment.
-
-### From YAML
-
-```bash
-source bash_scripts/set_up_conda.sh
-conda env create -f /gpfs/data/proteomics/home/yb2612/yaml/celesta_proteomics.yaml --prefix=/gpfs/data/proteomics/projects/miniconda3/envs/celesta
-```
-
-If that worked, open up R and run the following:
-
-```R
-install.packages("rlang")
-install.packages("devtools")
-devtools::install_github("plevritis/CELESTA")
-```
-
-You might be asked to update packages. I usually update all. If you encounter this error with `s2`:
-
-```txt
-CMake build of Abseil failed
-** Abseil can be installed with:
-** - apt-get install libabsl-dev
-** - dnf install abseil-cpp-devel
-** - brew install abseil
-** If a system install of Abseil is not possible, cmake is required to build
-** the internal vendored copy.
-ERROR: configuration failed for package ‘s2’
-* removing ‘/gpfs/data/proteomics/projects/miniconda3/envs/celesta/lib/R/library/s2’
-* restoring previous ‘/gpfs/data/proteomics/projects/miniconda3/envs/celesta/lib/R/library/s2’
-
-The downloaded source packages are in
-	‘/tmp/RtmpKHftcQ/downloaded_packages’
-Updating HTML index of packages in '.Library'
-Making 'packages.html' ... done
-Warning message:
-In install.packages("s2") :
-  installation of package ‘s2’ had non-zero exit status
-```
-
-You can solve this by doing:
-
-```bash
-conda install -c conda-forge cmake
-```
-
-Then in R, try installing `s2`:
-
-```R
-install.packages("s2")
-```
-
-Finally, try loading CELESTA in R:
-
-```R
-library(CELESTA)
-```
-
-### From scratch
-
-```bash
-conda create -n celesta -c conda-forge r-base=4.4.2 -y
-conda activate celesta
-```
-
-Now there are a couple of tricky things about installing CELESTA from scratch.
-
-First is that it relies on `devtools`, which can be a pain to install properly. Thanks to Amit Kohli and Matthew J. Oldach for their instructions in https://stackoverflow.com/questions/20923209/problems-installing-the-devtools-package. Below is what worked for me:
-
-```bash
-conda create -n celesta -c conda-forge r-base=4.4.2 -y
-conda activate celesta
-conda install -c conda-forge libcurl openssl fontconfig libxml2 harfbuzz fribidi freetype libpng libtiff libjpeg-turbo -y
-conda install -c r r-devtools -y
-```
-
-Now install CELESTA's dependencies:
-```
-conda install -c conda-forge gdal liblzma zlib mysql-libs -y
-conda install -c conda-forge r-sf r-spdep -y
-```
-
-If that worked, open up R and run the following:
-
-```R
-install.packages("argparse")
-install.packages("rlang")
-install.packages("devtools")
-devtools::install_github("plevritis/CELESTA")
-````
-
-Finally, try loading CELESTA in R:
-
-```R
-library(CELESTA)
-```
+See `README_celesta_env.md` for details on activating/setting up the `celesta` conda environment. If the environment exists and runs properly, you may proceed.
 
 ## Preparing CELESTA inputs
 
 CELESTA requires the following:
 
-1. Prior marker info (CSV)
-2. Imaging data (CSV)
+1. **Prior marker info (CSV):** Contains cell type name, lineage levels, and marker expression probability 0/1 per cell type. Each row should correspond to a cell type.
+
+2. **Imaging data (CSV):** Contains X/Y coordinates and "raw" expression levels per marker (you can input normalized expression here too). Each row should correspond to an individual cell.
+
+You can prepare these inputs using `notebooks/celesta_data_prep.ipynb` (TODO: clean up this notebook!)
 
 See https://github.com/plevritis-lab/CELESTA for more details.
 
 ## Running CELESTA
 
-Clone the `CC_codeximaging` repo and navigate to `bash_scripts`. 
+Clone the `CC_codeximaging` repo and navigate to `bash_scripts`. Note that whenever you run a shell script, there are arguments you will need to edit according to your needs.
 
-Open `run_celesta.sh`, edit arguments as needed, and run.
+You have two options when running CELESTA:
 
-The actual R script is in `celesta_phenotyping.R`.
+1. **Run the full pipeline:** Run `celesta_full_pipeline.sh`.
+    * This creates a CELESTA object, assigns cells, plots expression probability, and plots cell assignments using built-in CELESTA functions. 
+2. *(Recommended)* **Run steps separately:** 
+    * First run `celesta_create_obj.sh` to create a CELESTA object.
+    * After the CELESTA object is created, run `celesta_assign_cells.sh`.
+    * I recommend this approach because creating a CELESTA object can often take a long time, but it does not depend on thresholds. So when testing out different thresholds, we can just create one CELESTA object and test a bunch of thresholds from there.
 
 ## Inspecting CELESTA results
 
-Results will be saved to the `output_dir/project_title` folder specified in `run_celesta.sh`. This will include the following:
-* Final Celesta object (RDS)
-* Final cell assignments (CSV)
-* Cell assignment plot
-* Expression probability plots
+Results will be saved to `output_dir/project_title/` as specified in the shell script you ran (any in the above section).
+
+1. `celesta_full_pipeline.sh` outputs:
+    * CELESTA object without cell type assignments (RDS)
+    * CELESTA object with cell type assignments (RDS)
+    * Final cell assignments (CSV)
+    * Cell assignment plot
+    * Expression probability plots
+
+2. `celesta_create_obj.sh` outputs:
+    * CELESTA object without cell type assignments (RDS)
+    * Marker expression probability (CSV)
+
+3. `celesta_assign_cells.sh` outputs:
+    * CELESTA object with cell type assignments (RDS)
+    * Final cell assignments (CSV)
 
 ## Evaluating CELESTA performance
 
-This will work if you have ground truth labels.
+This will work if you have ground truth labels, i.e., from the manual cell phenotyping pipeline. 
+
+Run `notebooks/celesta_evaluate_results.ipynb`. This generates the following:
+* Spatial plots of expression probability per marker
+* Spatial plot of cell type assignments
+* Plots showing accuracy for selected cell types
+* Classification report and graph of precision/recall/f1-score per cell type and overall
+* Confusion matrix
+* Plot of cell type proportions from  manual pipeline vs. CELESTA
+
