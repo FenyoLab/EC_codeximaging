@@ -74,6 +74,7 @@ Now install CELESTA's dependencies:
 ```
 conda install -c conda-forge gdal liblzma zlib mysql-libs -y
 conda install -c conda-forge r-sf r-spdep -y
+conda install -c conda-forge cmake -y
 ```
 
 If that worked, open up R and run the following:
