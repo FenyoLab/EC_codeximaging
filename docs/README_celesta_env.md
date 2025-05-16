@@ -38,6 +38,7 @@ conda env create -f config/celesta_env.yaml --prefix=/gpfs/data/proteomics/proje
 If that worked, open up R and run the following:
 
 ```R
+install.packages("argparse")
 install.packages("rlang")
 install.packages("devtools")
 devtools::install_github("plevritis/CELESTA")
