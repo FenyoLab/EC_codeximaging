@@ -164,11 +164,19 @@ Results will be saved to `results_dir/project_title/` as specified in the bash s
 
 This will work if you have ground truth labels, i.e., from the manual cell phenotyping pipeline. 
 
-Run `notebooks/celesta_evaluate_results.ipynb`. This generates the following:
-* Spatial plots of expression probability per marker
+Run `notebooks/celesta_evaluate_results.ipynb`.
+
+There are code blocks dedicated to plotting expression probability, in the same way that `celesta_plot_exp_prob.sh` does. This is just so you can see all plots at once, which can help when selecting thresholds.
+
+I have also developed a rudimentary way of searching and choosing thresholds. First run `celesta_assign_cells.sh` with a bunch of different thresholds. Then in this notebook, run the code blocks under:
+
+* **Threshold search (mean of conf matrix diagonal):** Here our evaluation metric is the mean of the diagonal of the confusion matrix (with the option to exclude certain cell types). It is not weighted based on cell number. This is probably best for making sure CELESTA has balanced performance across all classes.
+* **Threshold search (macro F1):** Here we use the macro F1 score (harmonic mean of precision and recall) as an alternative evaluation metric. Sometimes this returns different results from the mean of conf matrix diagonal.
+
+You will also see code blocks named **Best thresholds - full evaluation.** This takes results from the chosen best thresholds and displays the following:
+
 * Spatial plot of cell type assignments
 * Plots showing accuracy for selected cell types
 * Classification report and graph of precision/recall/f1-score per cell type and overall
 * Confusion matrix
 * Plot of cell type proportions from  manual pipeline vs. CELESTA
-
