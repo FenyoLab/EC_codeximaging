@@ -92,7 +92,7 @@ I've made my own script to plot expression probability because I think it looks 
 ![image](img/yumi_CD3e_exp_prob.png)
 *Yumi's expression probability plot for the same marker and sample. I make sure to plot cells in order of increasing probability. Notice how this reveals many more cells >0.9, which helps us set a better threshold.*
 
-#### 3. After the CELESTA object is created, run `celesta_assign_cells.sh` to assign cell types at specified thresholds.
+#### 3. After choosing thresholds, run `celesta_assign_cells.sh` to assign cell types.
 
 You will need to edit these arguments:
 
@@ -112,7 +112,7 @@ You will need to edit these arguments:
 * `low_anchor`: Same as above, but defines low expression probability for anchor cells. Default is 0.9 for all cell types.
 * `low_iter`: Same as above, but for iteration cells. Default is 1 for all cell types.
 
-For `high_anchor` and `high_iter`, you can use this [example spreadsheet](https://docs.google.com/spreadsheets/d/1xc_mcczZ0B0EAhWt6SpMEdjmpPlIWInAd9OLzNKNgkI/edit?usp=sharing) to edit thresholds and output them into the correct format for CELESTA.
+For `high_anchor` and `high_iter`, you can use this [example spreadsheet](https://docs.google.com/spreadsheets/d/1xc_mcczZ0B0EAhWt6SpMEdjmpPlIWInAd9OLzNKNgkI/edit?usp=sharing) to edit thresholds and output them into the correct format for CELESTA. You can use this script to test a bunch of different thresholds, and all results will be saved with a unique filename.
 
 *Note: Output filenames will contain the full lists of `high_anchor` and `high_iter` thresholds. There is probably a better way to do this, but this is how it is for now.*
 
