@@ -9,6 +9,12 @@ source bash_scripts/set_up_conda.sh
 conda activate celesta
 ```
 
+Then check that CELESTA is properly working in R:
+
+```R
+library(CELESTA)
+```
+
 ## Creating new environment
 
 If for some reason you need to recreate the `celesta` environment, you can either create it from a YAML file or from scratch.
