@@ -44,40 +44,7 @@ install.packages("devtools")
 devtools::install_github("plevritis/CELESTA")
 ```
 
-You might be asked to update packages. I usually update all. If you encounter this error with `s2`:
-
-```txt
-CMake build of Abseil failed
-** Abseil can be installed with:
-** - apt-get install libabsl-dev
-** - dnf install abseil-cpp-devel
-** - brew install abseil
-** If a system install of Abseil is not possible, cmake is required to build
-** the internal vendored copy.
-ERROR: configuration failed for package ‘s2’
-* removing ‘/gpfs/data/proteomics/projects/miniconda3/envs/celesta/lib/R/library/s2’
-* restoring previous ‘/gpfs/data/proteomics/projects/miniconda3/envs/celesta/lib/R/library/s2’
-
-The downloaded source packages are in
-	‘/tmp/RtmpKHftcQ/downloaded_packages’
-Updating HTML index of packages in '.Library'
-Making 'packages.html' ... done
-Warning message:
-In install.packages("s2") :
-  installation of package ‘s2’ had non-zero exit status
-```
-
-You can solve this by doing:
-
-```bash
-conda install -c conda-forge cmake
-```
-
-Then in R, try installing `s2`:
-
-```R
-install.packages("s2")
-```
+You might be asked to update packages. I usually choose to update all. 
 
 Finally, try loading CELESTA in R:
 
