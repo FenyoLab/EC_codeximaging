@@ -2,17 +2,41 @@
 
 See `README_celesta_env.md` for details on activating/setting up the `celesta` conda environment. If the environment exists and runs properly, you may proceed.
 
+You can test this with:
+
+```bash
+source bash_scripts/set_up_conda.sh
+conda activate celesta
+```
+
+And in R,
+```R
+library(CELESTA)
+```
+
 ## Preparing CELESTA inputs
+
+*See https://github.com/plevritis-lab/CELESTA for more details.*
 
 CELESTA requires the following:
 
 1. **Prior marker info (CSV):** Contains cell type name, lineage levels, and marker expression probability 0/1 per cell type. Each row should correspond to a cell type.
+    
+    Sometimes it is easier to visualize it as a flowchart first:
 
+    ![image](prior_marker_info_flowchart.png)
+
+    This is how it translates into tabular form:
+
+    ![image](prior_marker_info.png)
+    
 2. **Imaging data (CSV):** Contains X/Y coordinates and "raw" expression levels per marker (you can input normalized expression here too). Each row should correspond to an individual cell.
 
-You can prepare these inputs using `notebooks/celesta_data_prep.ipynb` (TODO: clean up this notebook!)
+    ![image](imaging_data.png)
 
-See https://github.com/plevritis-lab/CELESTA for more details.
+You can prepare these inputs using `notebooks/celesta_data_prep.ipynb`. 
+
+*Note: Need to clean up this notebook!*
 
 ## Running CELESTA
 
@@ -21,7 +45,7 @@ Clone the `CC_codeximaging` repo and navigate to `bash_scripts`. Note that whene
 You have two options when running CELESTA:
 
 ### A. *(Recommended)* **Run steps separately** 
-This gives you more control over each step. Furthermore, this allows you to test a bunch of thresholds on an existing CELESTA object rather than having to build the object from scratch every time.
+This gives you more control over each step. It also allows you to test a bunch of thresholds on an existing CELESTA object rather than having to build the object from scratch every time.
 
 #### 1. First run `celesta_create_obj.sh` to create a CELESTA object.
 
@@ -38,13 +62,13 @@ You will need to edit these arguments:
 ```
 
 * `project_title:` This will be the name of the subfolder containing all results, as well as the prefix for filenames.
-* `prior_marker_info`: Path to prior marker info CSV
-* `imaging_data`: Path to imaging data CSV
+* `prior_marker_info`: Path to prior marker info CSV. This 
+* `imaging_data`: Path to imaging data CSV.
 * `results_dir`: Path to directory where you want *all* of your CELESTA results to go. The script will automatically create a subfolder named after `project_title` here.
 
 #### 2. After the CELESTA object is created, run `celesta_plot_exp_prob.sh` to plot expression probability for each marker.
 
-This will help you choose thresholds when assigning cell types. I've made my own script to plot expression probability because I think it looks better than CELESTA's plots.
+This will help you choose thresholds when assigning cell types.
 
 You will need to edit these arguments:
 
@@ -55,6 +79,14 @@ You will need to edit these arguments:
 
 * `project_title:` Use same value as in `celesta_create_obj.sh`. This should be the name of the subfolder containing all results.
 * `results_dir`: Use same value as in `celesta_create_obj.sh`. This should be the parent directory of the `project_title` subdir.
+
+I've made my own script to plot expression probability because I think it looks better than CELESTA's plots. Case in point:
+
+![image](celesta_CD3e_exp_prob.png)
+*CELESTA's expression probability plot for CD3e in one of our samples. From this it looks like most cells are <=0.5, but in truth they are just plotted on top of cells with higher probability. This plot can mislead us into setting a threshold that is too low for this marker.*
+
+![image](yumi_CD3e_exp_prob.png)
+*Yumi's expression probability plot for the same marker and sample. I make sure to plot cells in order of increasing probability. Notice how this reveals many more cells >0.9, which helps us set a better threshold.*
 
 #### 3. After the CELESTA object is created, run `celesta_assign_cells.sh` to assign cell types at specified thresholds.
 
@@ -76,7 +108,7 @@ You will need to edit these arguments:
 * `low_anchor`: Series of space-separated expression thresholds for anchor cells, in order of cell types listed in `prior_marker_info`. Can leave blank for CELESTA defaults (0.9 for all cell types).
 * `low_iter`: Series of space-separated expression thresholds for anchor cells, in order of cell types listed in `prior_marker_info`. Can leave blank for CELESTA defaults (1 for all cell types).
 
-*Note: Output files will be saved with the full list of *
+*Note: Output filenames will contain the full lists of high_anchor and high_iter thresholds. There is probably a better way to do this, but this is how it is for now.*
 
 ### B. Run the full pipeline with `celesta_full_pipeline.sh`
 This creates a CELESTA object, assigns cells, plots expression probability, and plots cell assignments using built-in CELESTA functions. 
