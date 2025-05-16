@@ -24,15 +24,15 @@ CELESTA requires the following:
     
     Sometimes it is easier to visualize it as a flowchart first:
 
-    ![image](prior_marker_info_flowchart.png)
+    ![image](img/prior_marker_info_flowchart.png)
 
     This is how it translates into tabular form:
 
-    ![image](prior_marker_info.png)
+    ![image](img/prior_marker_info.png)
     
 2. **Imaging data (CSV):** Contains X/Y coordinates and "raw" expression levels per marker (you can input normalized expression here too). Each row should correspond to an individual cell.
 
-    ![image](imaging_data.png)
+    ![image](img/imaging_data.png)
 
 You can prepare these inputs using `notebooks/celesta_data_prep.ipynb`. 
 
@@ -82,10 +82,10 @@ You will need to edit these arguments:
 
 I've made my own script to plot expression probability because I think it looks better than CELESTA's plots. Case in point:
 
-![image](celesta_CD3e_exp_prob.png)
+![image](img/celesta_CD3e_exp_prob.png)
 *CELESTA's expression probability plot for CD3e in one of our samples. From this it looks like most cells are <=0.5, but in truth they are just plotted on top of cells with higher probability. This plot can mislead us into setting a threshold that is too low for this marker.*
 
-![image](yumi_CD3e_exp_prob.png)
+![image](img/yumi_CD3e_exp_prob.png)
 *Yumi's expression probability plot for the same marker and sample. I make sure to plot cells in order of increasing probability. Notice how this reveals many more cells >0.9, which helps us set a better threshold.*
 
 #### 3. After the CELESTA object is created, run `celesta_assign_cells.sh` to assign cell types at specified thresholds.
