@@ -1,5 +1,7 @@
 # Guide to CELESTA
 
+All credit goes to the Plevritis Lab for this wonderful library! For more details, see https://github.com/plevritis-lab/CELESTA.
+
 ## Testing `celesta` environment
 
 See `README_celesta_env.md` for details on activating/setting up the `celesta` conda environment. Hopefully the one I've created on the shared lab miniconda works for everyone.
@@ -18,7 +20,7 @@ library(CELESTA)
 
 ## Preparing CELESTA inputs
 
-*See https://github.com/plevritis-lab/CELESTA for more details.*
+See `notebooks/celesta_data_prep.ipynb` for an example of how to prepare inputs.
 
 CELESTA requires the following:
 
@@ -35,10 +37,6 @@ CELESTA requires the following:
 2. **Imaging data (CSV):** Contains X/Y coordinates and "raw" expression levels per marker (you can input normalized expression here too). Each row should correspond to an individual cell.
 
     ![image](img/imaging_data.png)
-
-You can prepare these inputs using `notebooks/celesta_data_prep.ipynb`. 
-
-*Note: Need to clean up this notebook!*
 
 ## Running CELESTA
 
