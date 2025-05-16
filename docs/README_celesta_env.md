@@ -1,5 +1,7 @@
 # Setting up CELESTA conda environment
 
+*This README focuses on the `celesta` environment only. See `README_celesta.md` for the complete guide to the CELESTA workflow.*
+
 ## Activate existing environment
 
 ```bash
@@ -20,11 +22,11 @@ pkgs_dirs:
 
 Now you can proceed with setting up the environment.
 
-### From YAML
+### Create environment from YAML
 
 ```bash
 source bash_scripts/set_up_conda.sh
-conda env create -f /gpfs/data/proteomics/home/yb2612/yaml/celesta_proteomics.yaml --prefix=/gpfs/data/proteomics/projects/miniconda3/envs/celesta
+conda env create -f config/celesta_env.yaml --prefix=/gpfs/data/proteomics/projects/miniconda3/envs/celesta
 ```
 
 If that worked, open up R and run the following:
@@ -76,7 +78,7 @@ Finally, try loading CELESTA in R:
 library(CELESTA)
 ```
 
-### From scratch
+### Create environment from scratch
 
 ```bash
 conda create -n celesta -c conda-forge r-base=4.4.2 -y
@@ -117,6 +119,6 @@ library(CELESTA)
 
 ## Issues
 
-* I do not know what caused this issue, but my r-base=4.4.2 broke and I had to upgrade it to r-base=4.4.3. This did not cause any problems with running CELESTA.
+* I don't know what caused this issue, but my `r-base=4.4.2` broke and I had to upgrade it to `r-base=4.4.3`. This did not cause any problems with running CELESTA.
 
-* The CreateCelestaObj() function, specifically GetNeighborInfo(), takes almost twice as long with this environment setup as in my personal R installation. I am not sure why. It might have something to do with `spdep` version.
+* The `CreateCelestaObj()` function, specifically `GetNeighborInfo()`, takes almost twice as long with this environment setup as in my personal R installation. I am not sure why. It probably has something to do with the `spdep` version.

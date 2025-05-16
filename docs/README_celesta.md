@@ -1,6 +1,8 @@
 # Guide to CELESTA
 
-See `README_celesta_env.md` for details on activating/setting up the `celesta` conda environment. If the environment exists and runs properly, you may proceed.
+## Testing `celesta` environment
+
+See `README_celesta_env.md` for details on activating/setting up the `celesta` conda environment. Hopefully the one I've created on the shared lab miniconda works for everyone.
 
 You can test this with:
 
@@ -62,7 +64,7 @@ You will need to edit these arguments:
 ```
 
 * `project_title:` This will be the name of the subfolder containing all results, as well as the prefix for filenames.
-* `prior_marker_info`: Path to prior marker info CSV. This 
+* `prior_marker_info`: Path to prior marker info CSV.
 * `imaging_data`: Path to imaging data CSV.
 * `results_dir`: Path to directory where you want *all* of your CELESTA results to go. The script will automatically create a subfolder named after `project_title` here.
 
