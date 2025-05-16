@@ -20,9 +20,7 @@ library(CELESTA)
 
 ## Preparing CELESTA inputs
 
-See `notebooks/celesta_data_prep.ipynb` for an example of how to prepare inputs.
-
-CELESTA requires the following:
+CELESTA requires two main inputs in CSV format: **prior marker information** ([example spreadsheet](https://docs.google.com/spreadsheets/d/1xc_mcczZ0B0EAhWt6SpMEdjmpPlIWInAd9OLzNKNgkI/edit?usp=sharing)) and **imaging data** (`notebooks/celesta_data_prep.ipynb`). 
 
 1. **Prior marker info (CSV):** Contains cell type name, lineage levels, and marker expression probability 0/1 per cell type. Each row should correspond to a cell type.
     
@@ -37,6 +35,12 @@ CELESTA requires the following:
 2. **Imaging data (CSV):** Contains X/Y coordinates and "raw" expression levels per marker (you can input normalized expression here too). Each row should correspond to an individual cell.
 
     ![image](img/imaging_data.png)
+
+Aside from these, you will also need to input high and low marker expression probability thresholds for anchor and iteration cells. Low thresholds can be set to 1 for all cells, but high thresholds need to be tuned. 
+
+This [example spreadsheet](https://docs.google.com/spreadsheets/d/1xc_mcczZ0B0EAhWt6SpMEdjmpPlIWInAd9OLzNKNgkI/edit?usp=sharing) also contains a sheet where you can easily edit thresholds per cell type and output it into a format that CELESTA will accept:
+
+![image](img/high_thresholds.png)
 
 ## Running CELESTA
 
@@ -103,17 +107,19 @@ You will need to edit these arguments:
 
 * `project_title:` Use same value as in `celesta_create_obj.sh`. This should be the name of the subfolder containing all results.
 * `results_dir`: Use same value as in `celesta_create_obj.sh`. This should be the parent directory of the `project_title` subdir.
-* `high_anchor`: Series of space-separated expression thresholds for anchor cells, in order of cell types listed in `prior_marker_info`. Can leave blank for CELESTA defaults (0.7 for all cell types).
-* `high_iter`: Series of space-separated expression thresholds for iteration cells, in order of cell types listed in `prior_marker_info`. Can leave blank for CELESTA defaults (0.5 for all cell types).
-* `low_anchor`: Series of space-separated expression thresholds for anchor cells, in order of cell types listed in `prior_marker_info`. Can leave blank for CELESTA defaults (0.9 for all cell types).
-* `low_iter`: Series of space-separated expression thresholds for anchor cells, in order of cell types listed in `prior_marker_info`. Can leave blank for CELESTA defaults (1 for all cell types).
+* `high_anchor`: Series of space-separated thresholds for high expression probability in anchor cells, in order of cell types listed in `prior_marker_info`. Can leave blank for CELESTA defaults (0.7 for all cell types).
+* `high_iter`: Same as above, but for iteration cells. Default is 0.5 for all cell types.
+* `low_anchor`: Same as above, but defines low expression probability for anchor cells. Default is 0.9 for all cell types.
+* `low_iter`: Same as above, but for iteration cells. Default is 1 for all cell types.
 
-*Note: Output filenames will contain the full lists of high_anchor and high_iter thresholds. There is probably a better way to do this, but this is how it is for now.*
+For `high_anchor` and `high_iter`, you can use this [example spreadsheet](https://docs.google.com/spreadsheets/d/1xc_mcczZ0B0EAhWt6SpMEdjmpPlIWInAd9OLzNKNgkI/edit?usp=sharing) to edit thresholds and output them into the correct format for CELESTA.
+
+*Note: Output filenames will contain the full lists of `high_anchor` and `high_iter` thresholds. There is probably a better way to do this, but this is how it is for now.*
 
 ### B. Run the full pipeline with `celesta_full_pipeline.sh`
 This creates a CELESTA object, assigns cells, plots expression probability, and plots cell assignments using built-in CELESTA functions. 
 
-*Note: While this is the simplest option, this entails building an object from scratch and only one set of thresholds can be tested. Furthermore, the plots outputted by CELESTA don't always look the best.*
+*Note: While this is the simplest option, it isn't the fastest. It entails building the object from scratch, and only one set of thresholds can be tested at a time. Furthermore, the plots outputted by CELESTA don't always look the best.*
 
 You will need to edit these arguments:
 
@@ -162,16 +168,14 @@ Results will be saved to `results_dir/project_title/` as specified in the bash s
 
 ## Evaluating CELESTA performance
 
-This will work if you have ground truth labels, i.e., from the manual cell phenotyping pipeline. 
-
-Run `notebooks/celesta_evaluate_results.ipynb`.
+You can evaluate CELESTA results using `notebooks/celesta_evaluate_results.ipynb`. This will only work if you have ground truth labels, i.e., from the manual cell phenotyping pipeline. 
 
 There are code blocks dedicated to plotting expression probability, in the same way that `celesta_plot_exp_prob.sh` does. This is just so you can see all plots at once, which can help when selecting thresholds.
 
-I have also developed a rudimentary way of searching and choosing thresholds. First run `celesta_assign_cells.sh` with a bunch of different thresholds. Then in this notebook, run the code blocks under:
+I have also developed a rudimentary way of selecting the best thresholds. First run `celesta_assign_cells.sh` with all of the different thresholds you want to test. Then in the notebook, run the code blocks under:
 
 * **Threshold search (mean of conf matrix diagonal):** Here our evaluation metric is the mean of the diagonal of the confusion matrix (with the option to exclude certain cell types). It is not weighted based on cell number. This is probably best for making sure CELESTA has balanced performance across all classes.
-* **Threshold search (macro F1):** Here we use the macro F1 score (harmonic mean of precision and recall) as an alternative evaluation metric. Sometimes this returns different results from the mean of conf matrix diagonal.
+* **Threshold search (macro F1):** Here we use the macro F1 score (harmonic mean of precision and recall) as an alternative evaluation metric. I find this tends to favor better performance in more common cell types.
 
 You will also see code blocks named **Best thresholds - full evaluation.** This takes results from the chosen best thresholds and displays the following:
 
