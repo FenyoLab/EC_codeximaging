@@ -13,19 +13,19 @@ set.seed(9)
 
 parser <- ArgumentParser(description = "Create CELESTA object with specified inputs")
 
-parser$add_argument("--project_title", help = "Title of the project")
+parser$add_argument("--project_title", help = "Project title, will be name of subdirectory in results_dir.")
 parser$add_argument("--prior_marker_info", help = "CSV file with prior marker info")
 parser$add_argument("--imaging_data", help = "CSV file with imaging data")
-parser$add_argument("--output_dir", help = "Path to output directory", default = "/gpfs/home/yb2612/yb2612_fenyo/results/celesta")
+parser$add_argument("--results_dir", help = "Path to results directory", default = "/gpfs/data/proteomics/home/yb2612/results/celesta")
 parser$add_argument("--transform_type", type = "integer", help = "0 for pre-normalized, 1 for arcsinh normalization")
 
 args <- parser$parse_args()
 
 project_title <- args$project_title
 prior_marker_info_path <- args$prior_marker_info
-output_dir <- args$output_dir
-if (!dir.exists(output_dir)) {
-  dir.create(output_dir, recursive = TRUE)
+results_dir <- args$results_dir
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir, recursive = TRUE)
 }
 imaging_data_path <- args$imaging_data
 transform_type <- args$transform_type
@@ -38,7 +38,7 @@ cat("-------------------------------\n")
 cat("Prior marker info:", prior_marker_info_path, "\n")
 cat("Imaging data:", imaging_data_path, "\n")
 cat("Transform type:", transform_type, "\n")
-cat("Output directory:", output_dir, "\n")
+cat("Output directory:", results_dir, "\n")
 cat("-------------------------------\n\n")
 
 # Load input files
@@ -46,7 +46,7 @@ prior_marker_info <- read.csv(prior_marker_info_path)
 imaging_data <- read.csv(imaging_data_path)
 
 # Create output directory
-output_folder <- file.path(output_dir, project_title)
+output_folder <- file.path(results_dir, project_title)
 if (!dir.exists(output_folder)) {
   dir.create(output_folder, recursive = TRUE)
 }

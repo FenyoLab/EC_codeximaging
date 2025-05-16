@@ -13,39 +13,44 @@ set.seed(9)
 
 parser <- ArgumentParser(description = "Run CELESTA with specified inputs and thresholds")
 
-parser$add_argument("--project_title", help = "Title of the project")
+parser$add_argument("--project_title", help = "Project title, will be name of subdirectory in results_dir.")
 parser$add_argument("--prior_marker_info", help = "CSV file with prior marker info")
 parser$add_argument("--imaging_data", help = "CSV file with imaging data")
-parser$add_argument("--output_dir", help = "Path to output directory", default = "/gpfs/home/yb2612/yb2612_fenyo/results/celesta")
+parser$add_argument("--results_dir", help = "Path to output directory", default = "/gpfs/data/proteomics/home/yb2612/results/celesta")
 parser$add_argument("--transform_type", type = "integer", help = "0 for pre-normalized, 1 for arcsinh normalization")
 
 parser$add_argument("--high_anchor", nargs = "+", type = "double",
-                    help = "High marker thresholds for anchor round (space-separated)", required = TRUE)
+                    help = "High marker thresholds for anchor round (space-separated)", 
+                    required = FALSE, default = NULL)
 
 parser$add_argument("--high_iter", nargs = "+", type = "double",
-                    help = "High marker thresholds for iteration rounds (space-separated)", required = TRUE)
+                    help = "High marker thresholds for iteration rounds (space-separated)", 
+                    required = FALSE, default = NULL)
 
 parser$add_argument("--low_anchor", nargs = "+", type = "double",
-                    help = "Low marker thresholds for anchor round (space-separated)", required = TRUE)
+                    help = "Low marker thresholds for anchor round (space-separated)", 
+                    required = FALSE, default = NULL)
 
 parser$add_argument("--low_iter", nargs = "+", type = "double",
-                    help = "Low marker thresholds for iteration rounds (space-separated)", required = TRUE)
+                    help = "Low marker thresholds for iteration rounds (space-separated)", 
+                    required = FALSE, default = NULL)
+
 
 args <- parser$parse_args()
 
 project_title <- args$project_title
 prior_marker_info_path <- args$prior_marker_info
-output_dir <- args$output_dir
-if (!dir.exists(output_dir)) {
-  dir.create(output_dir, recursive = TRUE)
+results_dir <- args$results_dir
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir, recursive = TRUE)
 }
 imaging_data_path <- args$imaging_data
 transform_type <- args$transform_type
 
-high_marker_threshold_anchor <- args$high_anchor
-high_marker_threshold_iteration <- args$high_iter
-low_marker_threshold_anchor <- args$low_anchor
-low_marker_threshold_iteration <- args$low_iter
+high_marker_threshold_anchor <- if (!is.null(args$high_anchor)) args$high_anchor else rep(0.7, 50)
+high_marker_threshold_iteration <- if (!is.null(args$high_iter)) args$high_iter else rep(0.5, 50)
+low_marker_threshold_anchor <- if (!is.null(args$low_anchor)) args$low_anchor else rep(0.9, 50)
+low_marker_threshold_iteration <- if (!is.null(args$low_iter)) args$low_iter else rep(1.0, 50)
 
 
 cat("\n-------------------------------\n")
@@ -55,7 +60,7 @@ cat("-------------------------------\n")
 cat("Prior marker info:", prior_marker_info_path, "\n")
 cat("Imaging data:", imaging_data_path, "\n")
 cat("Transform type:", transform_type, "\n")
-cat("Output directory:", output_dir, "\n")
+cat("Output directory:", results_dir, "\n")
 cat("High marker threshold (anchor):", paste(high_marker_threshold_anchor, collapse = ", "), "\n")
 cat("High marker threshold (iteration):", paste(high_marker_threshold_iteration, collapse = ", "), "\n")
 cat("Low marker threshold (anchor):", paste(low_marker_threshold_anchor, collapse = ", "), "\n")
@@ -67,17 +72,12 @@ prior_marker_info <- read.csv(prior_marker_info_path)
 imaging_data <- read.csv(imaging_data_path)
 
 # Create output directory
-output_folder <- file.path(output_dir, project_title)
+output_folder <- file.path(results_dir, project_title)
 if (!dir.exists(output_folder)) {
   dir.create(output_folder, recursive = TRUE)
 }
 setwd(output_folder)
 cat("All results saved to:", output_folder, "\n")
-
-# Start profiling (CPU + memory)
-cat("\n[Starting memory profiling...]\n")
-profile_out_path <- file.path(output_folder, "celesta_profile.out")
-Rprof(profile_out_path, memory.profiling = TRUE)
 
 ### The pre-saved imaging data is taken from reg009 of the published CODEX data Schurch et al. Cell,2020
 
@@ -149,16 +149,3 @@ PlotExpProb(coords=CelestaObj@coords,
 saveRDS(CelestaObj, file = file.path(output_folder, paste0(project_title, "_assigned_CelestaObj.rds")))
 
 cat("\nFinished!")
-
-# --------------- STOP PROFILING --------------
-Rprof(NULL)
-
-# Summarize profiling
-summaryRprof(profile_out_path, memory = "both") -> prof_summary
-
-# Save to file
-sink(file.path(output_folder, "celesta_profile_summary.txt"))
-print(prof_summary)
-sink()
-
-cat("\nProfiling complete! See 'celesta_profile_summary.txt' and 'celesta_profile.out'\n")

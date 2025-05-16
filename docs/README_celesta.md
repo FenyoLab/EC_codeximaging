@@ -16,33 +16,115 @@ See https://github.com/plevritis-lab/CELESTA for more details.
 
 ## Running CELESTA
 
-Clone the `CC_codeximaging` repo and navigate to `bash_scripts`. Note that whenever you run a shell script, there are arguments you will need to edit according to your needs.
+Clone the `CC_codeximaging` repo and navigate to `bash_scripts`. Note that whenever you run a bash script, there are arguments you will need to edit according to your needs.
 
 You have two options when running CELESTA:
 
-1. **Run the full pipeline:** Run `celesta_full_pipeline.sh`.
-    * This creates a CELESTA object, assigns cells, plots expression probability, and plots cell assignments using built-in CELESTA functions. 
-2. *(Recommended)* **Run steps separately:** 
-    * First run `celesta_create_obj.sh` to create a CELESTA object.
-    * After the CELESTA object is created, run `celesta_assign_cells.sh`.
-    * I recommend this approach because creating a CELESTA object can often take a long time, but it does not depend on thresholds. So when testing out different thresholds, we can just create one CELESTA object and test a bunch of thresholds from there.
+### A. *(Recommended)* **Run steps separately** 
+This gives you more control over each step. Furthermore, this allows you to test a bunch of thresholds on an existing CELESTA object rather than having to build the object from scratch every time.
 
-## Inspecting CELESTA results
+#### 1. First run `celesta_create_obj.sh` to create a CELESTA object.
 
-Results will be saved to `output_dir/project_title/` as specified in the shell script you ran (any in the above section).
+This will also output a CSV file of marker expression probability.
+
+You will need to edit these arguments:
+
+```bash
+--project_title "endometrial_1T_raw_noarcsinh" \
+--prior_marker_info "/gpfs/data/proteomics/home/yb2612/data/celesta/endometrial_test/prior_marker_info_endometrial_noDAPI.csv" \
+--imaging_data "/gpfs/data/proteomics/home/yb2612/data/celesta/endometrial_test/imaging_data_1T_raw_noDAPI.csv" \
+--results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
+--transform_type 0 \
+```
+
+* `project_title:` This will be the name of the subfolder containing all results, as well as the prefix for filenames.
+* `prior_marker_info`: Path to prior marker info CSV
+* `imaging_data`: Path to imaging data CSV
+* `results_dir`: Path to directory where you want *all* of your CELESTA results to go. The script will automatically create a subfolder named after `project_title` here.
+
+#### 2. After the CELESTA object is created, run `celesta_plot_exp_prob.sh` to plot expression probability for each marker.
+
+This will help you choose thresholds when assigning cell types. I've made my own script to plot expression probability because I think it looks better than CELESTA's plots.
+
+You will need to edit these arguments:
+
+```bash
+--project_title "endometrial_1T_raw_noarcsinh" \
+--results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
+```
+
+* `project_title:` Use same value as in `celesta_create_obj.sh`. This should be the name of the subfolder containing all results.
+* `results_dir`: Use same value as in `celesta_create_obj.sh`. This should be the parent directory of the `project_title` subdir.
+
+#### 3. After the CELESTA object is created, run `celesta_assign_cells.sh` to assign cell types at specified thresholds.
+
+You will need to edit these arguments:
+
+```bash
+--project_title "endometrial_1T_raw_noarcsinh" \
+--results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
+--high_anchor 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 \
+--high_iter 0.8 0.8 0.8 0.8 0.8 0.8 0.8 0.8 0.8 0.8 \
+--low_anchor 1 1 1 1 1 1 1 1 1 1 \
+--low_iter 1 1 1 1 1 1 1 1 1 1
+```
+
+* `project_title:` Use same value as in `celesta_create_obj.sh`. This should be the name of the subfolder containing all results.
+* `results_dir`: Use same value as in `celesta_create_obj.sh`. This should be the parent directory of the `project_title` subdir.
+* `high_anchor`: Series of space-separated expression thresholds for anchor cells, in order of cell types listed in `prior_marker_info`. Can leave blank for CELESTA defaults (0.7 for all cell types).
+* `high_iter`: Series of space-separated expression thresholds for iteration cells, in order of cell types listed in `prior_marker_info`. Can leave blank for CELESTA defaults (0.5 for all cell types).
+* `low_anchor`: Series of space-separated expression thresholds for anchor cells, in order of cell types listed in `prior_marker_info`. Can leave blank for CELESTA defaults (0.9 for all cell types).
+* `low_iter`: Series of space-separated expression thresholds for anchor cells, in order of cell types listed in `prior_marker_info`. Can leave blank for CELESTA defaults (1 for all cell types).
+
+*Note: Output files will be saved with the full list of *
+
+### B. Run the full pipeline with `celesta_full_pipeline.sh`
+This creates a CELESTA object, assigns cells, plots expression probability, and plots cell assignments using built-in CELESTA functions. 
+
+*Note: While this is the simplest option, this entails building an object from scratch and only one set of thresholds can be tested. Furthermore, the plots outputted by CELESTA don't always look the best.*
+
+You will need to edit these arguments:
+
+```bash
+--project_title "endometrial_1T_raw_noarcsinh" \
+--prior_marker_info "/gpfs/data/proteomics/home/yb2612/data/celesta/endometrial_test/prior_marker_info_endometrial_noDAPI.csv" \
+--imaging_data "/gpfs/data/proteomics/home/yb2612/data/celesta/endometrial_test/imaging_data_1T_raw_noDAPI.csv" \
+--results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
+--transform_type 0 \
+--high_anchor 1 0.8 0.9 0.7 0.7 0.7 0.7 0.5 0.5 0.8 \
+--high_iter 1 0.7 0.8 0.6 0.6 0.6 0.6 0.5 0.5 0.7 \
+--low_anchor 1 1 1 1 1 1 1 1 1 1 \
+--low_iter 1 1 1 1 1 1 1 1 1 1
+```
+
+* `project_title:` This will be the name of the subfolder containing all results, as well as the prefix for filenames.
+* `prior_marker_info`: Path to prior marker info CSV.
+* `imaging_data`: Path to imaging data CSV.
+* `results_dir`: Path to directory where you want *all* of your CELESTA results to go. The script will automatically create a subfolder named after `project_title` here.
+* `high_anchor`: Series of space-separated expression thresholds for anchor cells, in order of cell types listed in `prior_marker_info`. Can leave blank for CELESTA defaults (0.7 for all cell types).
+* `high_iter`: Series of space-separated expression thresholds for iteration cells, in order of cell types listed in `prior_marker_info`. Can leave blank for CELESTA defaults (0.5 for all cell types).
+* `low_anchor`: Series of space-separated expression thresholds for anchor cells, in order of cell types listed in `prior_marker_info`. Can leave blank for CELESTA defaults (0.9 for all cell types).
+* `low_iter`: Series of space-separated expression thresholds for anchor cells, in order of cell types listed in `prior_marker_info`. Can leave blank for CELESTA defaults (1 for all cell types).
+
+### Inspecting CELESTA results
+
+Results will be saved to `results_dir/project_title/` as specified in the bash script you ran (any in the above section).
 
 1. `celesta_full_pipeline.sh` outputs:
     * CELESTA object without cell type assignments (RDS)
     * CELESTA object with cell type assignments (RDS)
     * Final cell assignments (CSV)
     * Cell assignment plot
-    * Expression probability plots
+    * Marker expression probability plots
 
 2. `celesta_create_obj.sh` outputs:
     * CELESTA object without cell type assignments (RDS)
     * Marker expression probability (CSV)
 
-3. `celesta_assign_cells.sh` outputs:
+3. `celesta_create_obj.sh` outputs:
+    * Marker expression probability plots
+
+4. `celesta_assign_cells.sh` outputs:
     * CELESTA object with cell type assignments (RDS)
     * Final cell assignments (CSV)
 
