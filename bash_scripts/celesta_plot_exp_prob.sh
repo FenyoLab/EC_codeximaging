@@ -16,7 +16,19 @@ cd ../src/celesta/
 
 # EDIT ARGUMENTS
 python -u celesta_plot_exp_prob.py \
-  --project_title "endometrial_1T_raw_noarcsinh" \
+  --project_title "cervical_10103_raw_arcsinh" \
+  --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
+
+python -u celesta_plot_exp_prob.py \
+  --project_title "cervical_34933_raw_arcsinh" \
+  --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
+
+python -u celesta_plot_exp_prob.py \
+  --project_title "cervical_28873_raw_arcsinh" \
+  --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
+
+python -u celesta_plot_exp_prob.py \
+  --project_title "cervical_02433_raw_arcsinh" \
   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
 
 wait
