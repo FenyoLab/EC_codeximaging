@@ -16,7 +16,7 @@ cd ../src/celesta/
 
 # EDIT ARGUMENTS
 
-### first 4 samples
+# ## first 4 samples
 # Rscript celesta_assign_cells.R \
 #   --project_title "cervical_28873_raw_arcsinh" \
 #   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
@@ -70,7 +70,7 @@ cd ../src/celesta/
 #   --project_title "cervical_49411_raw_arcsinh" \
 #   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
 
-# >100k, <1M
+# ## >100k, <1M
 # Rscript celesta_assign_cells.R \
 #   --project_title "cervical_09002_raw_arcsinh" \
 #   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
@@ -91,22 +91,22 @@ cd ../src/celesta/
 #   --project_title "cervical_04738_raw_arcsinh" \
 #   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
 
-# >1M
+# ## >1M
 # Rscript celesta_assign_cells.R \
 #   --project_title "cervical_07611_raw_arcsinh" \
 #   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
 
-# Rscript celesta_assign_cells.R \
-#   --project_title "cervical_00862_raw_arcsinh" \
-#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
+Rscript celesta_assign_cells.R \
+  --project_title "cervical_00862_raw_arcsinh" \
+  --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
 
 # Rscript celesta_assign_cells.R \
 #   --project_title "cervical_10285_raw_arcsinh" \
 #   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
 
-Rscript celesta_assign_cells.R \
-  --project_title "cervical_07291_raw_arcsinh" \
-  --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
+# Rscript celesta_assign_cells.R \
+#   --project_title "cervical_07291_raw_arcsinh" \
+#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
 
 wait
 

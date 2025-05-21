@@ -28,7 +28,7 @@ def plot_exp_prob(df, x_col='X', y_col='Y', marker_cols=None,
                                       "#FF6F59",  # Coral red
                                       "#D32F2F",  # Dark red
                                   ],
-                                   point_size=0.5, figsize=(6, 4), title_prefix="Expression of ",
+                                   point_size=0.5, figsize=(6, 4), title_prefix="Expression probability of ",
                                    save_path=save_path):
     """
     Plots binned expression levels for each marker in a given DataFrame.
@@ -72,7 +72,7 @@ def plot_exp_prob(df, x_col='X', y_col='Y', marker_cols=None,
         # Add legend outside plot (right side)
         plt.legend(
             handles=handles,
-            title="Expression",
+            title="Probability",
             loc='center left',
             bbox_to_anchor=(1.05, 0.5),
             fontsize=8,

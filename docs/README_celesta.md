@@ -20,7 +20,7 @@ library(CELESTA)
 
 ## Preparing CELESTA inputs
 
-CELESTA requires two main inputs in CSV format: **prior marker information** ([example spreadsheet](https://docs.google.com/spreadsheets/d/1xc_mcczZ0B0EAhWt6SpMEdjmpPlIWInAd9OLzNKNgkI/edit?usp=sharing)) and **imaging data** (`notebooks/celesta_data_prep.ipynb`). 
+CELESTA requires two main inputs in CSV format: **prior marker information** ([example spreadsheet](https://docs.google.com/spreadsheets/d/1xc_mcczZ0B0EAhWt6SpMEdjmpPlIWInAd9OLzNKNgkI/edit?usp=sharing)) and **imaging data** (`notebooks/celesta_data_prep_cervical.ipynb`). 
 
 1. **Prior marker info (CSV):** Contains cell type name, lineage levels, and marker expression probability 0/1 per cell type. Each row should correspond to a cell type.
     
@@ -32,7 +32,7 @@ CELESTA requires two main inputs in CSV format: **prior marker information** ([e
 
     ![image](img/prior_marker_info.png)
     
-2. **Imaging data (CSV):** Contains X/Y coordinates and "raw" expression levels per marker (you can input normalized expression here too). Each row should correspond to an individual cell.
+2. **Imaging data (CSV):** Contains X/Y coordinates and raw expression levels per marker. Each row should correspond to an individual cell.
 
     ![image](img/imaging_data.png)
 
@@ -51,18 +51,18 @@ You have two options when running CELESTA:
 ### A. *(Recommended)* **Run steps separately** 
 This gives you more control over each step. It also allows you to test a bunch of thresholds on an existing CELESTA object rather than having to build the object from scratch every time.
 
-#### 1. First run `celesta_create_obj.sh` to create a CELESTA object.
+#### 1. Run `celesta_create_obj.sh` to create a CELESTA object.
 
 This will also output a CSV file of marker expression probability.
 
 You will need to edit these arguments:
 
 ```bash
---project_title "endometrial_1T_raw_noarcsinh" \
---prior_marker_info "/gpfs/data/proteomics/home/yb2612/data/celesta/endometrial_test/prior_marker_info_endometrial_noDAPI.csv" \
---imaging_data "/gpfs/data/proteomics/home/yb2612/data/celesta/endometrial_test/imaging_data_1T_raw_noDAPI.csv" \
+--project_title "cervical_10103_raw_arcsinh" \
+--prior_marker_info "/gpfs/data/proteomics/home/yb2612/data/celesta/cervical/prior_marker_info_cervical.csv" \
+--imaging_data "/gpfs/data/proteomics/home/yb2612/data/celesta/cervical/imaging_data_10103_raw.csv" \
 --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
---transform_type 0 \
+--transform_type 1
 ```
 
 * `project_title:` This will be the name of the subfolder containing all results, as well as the prefix for filenames.
@@ -70,15 +70,15 @@ You will need to edit these arguments:
 * `imaging_data`: Path to imaging data CSV.
 * `results_dir`: Path to directory where you want *all* of your CELESTA results to go. The script will automatically create a subfolder named after `project_title` here.
 
-#### 2. After the CELESTA object is created, run `celesta_plot_exp_prob.sh` to plot expression probability for each marker.
+#### 2. After creating the object, run `celesta_plot_exp_prob.sh` to plot expression probability for each marker.
 
 This will help you choose thresholds when assigning cell types.
 
 You will need to edit these arguments:
 
 ```bash
---project_title "endometrial_1T_raw_noarcsinh" \
---results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
+--project_title "cervical_10103_raw_arcsinh" \
+--results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta"
 ```
 
 * `project_title:` Use same value as in `celesta_create_obj.sh`. This should be the name of the subfolder containing all results.
@@ -86,18 +86,20 @@ You will need to edit these arguments:
 
 I've made my own script to plot expression probability because I think it looks better than CELESTA's plots. Case in point:
 
-![image](img/celesta_CD3e_exp_prob.png)
-*CELESTA's expression probability plot for CD3e in one of our samples. From this it looks like most cells are <=0.5, but in truth they are just plotted on top of cells with higher probability. This plot can mislead us into setting a threshold that is too low for this marker.*
+<img src="img/celesta_CD3e_exp_prob.png" alt="CELESTA CD3e" width="300"/>
 
-![image](img/yumi_CD3e_exp_prob.png)
-*Yumi's expression probability plot for the same marker and sample. I make sure to plot cells in order of increasing probability. Notice how this reveals many more cells >0.9, which helps us set a better threshold.*
+*CELESTA's expression probability plot for CD3e in one of our samples. Notice that points are large and overlapping, making it hard to select an appropriate threshold.*
+
+<img src="img/yumi_CD3e_exp_prob.png" alt="Yumi CD3e" width="300"/>
+
+*Yumi's expression probability plot for the same marker and sample. The points are smaller with less overlap, and points with higher probability are plotted on top.*
 
 #### 3. After choosing thresholds, run `celesta_assign_cells.sh` to assign cell types.
 
 You will need to edit these arguments:
 
 ```bash
---project_title "endometrial_1T_raw_noarcsinh" \
+--project_title "cervical_10103_raw_arcsinh" \
 --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
 --high_anchor 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 \
 --high_iter 0.8 0.8 0.8 0.8 0.8 0.8 0.8 0.8 0.8 0.8 \
@@ -116,6 +118,8 @@ For `high_anchor` and `high_iter`, you can use this [example spreadsheet](https:
 
 *Note: Output filenames will contain the full lists of `high_anchor` and `high_iter` thresholds. There is probably a better way to do this, but this is how it is for now.*
 
+#### 4. After choosing thresholds, run `celesta_assign_cells.sh` to assign cell types.
+
 ### B. Run the full pipeline with `celesta_full_pipeline.sh`
 This creates a CELESTA object, assigns cells, plots expression probability, and plots cell assignments using built-in CELESTA functions. 
 
@@ -124,13 +128,13 @@ This creates a CELESTA object, assigns cells, plots expression probability, and 
 You will need to edit these arguments:
 
 ```bash
---project_title "endometrial_1T_raw_noarcsinh" \
---prior_marker_info "/gpfs/data/proteomics/home/yb2612/data/celesta/endometrial_test/prior_marker_info_endometrial_noDAPI.csv" \
---imaging_data "/gpfs/data/proteomics/home/yb2612/data/celesta/endometrial_test/imaging_data_1T_raw_noDAPI.csv" \
+--project_title "cervical_10103_raw_arcsinh" \
+--prior_marker_info "/gpfs/data/proteomics/home/yb2612/data/celesta/cervical/prior_marker_info_cervical.csv" \
+--imaging_data "/gpfs/data/proteomics/home/yb2612/data/celesta/cervical/imaging_data_10103_raw.csv" \
 --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
---transform_type 0 \
---high_anchor 1 0.8 0.9 0.7 0.7 0.7 0.7 0.5 0.5 0.8 \
---high_iter 1 0.7 0.8 0.6 0.6 0.6 0.6 0.5 0.5 0.7 \
+--transform_type 1 \
+--high_anchor 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 \
+--high_iter 0.8 0.8 0.8 0.8 0.8 0.8 0.8 0.8 0.8 0.8 \
 --low_anchor 1 1 1 1 1 1 1 1 1 1 \
 --low_iter 1 1 1 1 1 1 1 1 1 1
 ```
@@ -168,19 +172,18 @@ Results will be saved to `results_dir/project_title/` as specified in the bash s
 
 ## Evaluating CELESTA performance
 
-You can evaluate CELESTA results using `notebooks/celesta_evaluate_results.ipynb`. This will only work if you have ground truth labels, i.e., from the manual cell phenotyping pipeline. 
+You can evaluate CELESTA results using `notebooks/celesta_evaluate_results_cervical.ipynb`. This will only work if you have ground truth labels, i.e., from the manual cell phenotyping pipeline. 
 
 There are code blocks dedicated to plotting expression probability, in the same way that `celesta_plot_exp_prob.sh` does. This is just so you can see all plots at once, which can help when selecting thresholds.
 
-I have also developed a rudimentary way of selecting the best thresholds. First run `celesta_assign_cells.sh` with all of the different thresholds you want to test. Then in the notebook, run the code blocks under:
+I have also developed a rudimentary way of selecting the best thresholds. First run `celesta_assign_cells.sh` with all of the different thresholds you want to test. 
 
-* **Threshold search (mean of conf matrix diagonal):** Here our evaluation metric is the mean of the diagonal of the confusion matrix (with the option to exclude certain cell types). It is not weighted based on cell number. This is probably best for making sure CELESTA has balanced performance across all classes.
-* **Threshold search (macro F1):** Here we use the macro F1 score (harmonic mean of precision and recall) as an alternative evaluation metric. I find this tends to favor better performance in more common cell types.
+Then in the notebook, run the code block under **Threshold search (mean of conf matrix diagonal).** Here our evaluation metric is the mean of the diagonal of the confusion matrix (with the option to exclude certain cell types). It is not weighted based on cell number. This is probably best for making sure CELESTA has balanced performance across all classes.
 
-You will also see code blocks named **Best thresholds - full evaluation.** This takes results from the chosen best thresholds and displays the following:
+Finally run **Best thresholds - full evaluation.** This takes results from the chosen best thresholds and displays the following:
 
-* Spatial plot of cell type assignments
 * Plots showing accuracy for selected cell types
 * Classification report and graph of precision/recall/f1-score per cell type and overall
 * Confusion matrix
 * Plot of cell type proportions from  manual pipeline vs. CELESTA
+* Spatial plot of cell type assignments

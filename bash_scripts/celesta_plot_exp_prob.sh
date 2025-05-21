@@ -16,6 +16,26 @@ cd ../src/celesta/
 
 # EDIT ARGUMENTS
 
+python -u celesta_plot_exp_prob.py \
+  --project_title "endometrial_1T_raw_arcsinh" \
+  --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/endometrial" \
+
+python -u celesta_plot_exp_prob.py \
+  --project_title "endometrial_1T_raw_noarcsinh" \
+  --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/endometrial" \
+
+python -u celesta_plot_exp_prob.py \
+  --project_title "endometrial_1T_raw_noarcsinh_NA" \
+  --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/endometrial" \
+
+python -u celesta_plot_exp_prob.py \
+  --project_title "endometrial_3P_raw_arcsinh" \
+  --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/endometrial" \
+
+python -u celesta_plot_exp_prob.py \
+  --project_title "endometrial_3P_raw_noarcsinh" \
+  --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/endometrial" \
+
 ### first four samples
 # python -u celesta_plot_exp_prob.py \
 #   --project_title "cervical_10103_raw_arcsinh" \
@@ -33,7 +53,7 @@ cd ../src/celesta/
 #   --project_title "cervical_02433_raw_arcsinh" \
 #   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
 
-### <100k
+# ### <100k
 # python -u celesta_plot_exp_prob.py \
 #   --project_title "cervical_39367_raw_arcsinh" \
 #   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
@@ -42,14 +62,14 @@ cd ../src/celesta/
 #   --project_title "cervical_49411_raw_arcsinh" \
 #   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
 
-### >100k, <1M
+# ## >100k, <1M
 # python -u celesta_plot_exp_prob.py \
 #   --project_title "cervical_09002_raw_arcsinh" \
 #   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
 
 # python -u celesta_plot_exp_prob.py \
-  # --project_title "cervical_08153_raw_arcsinh" \
-  # --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
+#   --project_title "cervical_08153_raw_arcsinh" \
+#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
 
 # python -u celesta_plot_exp_prob.py \
 #   --project_title "cervical_00438_raw_arcsinh" \
@@ -63,7 +83,7 @@ cd ../src/celesta/
 #   --project_title "cervical_04738_raw_arcsinh" \
 #   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
 
-### >1M
+# ### >1M
 # python -u celesta_plot_exp_prob.py \
 #   --project_title "cervical_07611_raw_arcsinh" \
 #   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
@@ -72,9 +92,9 @@ cd ../src/celesta/
 #   --project_title "cervical_00862_raw_arcsinh" \
 #   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
 
-# python -u celesta_plot_exp_prob.py \
-#   --project_title "cervical_10285_raw_arcsinh" \
-#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
+# # python -u celesta_plot_exp_prob.py \
+# #   --project_title "cervical_10285_raw_arcsinh" \
+# #   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
 
 # python -u celesta_plot_exp_prob.py \
 #   --project_title "cervical_07291_raw_arcsinh" \
