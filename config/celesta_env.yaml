@@ -85,6 +85,7 @@ dependencies:
   - ipykernel=6.29.5
   - ipython=9.1.0
   - ipython_pygments_lexers=1.1.1
+  - ipywidgets=8.1.7
   - jedi=0.19.2
   - jinja2=3.1.6
   - joblib=1.4.2
@@ -92,8 +93,10 @@ dependencies:
   - json5=0.9.25
   - jsonschema=4.23.0
   - jsonschema-specifications=2023.7.1
+  - jupyter=1.1.1
   - jupyter-lsp=2.2.5
   - jupyter_client=8.6.3
+  - jupyter_console=6.6.3
   - jupyter_core=5.7.2
   - jupyter_events=0.12.0
   - jupyter_server=2.15.0
@@ -101,6 +104,7 @@ dependencies:
   - jupyterlab=4.4.2
   - jupyterlab_pygments=0.3.0
   - jupyterlab_server=2.27.3
+  - jupyterlab_widgets=3.0.15
   - kernel-headers_linux-64=3.10.0
   - keyutils=1.6.1
   - kiwisolver=1.4.8
@@ -201,6 +205,7 @@ dependencies:
   - mpg123=1.32.9
   - mysql-common=9.3.0
   - mysql-libs=9.3.0
+  - narwhals=1.40.0
   - nbclient=0.10.2
   - nbconvert-core=7.16.6
   - nbformat=5.10.4
@@ -231,6 +236,7 @@ dependencies:
   - pip=25.1.1
   - pixman=0.46.0
   - platformdirs=4.3.7
+  - plotly=6.1.0
   - ply=3.11
   - proj=9.5.1
   - prometheus_client=0.21.1
@@ -410,6 +416,7 @@ dependencies:
   - wcwidth=0.2.5
   - webencodings=0.5.1
   - websocket-client=1.8.0
+  - widgetsnbextension=4.0.14
   - x265=3.5
   - xcb-util=0.4.1
   - xcb-util-image=0.4.0
