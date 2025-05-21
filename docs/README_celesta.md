@@ -129,6 +129,13 @@ For both scripts, you will need to edit these arguments:
 * `project_title:` Use same value as in `celesta_create_obj.sh`. This should be the name of the subfolder containing all results.
 * `results_dir`: Use same value as in `celesta_create_obj.sh`. This should be the parent directory of the `project_title` subdir.
 
+Example plots: 
+
+<p>
+  <img src="img/plot_cell_proportions.png" alt="Cell Proportions" height="300" style="vertical-align: top;"/>
+  <img src="img/plot_cell_assignments.png" alt="Cell Assignments" height="300" style="vertical-align: top;"/>
+</p>
+
 ## Running full CELESTA pipeline
 
 This creates a CELESTA object, assigns cells, plots expression probability, and plots cell assignments using built-in CELESTA functions. 
@@ -187,17 +194,15 @@ Results will be saved to `results_dir/project_title/` as specified in the bash s
     * Spatial plot of cell type assignments for each `final_cell_type_assignment.csv` file
 
 6. `celesta_plot_interactive_assignments.sh` outputs:
-    * Spatial plot of cell type assignments for each `final_cell_type_assignment.csv` file (HTML)
+    * Interactive spatial plot of cell type assignments for each `final_cell_type_assignment.csv` file (HTML)
 
 ## Evaluating CELESTA performance
 
-You can evaluate CELESTA results using `notebooks/celesta_evaluate_results_cervical.ipynb`. This will only work if you have ground truth labels, i.e., from the manual cell phenotyping pipeline. 
+You can evaluate CELESTA results using `notebooks/celesta_evaluate_results_cervical.ipynb`. 
 
 There are code blocks dedicated to plotting expression probability, in the same way that `celesta_plot_exp_prob.sh` does. This is just so you can see all plots at once, which can help when selecting thresholds.
 
-I have also developed a rudimentary way of selecting the best thresholds. First run `celesta_assign_cells.sh` with all of the different thresholds you want to test. 
-
-Then in the notebook, run the code block under **Threshold search (mean of conf matrix diagonal).** Here our evaluation metric is the mean of the diagonal of the confusion matrix (with the option to exclude certain cell types). It is not weighted based on cell number. This is probably best for making sure CELESTA has balanced performance across all classes.
+* **Threshold search (mean of conf matrix diagonal):** If you have ground truth labels, you can evaluate performance using the mean of the diagonal of the confusion matrix. This is best for making sure CELESTA has balanced performance across all classes. Make sure you have run `celesta_assign_cells.sh` with all of the different thresholds you want to test. 
 
 Finally run **Best thresholds - full evaluation.** This takes results from the chosen best thresholds and displays the following:
 
