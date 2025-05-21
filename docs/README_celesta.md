@@ -132,8 +132,8 @@ For both scripts, you will need to edit these arguments:
 Example plots: 
 
 <p>
-  <img src="img/plot_cell_proportions.png" alt="Cell Proportions" height="300" style="vertical-align: top;"/>
-  <img src="img/plot_cell_assignments.png" alt="Cell Assignments" height="300" style="vertical-align: top;"/>
+  <img src="img/plot_cell_proportions.png" alt="Cell Proportions" height="600" style="vertical-align: top;"/>
+  <img src="img/plot_cell_assignments.png" alt="Cell Assignments" height="600" style="vertical-align: top;"/>
 </p>
 
 ## Running full CELESTA pipeline
