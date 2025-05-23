@@ -17,64 +17,60 @@ cd ../src/celesta/
 # EDIT ARGUMENTS
 
 ### first 4 samples
-python -u celesta_plot_results.py \
-  --project_title "cervical_10103_raw_arcsinh" \
-  --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
-
-python -u celesta_plot_results.py \
-  --project_title "cervical_34933_raw_arcsinh" \
-  --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
-
-python -u celesta_plot_results.py \
-  --project_title "cervical_28873_raw_arcsinh" \
-  --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
-
-python -u celesta_plot_results.py \
-  --project_title "cervical_02433_raw_arcsinh" \
-  --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
-
-### <100k
-python -u celesta_plot_results.py \
-  --project_title "cervical_39367_raw_arcsinh" \
-  --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
-
-python -u celesta_plot_results.py \
-  --project_title "cervical_49411_raw_arcsinh" \
-  --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
-
-### >100k, <1M
-python -u celesta_plot_results.py \
-  --project_title "cervical_09002_raw_arcsinh" \
-  --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
-
-python -u celesta_plot_results.py \
-  --project_title "cervical_08153_raw_arcsinh" \
-  --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
-
-python -u celesta_plot_results.py \
-  --project_title "cervical_00438_raw_arcsinh" \
-  --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
-
-python -u celesta_plot_results.py \
-  --project_title "cervical_07688_raw_arcsinh" \
-  --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
-
-python -u celesta_plot_results.py \
-  --project_title "cervical_04738_raw_arcsinh" \
-  --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
-
-### >1M
 # python -u celesta_plot_results.py \
-#   --project_title "cervical_07611_raw_arcsinh" \
+#   --project_title "cervical_10103_raw_arcsinh" \
 #   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
 
+# python -u celesta_plot_results.py \
+#   --project_title "cervical_34933_raw_arcsinh" \
+#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
+
+# python -u celesta_plot_results.py \
+#   --project_title "cervical_28873_raw_arcsinh" \
+#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
+
+# python -u celesta_plot_results.py \
+#   --project_title "cervical_02433_raw_arcsinh" \
+#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
+
+# ### <100k
+# python -u celesta_plot_results.py \
+#   --project_title "cervical_39367_raw_arcsinh" \
+#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
+
+# python -u celesta_plot_results.py \
+#   --project_title "cervical_49411_raw_arcsinh" \
+#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
+
+# ### >100k, <1M
+# python -u celesta_plot_results.py \
+#   --project_title "cervical_09002_raw_arcsinh" \
+#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
+
+# python -u celesta_plot_results.py \
+#   --project_title "cervical_08153_raw_arcsinh" \
+#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
+
+# python -u celesta_plot_results.py \
+#   --project_title "cervical_00438_raw_arcsinh" \
+#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
+
+# python -u celesta_plot_results.py \
+#   --project_title "cervical_07688_raw_arcsinh" \
+#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
+
+# python -u celesta_plot_results.py \
+#   --project_title "cervical_04738_raw_arcsinh" \
+#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
+
+# # ### >1M
 # python -u celesta_plot_results.py \
 #   --project_title "cervical_00862_raw_arcsinh" \
 #   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
 
-# python -u celesta_plot_results.py \
-#   --project_title "cervical_10285_raw_arcsinh" \
-#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
+python -u celesta_plot_results.py \
+  --project_title "cervical_10285_raw_arcsinh" \
+  --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
 
 # python -u celesta_plot_results.py \
 #   --project_title "cervical_07291_raw_arcsinh" \

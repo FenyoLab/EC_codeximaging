@@ -1,0 +1,100 @@
+# REMINDER: add deepcell API key in bash_scripts/.env like below
+# export DEEPCELL_ACCESS_TOKEN=<token-from-users.deepcell.org>
+# Basic input parameters
+tile_size: 256
+batch_size: 64
+tiles_dir: tiles
+num_channels: 34
+n_clusters_celltypes: 27
+n_clusters_preprocessing: 3
+n_clusters_thresholding: 3
+random_state: 2024
+membrane_marker: 'E-cadherin'
+channel_names: ['DAPI', 'CD45RO', 'CD4', 'MPO', 'CD68', 'E-cadherin', 'PD-L1', 'CD163', 'PD-1', 'PARP1', 'GAL3', 'CD8', 'CD47', 'PI3KCA', 'MSH2', 'IFNG', 'MSH6', 'HLADR', 'MLH1', 'CD40', 'CD34', 'TIM3', 'FOXP3', 'Granzyme B', 'PR', 'IDO1', 'TOX', 'CD20', 'ARID1A', 'CD31', 'PMS2', 'Ki67', 'Pan-Cytokeratin', 'CD3e']
+
+lineage_markers: ['CD3e', 'CD163', 'CD31', 'CD4', 'CD20', 'CD68', 'CD8', 'MPO', 'CD45RO', 'E-cadherin', 'DAPI', 'Pan-Cytokeratin', 'CD34'] 
+threshold_channel_names: ['MPO', 'CD163', 'CD4', 'CD68', 'CD8', 'CD20', 'CD3e']
+exclude_channel_names: []
+samples_to_remove: null
+
+# Base paths
+segmentation_data_dir: /gpfs/data/proteomics/data/Cervical_mIF/output/raw_segmentation_data_again
+label_images_dir: /gpfs/data/proteomics/data/Cervical_mIF/output/label_images
+out_dir: /gpfs/data/proteomics/data/Cervical_mIF/output/initial_run
+
+data_dir: /gpfs/data/proteomics/data/Cervical_mIF/output/data
+qptiff_data_dir: /gpfs/data/proteomics/data/Cervical_mIF/qptiff_dat
+
+new_data_dir: /gpfs/data/proteomics/data/Cervical_mIF/output/data
+new_segmentation_data_dir: /gpfs/data/proteomics/data/Cervical_mIF/output/raw_segmentation_data_again
+
+# Specific paths: main_cell_segmentation
+tiles_split_dir: tiles_split
+
+# Specific paths: main_cell_segmentation_analysis
+thresholded_dir: thresholded_matrix
+normalized_matrix_dir: normalized_matrix
+metadata_filtered_path: normalized_matrix/metadata_filtered.csv
+matrix_normal_filtered_path: normalized_matrix/matrix_normal_filtered_markers.npy
+umap_dir: umap
+umap_coord_path: umap/coord.npy
+pca_coord_path: pca/coord.npy
+clustering_dir: clustering
+celltypes_dir: celltypes
+omero_table_dir: omero_tables
+
+# Research drive
+omero_dir: 'fenyolab/CC_codeximaging/cell_segmentation'
+research_drive_dir: 'fenyolab/CC_codeximaging/cell_segmentation'
+
+# Omero image info 
+omero_image_dict:
+  "20250225-Jharna-02433-A1_Scan1.er": 
+    image_id: 698744
+    cell_label_image_csv: 1238322
+  "20250225-Jharna-08153-A1_Scan1.er":
+    image_id: 699026
+    cell_label_image_csv: 1238323
+  "20250225-Jharna-10103-A1_Scan1.er":
+    image_id: 699167
+    cell_label_image_csv: 1238324
+  "20250305-Jharna-00862-6X_Scan1.er":
+    image_id: 704253
+    cell_label_image_csv: 1238325
+  "20250305-Jharna-09002-A1_Scan1.er":
+    image_id: 701231
+    cell_label_image_csv: 1238326
+  "20250305-Jharna-10285-A21_Scan1.er":
+    image_id: 704478
+    cell_label_image_csv: 1238327
+  "20250305-Jharna-34933-A1_Scan1.er":
+    image_id: 701509
+    cell_label_image_csv: 1238328
+  "20250311-Jharna-00438-1A_Scan1.er":
+    image_id: 705910
+    cell_label_image_csv: 1238329
+  "20250311-Jharna-07688-A1_Scan1.er":
+    image_id: 705491
+    cell_label_image_csv: 1238330
+  "20250311-Jharna-39367-A1_Scan1.er":
+    image_id: 705632
+    cell_label_image_csv: 1238331
+  "20250311-Jharna-49411-1A_Scan1.er":
+    image_id: 705769
+    cell_label_image_csv: 1238332
+  "20250318-Jharna-04738-A1_Scan1.er":
+    image_id: 707353
+    cell_label_image_csv: 1238333
+  "20250318-Jharna-07291-1A_Scan1.er":
+    image_id: 707494
+    cell_label_image_csv: 1238334
+  "20250318-Jharna-28873-A1_Scan1.er":
+    image_id: 707635
+    cell_label_image_csv: 1238335
+
+
+# already done
+
+
+# Lineage markers cluster identity - leave empty when doing first cell segmentation and fill out for analysis
+lineage_markers_cluster_dict:

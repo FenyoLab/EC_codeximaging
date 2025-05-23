@@ -80,7 +80,7 @@ def plot_interactive_cell_assignments(
         legend=dict(itemsizing='constant')
     )
     fig.update_xaxes(showgrid=False, zeroline=False)
-    fig.update_yaxes(showgrid=False, zeroline=False)
+    fig.update_yaxes(showgrid=False, zeroline=False, autorange='reversed')
 
     if save_path:
         fig.write_html(save_path)
@@ -101,8 +101,8 @@ cell_type_colors = {
     'Macrophage': '#FB22FF',                    # magenta
     'Macrophage (CD163-)': '#FB22FF',           # magenta
     'Macrophages (CD163-)': '#FB22FF',          # magenta
-    'Macrophage (CD163+)': '#FFC5D3',           # lightpink
-    'Macrophages (CD163+)': '#FFC5D3',          # lightpink
+    'Macrophage (CD163+)': '#FF80FF',           # light magenta
+    'Macrophages (CD163+)': '#FF80FF',          # light magenta
     'CD8_T': '#FFFE04',                         # yellow
     'Cytotoxic T cells': '#FFFE04',             # yellow
     'T': '#008B8B',                             # dark cyan
@@ -111,6 +111,10 @@ cell_type_colors = {
     'Helper T cells': '#FC8001',                # orange
     'B': '#FFFFFF',                             # white
     'B cells': '#FFFFFF',                       # white
+    'Cytotoxic NK': '#B7FFFA',                  # pastel cyan
+    'Exhausted CD8': '#FFC1CB',                 # pastel pink
+    'Treg': '#FFC067',                          # pastel orange
+    'Th1': '#FFEE8C',                           # pastel yellow
 }
 
 if __name__ == "__main__":

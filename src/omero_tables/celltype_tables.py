@@ -9,7 +9,7 @@ from utils import helper
 
 def celltype_tables(cell_types_path, save_path, omero_dict, n_clusters, table_name, samples_to_remove=None):
 
-    metadata = pd.read_csv(os.path.join(cell_types_path, 'cell_types.csv'))
+    metadata = pd.read_csv(os.path.join(cell_types_path, 'cell_types_detailed.csv'))
     sample_names = metadata["slide_id"]
 
     for sample in sample_names.unique():
@@ -32,7 +32,7 @@ def celltype_tables(cell_types_path, save_path, omero_dict, n_clusters, table_na
             f'clusters_{n_clusters}': sample_cluster_labels,
             'cell_type': sample_cell_types
         })
-        roi_value = omero_dict.get(sample, {}).get('roi_id')
+        roi_value = omero_dict.get(sample, {}).get('cell_label_image_csv')
 
         omero_df = create_omero_table(celltype_df, roi_value)
         print(omero_df.head())

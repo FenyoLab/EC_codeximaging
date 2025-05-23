@@ -88,6 +88,7 @@ def plot_exp_prob(df, x_col='X', y_col='Y', marker_cols=None,
         plt.yticks([])
         
         plt.gca().set_aspect('equal')
+        plt.gca().invert_yaxis()
 
         plt.savefig(f"{save_path}/{marker}_exp_prob.png", dpi=300, bbox_inches='tight')
         plt.close()

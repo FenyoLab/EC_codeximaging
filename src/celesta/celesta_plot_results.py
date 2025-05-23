@@ -32,7 +32,7 @@ def plot_cell_proportions(df, cell_type_col, color_map=None, normalize=True, sav
     - save_path: Optional path to save the figure. If None, plot is shown.
     """
     # count cell types
-    counts = df[cell_type_col].value_counts().sort_index()
+    counts = df[cell_type_col].value_counts(ascending=True)
 
     if normalize:
         counts = counts / counts.sum()
@@ -122,6 +122,8 @@ def plot_cell_assignments(
     ax = plt.gca()
     ax.set_facecolor('black')
 
+    ax.invert_yaxis()
+
     # plot base layer first
     if base_layer in cell_types:
         subset = df[df[cell_type_col] == base_layer]
@@ -178,8 +180,8 @@ cell_type_colors = {
     'Macrophage': '#FB22FF',                    # magenta
     'Macrophage (CD163-)': '#FB22FF',           # magenta
     'Macrophages (CD163-)': '#FB22FF',          # magenta
-    'Macrophage (CD163+)': '#FFC5D3',           # lightpink
-    'Macrophages (CD163+)': '#FFC5D3',          # lightpink
+    'Macrophage (CD163+)': '#FF80FF',           # light magenta
+    'Macrophages (CD163+)': '#FF80FF',          # light magenta
     'CD8_T': '#FFFE04',                         # yellow
     'Cytotoxic T cells': '#FFFE04',             # yellow
     'T': '#008B8B',                             # dark cyan
@@ -188,6 +190,10 @@ cell_type_colors = {
     'Helper T cells': '#FC8001',                # orange
     'B': '#FFFFFF',                             # white
     'B cells': '#FFFFFF',                       # white
+    'Cytotoxic NK': '#B7FFFA',                  # pastel cyan
+    'Exhausted CD8': '#FFC1CB',                 # pastel pink
+    'Treg': '#FFC067',                          # pastel orange
+    'Th1': '#FFEE8C',                           # pastel yellow
 }
 
 if __name__ == "__main__":
