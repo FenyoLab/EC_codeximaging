@@ -198,16 +198,18 @@ Results will be saved to `results_dir/project_title/` as specified in the bash s
 
 ## Evaluating CELESTA performance
 
-You can evaluate CELESTA results using `notebooks/celesta_evaluate_results_cervical.ipynb`. 
+You can evaluate CELESTA results using `notebooks/celesta_evaluate_results_cervical.ipynb`. You will find the following code blocks:
 
-There are code blocks dedicated to plotting expression probability, in the same way that `celesta_plot_exp_prob.sh` does. This is just so you can see all plots at once, which can help when selecting thresholds.
+* **arcsinh_exp_prob:** Plots expression probability, in the same way that `celesta_plot_exp_prob.sh` does. This is so you can see all plots at once, which can help when selecting thresholds. 
+
+* **Violin plots and Spatial plots:** For visual comparison of raw biomarker means and marker expression probability.
 
 * **Threshold search (mean of conf matrix diagonal):** If you have ground truth labels, you can evaluate performance using the mean of the diagonal of the confusion matrix. This is best for making sure CELESTA has balanced performance across all classes. Make sure you have run `celesta_assign_cells.sh` with all of the different thresholds you want to test. 
 
-Finally run **Best thresholds - full evaluation.** This takes results from the chosen best thresholds and displays the following:
+* **Best thresholds - full evaluation.** This takes results from the chosen best thresholds and displays the following:
 
-* Plots showing accuracy for selected cell types
-* Classification report and graph of precision/recall/f1-score per cell type and overall
-* Confusion matrix
-* Plot of cell type proportions from  manual pipeline vs. CELESTA
-* Spatial plot of cell type assignments
+    * Plots showing accuracy for selected cell types
+    * Classification report and graph of precision/recall/f1-score per cell type and overall
+    * Confusion matrix
+    * Plot of cell type proportions from  manual pipeline vs. CELESTA
+    * Spatial plot of cell type assignments
