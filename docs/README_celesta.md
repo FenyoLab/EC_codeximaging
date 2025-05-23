@@ -198,13 +198,15 @@ Results will be saved to `results_dir/project_title/` as specified in the bash s
 
 ## Evaluating CELESTA performance
 
-You can evaluate CELESTA results using `notebooks/celesta_evaluate_results_cervical.ipynb`. You will find the following code blocks:
+All CELESTA results are uploaded to OMERO after completion. You can use the PathViewer tool to overlay assigned cell types onto the CODEX image and visually evaluate how well they overlap with marker expression.
+
+You can also evaluate CELESTA results using `notebooks/celesta_evaluate_results_cervical.ipynb`. This contains the following code blocks:
 
 * **arcsinh_exp_prob:** Plots expression probability, in the same way that `celesta_plot_exp_prob.sh` does. This is so you can see all plots at once, which can help when selecting thresholds. 
 
 * **Violin plots and Spatial plots:** For visual comparison of raw biomarker means and marker expression probability.
 
-* **Threshold search (mean of conf matrix diagonal):** If you have ground truth labels, you can evaluate performance using the mean of the diagonal of the confusion matrix. This is best for making sure CELESTA has balanced performance across all classes. Make sure you have run `celesta_assign_cells.sh` with all of the different thresholds you want to test. 
+* **Threshold search (mean of conf matrix diagonal):** If you have ground truth labels, you can evaluate threshold performance using the mean of the diagonal of the confusion matrix. This is best for making sure CELESTA has balanced performance across all classes. Make sure you have run `celesta_assign_cells.sh` with all of the different thresholds you want to test. 
 
 * **Best thresholds - full evaluation.** This takes results from the chosen best thresholds and displays the following:
 
@@ -213,3 +215,15 @@ You can evaluate CELESTA results using `notebooks/celesta_evaluate_results_cervi
     * Confusion matrix
     * Plot of cell type proportions from  manual pipeline vs. CELESTA
     * Spatial plot of cell type assignments
+
+There is also a notebook `notebooks/celesta_broad_vs_detailed_cervical.ipynb` to compare results from broad cell types to detailed cell types.
+
+# Notes
+
+1. I first ran CELESTA on two endometrial cancer samples: 1T (22k cells) and 3P (1M cells). 
+    * For the imaging data, I used raw biomarker means with no further transformation. 
+    * Both samples had manual annotations, which were treated as ground truth labels. 
+    * I tested multiple thresholds and followed the evaluation pipeline in the above section ("Evaluating CELESTA performance") to select the best thresholds.
+3. I then ran the full CELESTA pipeline on all 14 cervical cancer samples. 
+    * For the imaging data, I used raw biomarker means with CELESTA's built-in arcsinh transformation. 
+    * Initially, default thresholds were used for all samples.
