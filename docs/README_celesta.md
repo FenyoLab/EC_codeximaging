@@ -223,7 +223,9 @@ There is also a notebook `notebooks/celesta_broad_vs_detailed_cervical.ipynb` to
 1. I first ran CELESTA on two endometrial cancer samples: 1T (22k cells) and 3P (1M cells). 
     * For the imaging data, I used raw biomarker means with no further transformation. 
     * Both samples had manual annotations, which were treated as ground truth labels. 
-    * I tested multiple thresholds and followed the evaluation pipeline in the above section ("Evaluating CELESTA performance") to select the best thresholds.
+    * I tested multiple thresholds and used `notebooks/celesta_evaluate_results_cervical.ipynb` to select the best thresholds (see "Evaluating CELESTA performance" section above).
 3. I then ran the full CELESTA pipeline on all 14 cervical cancer samples. 
     * For the imaging data, I used raw biomarker means with CELESTA's built-in arcsinh transformation. 
     * Initially, default thresholds were used for all samples.
+    * Thresholds will be tuned as described in the "Evaluating CELESTA performance" section above.
+    * Three samples (10103, 34933, and 29973) had manual annotations, which were used for evaluation.
