@@ -9,6 +9,7 @@
 #SBATCH --partition=fn_short
 
 source ~/.bashrc
+source set_up_conda.sh
 conda activate omero
 
 source .env
