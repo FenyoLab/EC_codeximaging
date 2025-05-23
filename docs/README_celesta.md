@@ -38,7 +38,7 @@ CELESTA requires two main inputs in CSV format: **prior marker information** ([e
 
 Aside from these, you will also need to input high and low marker expression probability thresholds for anchor and iteration cells. Low thresholds can be set to 1 for all cells, but high thresholds need to be tuned. 
 
-This [example spreadsheet](https://docs.google.com/spreadsheets/d/1xc_mcczZ0B0EAhWt6SpMEdjmpPlIWInAd9OLzNKNgkI/edit?usp=sharing) also contains a sheet where you can easily edit thresholds per cell type and output it into a format that CELESTA will accept:
+This [example spreadsheet](https://docs.google.com/spreadsheets/d/1xc_mcczZ0B0EAhWt6SpMEdjmpPlIWInAd9OLzNKNgkI/edit?usp=sharing) also contains `high_thresholds` sheets where you can easily edit thresholds per cell type and output it into a format that CELESTA will accept:
 
 ![image](img/high_thresholds.png)
 
