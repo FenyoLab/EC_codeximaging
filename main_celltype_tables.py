@@ -15,8 +15,9 @@ cell_types_path = os.path.join(config.out_dir, config.celltypes_dir, f'{config.n
 omero_table_dir = os.path.join(config.out_dir, config.omero_table_dir)
 
 out_suffix = os.path.basename(config.out_dir)
-date = "_".join(out_suffix.split("_")[1:])
-table_name_celltypes = f'celltypes_{date}'
+# date = "_".join(out_suffix.split("_")[1:])
+# table_name_celltypes = f'celltypes_{config.celltypes_table_name}'
+table_name_celltypes = config.celltypes_table_name
 print('Table name:', table_name_celltypes)
 
 celltype_tables.celltype_tables(cell_types_path = cell_types_path, save_path = omero_table_dir, 

@@ -68,13 +68,13 @@ cd ../src/celesta/
 #   --project_title "cervical_00862_raw_arcsinh" \
 #   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
 
-python -u celesta_plot_interactive_assignments.py \
-  --project_title "cervical_10285_raw_arcsinh" \
-  --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
-
 # python -u celesta_plot_interactive_assignments.py \
-#   --project_title "cervical_07291_raw_arcsinh" \
+#   --project_title "cervical_10285_raw_arcsinh" \
 #   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
+
+python -u celesta_plot_interactive_assignments.py \
+  --project_title "cervical_07291_raw_arcsinh" \
+  --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
 
 wait
 

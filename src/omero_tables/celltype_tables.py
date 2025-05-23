@@ -9,7 +9,7 @@ from utils import helper
 
 def celltype_tables(cell_types_path, save_path, omero_dict, n_clusters, table_name, samples_to_remove=None):
 
-    metadata = pd.read_csv(os.path.join(cell_types_path, 'cell_types_detailed.csv'))
+    metadata = pd.read_csv(os.path.join(cell_types_path, f'{table_name}.csv'))
     sample_names = metadata["slide_id"]
 
     for sample in sample_names.unique():
