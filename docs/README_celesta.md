@@ -167,7 +167,7 @@ You will need to edit these arguments:
 * `low_anchor`: Series of space-separated expression thresholds for anchor cells, in order of cell types listed in `prior_marker_info`. Can leave blank for CELESTA defaults (0.9 for all cell types).
 * `low_iter`: Series of space-separated expression thresholds for anchor cells, in order of cell types listed in `prior_marker_info`. Can leave blank for CELESTA defaults (1 for all cell types).
 
-## Inspecting CELESTA results
+## CELESTA outputs
 
 Results will be saved to `results_dir/project_title/` as specified in the bash script you ran (any in the above section).
 
@@ -198,8 +198,12 @@ Results will be saved to `results_dir/project_title/` as specified in the bash s
 
 ## Evaluating CELESTA performance
 
-All CELESTA results are uploaded to OMERO after completion. You can use the PathViewer tool to overlay assigned cell types onto the CODEX image and visually evaluate how well they overlap with marker expression.
+### Visual evaluation with OMERO
+All CELESTA results should be uploaded to OMERO (https://omero.nyumc.org/) after completion. This will allow you to use the PathViewer tool to overlay assigned cell types onto the CODEX image and visually evaluate how well they overlap with marker expression. To upload results, follow these steps:
 
+1. Open [notebooks/celesta_data_prep_cervical.ipynb](https://github.com/lp2700/CC_codeximaging/blob/feature/celesta_phenotyping/notebooks/celesta_data_prep_cervical.ipynb) 
+
+### Computational evaluation with Jupyter notebook
 You can also evaluate CELESTA results using `notebooks/celesta_evaluate_results_cervical.ipynb`. This contains the following code blocks:
 
 * **arcsinh_exp_prob:** Plots expression probability, in the same way that `celesta_plot_exp_prob.sh` does. This is so you can see all plots at once, which can help when selecting thresholds. 
