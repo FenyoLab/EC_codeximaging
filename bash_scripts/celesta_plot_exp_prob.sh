@@ -64,13 +64,13 @@ cd ../src/celesta/
 #   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
 
 # ### >1M
-python -u celesta_plot_exp_prob.py \
-  --project_title "cervical_00862_raw_arcsinh" \
-  --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
-
 # python -u celesta_plot_exp_prob.py \
-#   --project_title "cervical_10285_raw_arcsinh" \
+#   --project_title "cervical_00862_raw_arcsinh" \
 #   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
+
+python -u celesta_plot_exp_prob.py \
+  --project_title "cervical_10285_raw_arcsinh" \
+  --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
 
 # python -u celesta_plot_exp_prob.py \
 #   --project_title "cervical_07291_raw_arcsinh" \
