@@ -5,14 +5,15 @@
 #SBATCH --ntasks=2
 #SBATCH --output=../logs/celltype_omero_tables_%j.txt
 #SBATCH --mem=20G
-#SBATCH --time=1:00:00
+#SBATCH --time=01:00:00
 #SBATCH --partition=fn_short
 
-source ~/.bashrc
-source set_up_conda.sh
+# source ~/.bashrc
+# source set_up_conda.sh
+source .env
 conda activate omero
 
-source .env
+# source .env
 
 cd ../
 python main_celltype_tables.py
