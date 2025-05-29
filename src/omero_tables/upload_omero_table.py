@@ -1,9 +1,12 @@
 import os
 import omero2pandas 
 import pdb  
+from dotenv import load_dotenv
 
 def upload_omero_table(table_dir, omero_dict, table_name, server="omero.nyumc.org", port=4064):
     
+    load_dotenv()
+
     #check that kerberos and password is in env
     password = os.getenv('PASSWORD')
     kerberosid = os.getenv('USER')

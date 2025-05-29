@@ -41,6 +41,7 @@ umap_coord_path: umap/coord.npy
 pca_coord_path: pca/coord.npy
 clustering_dir: clustering
 celltypes_dir: celltypes
+celltypes_table_name: cell_types_detailed_default
 omero_table_dir: omero_tables
 
 # Research drive
