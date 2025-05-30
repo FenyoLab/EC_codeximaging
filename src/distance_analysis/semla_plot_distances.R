@@ -34,16 +34,16 @@ cell_type_colors <- c(
   # endothelial - beige
   Endothelial = "#A17569",     # muted beige
   # B - orange
-  B = "#C25A00"                # dark orange
+  B = "#C25A00",                # dark orange
   Activated_B = "#FFA52F",     # orange
   # neutrophil - yellow
   Neutrophil = "#FDF490",           # pastel yellow
-  Activated_Neutrophil = "#FFD700"  # bright yellow
+  Activated_Neutrophil = "#FFD700",  # bright yellow
   # macrophage - blue
   Macrophage_CD163neg = "#0774D8",              # cobalt blue
   Activated_Macrophage_CD163neg = "#9AE4FF",    # light sky blue
   Macrophage_CD163pos = "#0000DD",              # royal blue
-  Activated_Macrophage_CD163pos = "#00ACC6",    # cyan blue
+  Activated_Macrophage_CD163pos = "#00ACC6",    # cyan bluesb
   # T - coral
   T = "#EDB8B8",            # light pink
   Activated_T = "#FF7266",  # coral red
@@ -58,9 +58,9 @@ cell_type_colors <- c(
   CD8_T = "#6B004F",                    # dark magenta
   Activated_CD8_T = "#BF03B8",          # magenta
   Exhausted_CD8 = "#FF7ED1",            # pink
-  Activated_Exhausted_CD8 = "#EB0077"   # hot pink
+  Activated_Exhausted_CD8 = "#EB0077",   # hot pink
   Cytotoxic_NK = "#645474",             # muted purple
-  Activated_Cytotoxic_NK = "#8C3BFF",   # purple violet
+  Activated_Cytotoxic_NK = "#8C3BFF"   # purple violet
 )
 
 # Output directory
@@ -76,23 +76,23 @@ for (sam in samples_chosen) {
   for (cell_type in unique(chosen_sample$Fine.cell.type)) {
     message("  > Processing cell type: ", cell_type)
     
-    # # Radial distance plot
-    # rdist_col <- paste0("r_dist_", cell_type)
-    # if (!rdist_col %in% names(chosen_sample)) {
-    #   message("  >> Skipping rdist plot: column ", rdist_col, " not found.")
-    #   next
-    # }
-    # rdist_plot <- ggplot(chosen_sample, aes(x = x, y = y, color = !!sym(rdist_col))) +
-    #   geom_point(size = 0.3) +
-    #   scale_color_viridis_c(option = "magma") +
-    #   scale_y_reverse() +
-    #   theme_classic()
+    # Radial distance plot
+    rdist_col <- paste0("r_dist_", cell_type)
+    if (!rdist_col %in% names(chosen_sample)) {
+      message("  >> Skipping rdist plot: column ", rdist_col, " not found.")
+      next
+    }
+    rdist_plot <- ggplot(chosen_sample, aes(x = x, y = y, color = !!sym(rdist_col))) +
+      geom_point(size = 0.3) +
+      scale_color_viridis_c(option = "magma") +
+      scale_y_reverse() +
+      theme_classic()
     
-    # ggsave(
-    #   filename = file.path(output_dir, paste0("rdist_plots/Cervical_v5_", sam, "_", cell_type, "_rdist_plot.png")),
-    #   plot = rdist_plot, width = 15, height = 15
-    # )
-    # message("  >> Saved rdist plot")
+    ggsave(
+      filename = file.path(output_dir, paste0("rdist_plots/Cervical_v5_", sam, "_", cell_type, "_rdist_plot.png")),
+      plot = rdist_plot, width = 15, height = 15
+    )
+    message("  >> Saved rdist plot")
     
     # Check if the kmeans column exists
     kmeans_col <- paste0(cell_type, "_dist_kmeans")
@@ -101,19 +101,19 @@ for (sam in samples_chosen) {
       next
     }
 
-    # # K-means distance plot
-    # kmeans_plot <- ggplot(chosen_sample, aes(x = x, y = y, color = !!sym(kmeans_col))) +
-    #   geom_point(size = 0.3) +
-    #   scale_y_reverse() +
-    #   theme_classic() +
-    #   scale_color_manual(values = dist_colors, na.value = "gray") +
-    #   guides(color = guide_legend(override.aes = list(size = 3)))
+    # K-means distance plot
+    kmeans_plot <- ggplot(chosen_sample, aes(x = x, y = y, color = !!sym(kmeans_col))) +
+      geom_point(size = 0.3) +
+      scale_y_reverse() +
+      theme_classic() +
+      scale_color_manual(values = dist_colors, na.value = "gray") +
+      guides(color = guide_legend(override.aes = list(size = 3)))
     
-    # ggsave(
-    #   filename = file.path(output_dir, paste0("dist_kmeans_plots/Cervical_v5_", sam, "_", cell_type, "_dist_kmeans_plot.png")),
-    #   plot = kmeans_plot, width = 15, height = 15
-    # )
-    # message("  >> Saved dist_kmeans plot")
+    ggsave(
+      filename = file.path(output_dir, paste0("dist_kmeans_plots/Cervical_v5_", sam, "_", cell_type, "_dist_kmeans_plot.png")),
+      plot = kmeans_plot, width = 15, height = 15
+    )
+    message("  >> Saved dist_kmeans plot")
 
     # Proportions plot
     gplot_mat <- table(chosen_sample$Fine.cell.type, chosen_sample[[kmeans_col]]) %>%
