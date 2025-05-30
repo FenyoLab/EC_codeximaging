@@ -98,3 +98,33 @@ omero_image_dict:
 
 # Lineage markers cluster identity - leave empty when doing first cell segmentation and fill out for analysis
 lineage_markers_cluster_dict:
+  "20250225-Jharna-07611-A3_Scan1.er":
+    DAPI: 8
+  "20250225-Jharna-02433-A1_Scan1.er":
+    DAPI: 8
+  "20250225-Jharna-08153-A1_Scan1.er":
+    DAPI: 8
+  "20250225-Jharna-10103-A1_Scan1.er":
+    DAPI: 8
+  "20250305-Jharna-00862-6X_Scan1.er":
+    DAPI: 8
+  "20250305-Jharna-09002-A1_Scan1.er":
+    DAPI: 8
+  "20250305-Jharna-10285-A21_Scan1.er":
+    DAPI: 8
+  "20250305-Jharna-34933-A1_Scan1.er":
+    DAPI: 8
+  "20250311-Jharna-00438-1A_Scan1.er":
+    DAPI: 8
+  "20250311-Jharna-07688-A1_Scan1.er":
+    DAPI: 8
+  "20250311-Jharna-39367-A1_Scan1.er":
+    DAPI: 8
+  "20250311-Jharna-49411-1A_Scan1.er":
+    DAPI: 8
+  "20250318-Jharna-04738-A1_Scan1.er":
+    DAPI: 8
+  "20250318-Jharna-07291-1A_Scan1.er":
+    DAPI: 8
+  "20250318-Jharna-28873-A1_Scan1.er":
+    DAPI: 8
