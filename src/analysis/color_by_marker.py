@@ -40,18 +40,19 @@ def pca_by_marker(pca_path, marker_path, matrix_path, plot_dir, channel_names = 
         marker_color = markers[:, marker_i]
         print(channel)
 
+
         if channel == 'CD163':
             print(f'upper percentile: {percentile_dict[channel]}')
             percentiles = [5, percentile_dict[channel]]
-        elif channel == 'CD4':
-            print(f'upper percentile: {percentile_dict[channel]}')
-            percentiles = [5, percentile_dict[channel]]
-        elif channel == 'CD68':
-            print(f'upper percentile: {percentile_dict[channel]}')
-            percentiles = [5, percentile_dict[channel]]
-        elif channel == 'CD20':
-            print(f'upper percentile: {percentile_dict[channel]}')
-            percentiles = [5, percentile_dict[channel]]
+        # elif channel == 'CD4':
+        #     print(f'upper percentile: {percentile_dict[channel]}')
+        #     percentiles = [5, percentile_dict[channel]]
+        # elif channel == 'CD68':
+        #     print(f'upper percentile: {percentile_dict[channel]}')
+        #     percentiles = [5, percentile_dict[channel]]
+        # elif channel == 'CD20':
+        #     print(f'upper percentile: {percentile_dict[channel]}')
+        #     percentiles = [5, percentile_dict[channel]]
         elif channel == 'CD8':
             print(f'upper percentile: {percentile_dict[channel]}')
             percentiles = [5, percentile_dict[channel]]

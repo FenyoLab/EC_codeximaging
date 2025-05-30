@@ -21,6 +21,10 @@ def filter_by_dapi_threshold(matrix_path, raw_sample_names_path, threshold_dict,
         sample_matrix = matrix[sample_indices]
         print(f'Sample matrix shape: {sample_matrix.shape}')
 
+        if sample not in threshold_dict:
+            print(f'Skipping sample {sample} - not in threshold_dict')
+            continue
+
         dapi_index = channel_names.index('DAPI')
         dapi_threshold = threshold_dict[sample]['DAPI']
         print(f'DAPI threshold for {sample}: {dapi_threshold}')
