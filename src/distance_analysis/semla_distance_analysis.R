@@ -6,8 +6,7 @@ total_metadata <- read.csv("/gpfs/home/yb2612/yb2612_fenyo/data/seurat_objects/C
 
 # choose samples
 samples_chosen<-unique(total_metadata$orig.ident)
-samples_chosen<-samples_chosen[c(1:5,7)]
-cat("Samples chosen for distance analysis: ", paste(samples_chosen, collapse = ", "), "\n")
+cat("Samples for distance analysis: ", paste(samples_chosen, collapse = ", "), "\n")
 
 # coords list
 coords_list<-list()
@@ -34,4 +33,4 @@ for(x in unique(total_metadata$Fine.cell.type[total_metadata$orig.ident==sam])){
 }
 
 cat("Saving metadata...\n")
-write.csv(total_metadata, "/gpfs/home/yb2612/yb2612_fenyo/data/seurat_objects/Cervical_v5_obj_metadata_1to5_7_radial_distances.csv")
+write.csv(total_metadata, "/gpfs/home/yb2612/yb2612_fenyo/data/seurat_objects/Cervical_v5_obj_metadata_radial_distances.csv")
