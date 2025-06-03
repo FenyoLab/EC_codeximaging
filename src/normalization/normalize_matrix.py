@@ -18,16 +18,6 @@ def get_normalized_matrix(save_path, raw_data_dir, thresholded_dir, channel_name
         return
 
     if samples_to_remove is not None:
-        # Load cell_sample_names to get unique sample names
-        cell_sample_names = np.load(os.path.join(raw_data_dir, 'cell_sample_names.npy'))
-        unique_sample_names = np.unique(cell_sample_names)
-
-        # Filter to only process samples in threshold_dict
-        samples_to_process = list(threshold_dict.keys()) if threshold_dict else unique_sample_names
-        for sample_name in unique_sample_names:
-            if sample_name not in samples_to_process:
-                print(f'Skipping sample {sample_name} - not in lineage_markers_cluster_dict')
-                continue
         print('samples_to_remove is not none')
         matrix_dir = os.path.join(save_path, 'matrix_filtered_samples')
         os.makedirs(matrix_dir, exist_ok = True)
