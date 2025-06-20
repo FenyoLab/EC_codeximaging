@@ -5,10 +5,10 @@
 #SBATCH --ntasks=2
 #SBATCH --output=../logs/celltype_omero_tables_%j.txt
 #SBATCH --mem=20G
-#SBATCH --time=1:00:00
+#SBATCH --time=01:00:00
 #SBATCH --partition=fn_short
 
-source ~/.bashrc
+# source ~/.bashrc
 source set_up_conda.sh
 conda activate omero
 

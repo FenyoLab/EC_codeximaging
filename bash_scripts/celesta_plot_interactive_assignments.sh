@@ -15,68 +15,24 @@ conda activate celesta
 cd /gpfs/home/yb2612/yb2612_fenyo/CC_codeximaging/bash_scripts
 cd ../src/celesta/
 
-# EDIT ARGUMENTS
+### ---------- SAMPLES TO RUN -------------
+### add sample IDs to the array below
 
-## first 4 samples
-# python -u celesta_plot_interactive_assignments.py \
-#   --project_title "cervical_10103_raw_arcsinh" \
-#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
+samples=(
+  "10103"
+  "28873"
+)
 
-# python -u celesta_plot_interactive_assignments.py \
-#   --project_title "cervical_34933_raw_arcsinh" \
-#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
+### ---------- LOOP THROUGH SAMPLES -------------
+### execute script for each sample chosen above
+### edit arguments as needed
 
-# python -u celesta_plot_interactive_assignments.py \
-#   --project_title "cervical_28873_raw_arcsinh" \
-#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
-
-# python -u celesta_plot_interactive_assignments.py \
-#   --project_title "cervical_02433_raw_arcsinh" \
-#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
-
-# ## <100k
-# python -u celesta_plot_interactive_assignments.py \
-#   --project_title "cervical_39367_raw_arcsinh" \
-#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
-
-# python -u celesta_plot_interactive_assignments.py \
-#   --project_title "cervical_49411_raw_arcsinh" \
-#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
-
-# ## >100k, <1M
-# python -u celesta_plot_interactive_assignments.py \
-#   --project_title "cervical_09002_raw_arcsinh" \
-#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
-
-# python -u celesta_plot_interactive_assignments.py \
-#   --project_title "cervical_08153_raw_arcsinh" \
-#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
-
-# python -u celesta_plot_interactive_assignments.py \
-#   --project_title "cervical_00438_raw_arcsinh" \
-#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
-
-# python -u celesta_plot_interactive_assignments.py \
-#   --project_title "cervical_07688_raw_arcsinh" \
-#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
-
-# python -u celesta_plot_interactive_assignments.py \
-#   --project_title "cervical_04738_raw_arcsinh" \
-#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
-
-### >1M
-# python -u celesta_plot_interactive_assignments.py \
-#   --project_title "cervical_00862_raw_arcsinh" \
-#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
-
-python -u celesta_plot_interactive_assignments.py \
-  --project_title "cervical_10285_raw_arcsinh" \
-  --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
-
-# python -u celesta_plot_interactive_assignments.py \
-#   --project_title "cervical_07291_raw_arcsinh" \
-#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
+for sample in "${samples[@]}"; do
+  echo "Running sample: $sample"
+  python -u celesta_plot_interactive_assignments.py \
+    --project_title "cervical_${sample}_raw_arcsinh" \
+    --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types"
+done
 
 wait
-
 echo "All jobs completed."

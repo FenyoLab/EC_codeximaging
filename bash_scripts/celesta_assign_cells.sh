@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --partition=cpu_medium
 #SBATCH --nodes=1
-#SBATCH --job-name=celesta_assign_cells
+#SBATCH --job-name=0.9_0.5_celesta_assign_cells
 #SBATCH --output=/gpfs/data/proteomics/home/yb2612/results/logs/%x_%j.out  # EDIT PATH TO LOGS DIR
 #SBATCH --error=/gpfs/data/proteomics/home/yb2612/results/logs/%x_%j.err   # EDIT PATH TO LOGS DIR
 #SBATCH --cpus-per-task=1
@@ -15,67 +15,28 @@ conda activate celesta
 cd /gpfs/home/yb2612/yb2612_fenyo/CC_codeximaging/bash_scripts
 cd ../src/celesta/
 
-# EDIT ARGUMENTS
-# ## first 4 samples
-# Rscript celesta_assign_cells.R \
-#   --project_title "cervical_10103_raw_arcsinh" \
-#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
+### ---------- SAMPLES TO RUN -------------
+### add sample IDs to the array below
 
-# Rscript celesta_assign_cells.R \
-#   --project_title "cervical_34933_raw_arcsinh" \
-#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
+samples=(
+  "28873"
+  "34933"
+  "49411"
+  "39367"
+)
 
-# Rscript celesta_assign_cells.R \
-#   --project_title "cervical_28873_raw_arcsinh" \
-#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
+### ---------- LOOP THROUGH SAMPLES -------------
+### execute script for each sample chosen above
+### edit arguments as needed
 
-# Rscript celesta_assign_cells.R \
-#   --project_title "cervical_02433_raw_arcsinh" \
-#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
-
-## <100k
-# Rscript celesta_assign_cells.R \
-#   --project_title "cervical_39367_raw_arcsinh" \
-#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
-
-# Rscript celesta_assign_cells.R \
-#   --project_title "cervical_49411_raw_arcsinh" \
-#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
-
-# ## >100k, <1M
-# Rscript celesta_assign_cells.R \
-#   --project_title "cervical_09002_raw_arcsinh" \
-#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
-
-# Rscript celesta_assign_cells.R \
-#   --project_title "cervical_08153_raw_arcsinh" \
-#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
-
-# Rscript celesta_assign_cells.R \
-#   --project_title "cervical_00438_raw_arcsinh" \
-#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
-
-# Rscript celesta_assign_cells.R \
-#   --project_title "cervical_07688_raw_arcsinh" \
-#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
-
-# Rscript celesta_assign_cells.R \
-#   --project_title "cervical_04738_raw_arcsinh" \
-#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
-
-# ## >1M
-
-# Rscript celesta_assign_cells.R \
-#   --project_title "cervical_00862_raw_arcsinh" \
-#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
-
-Rscript celesta_assign_cells.R \
-  --project_title "cervical_10285_raw_arcsinh" \
-  --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
-
-# Rscript celesta_assign_cells.R \
-#   --project_title "cervical_07291_raw_arcsinh" \
-#   --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
+for sample in "${samples[@]}"; do
+  echo "Running sample: $sample"
+  Rscript celesta_assign_cells.R \
+    --project_title "cervical_${sample}_raw_arcsinh" \
+    --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
+    --high_anchor 0.7 0.7 0.7 0.7 0.7 0.7 0.9 0.7 0.7 0.7 0.7 0.7 0.7 0.7 \
+    --high_iter 0.5 0.5 0.5 0.5 0.5 0.5 0.50 0.5 0.5 0.5 0.5 0.5 0.5 0.5
+done
 
 wait
 
