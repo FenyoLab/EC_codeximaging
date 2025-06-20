@@ -15,7 +15,12 @@ def threshold_markers(data_dir, channel_names, threshold_dict, threshold_channel
         return
 
     # Iterate over unique samples
+    # Filter to only process samples in lineage_markers_cluster_dict
+    samples_to_process = list(threshold_dict.keys())
     for sample in np.unique(cell_sample_names):
+        if sample not in samples_to_process:
+            print(f'Skipping sample {sample} - not in lineage_markers_cluster_dict')
+            continue
         print(f'Processing sample {sample}')
         sample_indices = np.where(cell_sample_names == sample)[0]
         sample_matrix = matrix[sample_indices]
