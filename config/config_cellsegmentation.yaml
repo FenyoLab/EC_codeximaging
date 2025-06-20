@@ -41,7 +41,7 @@ umap_coord_path: umap/coord.npy
 pca_coord_path: pca/coord.npy
 clustering_dir: clustering
 celltypes_dir: celltypes
-celltypes_table_name: celesta_B_test_high-anchor_0.8_high_iter_0.5
+celltypes_table_name: celesta_B_test_high-anchor_0.8_high_iter_0.7
 omero_table_dir: omero_tables
 
 # Research drive
