@@ -9,11 +9,10 @@
 #SBATCH --partition=fn_short
 
 # source ~/.bashrc
-# source set_up_conda.sh
-source .env
+source set_up_conda.sh
 conda activate omero
 
-# source .env
+source .env
 
 cd ../
 python main_celltype_tables.py

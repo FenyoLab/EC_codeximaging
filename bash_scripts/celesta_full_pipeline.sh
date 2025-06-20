@@ -14,17 +14,27 @@ conda activate celesta
 # make sure you run this script from /path/to/bash_scripts
 cd ../src/celesta/
 
-# EDIT ARGUMENTS
-Rscript celesta_full_pipeline.R \
-  --project_title "endometrial_1T_raw_noarcsinh_full" \
-  --prior_marker_info "/gpfs/data/proteomics/home/yb2612/data/celesta/endometrial_test/prior_marker_info_endometrial_noDAPI.csv" \
-  --imaging_data "/gpfs/data/proteomics/home/yb2612/data/celesta/endometrial_test/imaging_data_1T_raw_noDAPI.csv" \
-  --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
-  --transform_type 0 \
-  # --high_anchor 1 0.8 0.9 0.7 0.7 0.7 0.7 0.5 0.5 0.8 \
-  # --high_iter 1 0.7 0.8 0.6 0.6 0.6 0.6 0.5 0.5 0.7 \
-  # --low_anchor 1 1 1 1 1 1 1 1 1 1 \
-  # --low_iter 1 1 1 1 1 1 1 1 1 1
+### ---------- SAMPLES TO RUN -------------
+### add sample IDs to the array below
+
+samples=(
+  "10103"
+  "28873"
+)
+
+### ---------- LOOP THROUGH SAMPLES -------------
+### execute script for each sample chosen above
+### edit arguments as needed
+
+for sample in "${samples[@]}"; do
+  echo "Running sample: $sample"
+  Rscript celesta_full_pipeline.R \
+    --project_title "cervical_${sample}_raw_arcsinh" \
+    --prior_marker_info "/gpfs/data/proteomics/home/yb2612/data/celesta/cervical/prior_marker_info_cervical_full.csv" \
+    --imaging_data "/gpfs/data/proteomics/home/yb2612/data/celesta/cervical/imaging_data_${sample}_raw.csv" \
+    --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
+    --transform_type 1 
+done
 
 wait
 
