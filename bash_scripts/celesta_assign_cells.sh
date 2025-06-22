@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --partition=cpu_medium
 #SBATCH --nodes=1
-#SBATCH --job-name=0.9_0.5_celesta_assign_cells
+#SBATCH --job-name=med_assign_cells
 #SBATCH --output=/gpfs/data/proteomics/home/yb2612/results/logs/%x_%j.out  # EDIT PATH TO LOGS DIR
 #SBATCH --error=/gpfs/data/proteomics/home/yb2612/results/logs/%x_%j.err   # EDIT PATH TO LOGS DIR
 #SBATCH --cpus-per-task=1
@@ -19,10 +19,12 @@ cd ../src/celesta/
 ### add sample IDs to the array below
 
 samples=(
-  "28873"
-  "34933"
-  "49411"
-  "39367"
+  "08153"
+  "09002"
+  "02433"
+  "07688"
+  "00438"
+  "04738"
 )
 
 ### ---------- LOOP THROUGH SAMPLES -------------
@@ -34,8 +36,8 @@ for sample in "${samples[@]}"; do
   Rscript celesta_assign_cells.R \
     --project_title "cervical_${sample}_raw_arcsinh" \
     --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
-    --high_anchor 0.7 0.7 0.7 0.7 0.7 0.7 0.9 0.7 0.7 0.7 0.7 0.7 0.7 0.7 \
-    --high_iter 0.5 0.5 0.5 0.5 0.5 0.5 0.50 0.5 0.5 0.5 0.5 0.5 0.5 0.5
+    --high_anchor 0.7 0.7 0.9 0.7 0.7 0.7 0.8 0.7 0.7 0.7 0.7 0.7 0.7 0.7 \
+    --high_iter 0.5 0.5 0.8 0.5 0.5 0.5 0.7 0.5 0.5 0.5 0.5 0.5 0.5 0.5
 done
 
 wait
