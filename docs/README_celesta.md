@@ -1,10 +1,10 @@
 # Guide to CELESTA
 
-All credit goes to the Plevritis Lab for this wonderful library! For more details, see https://github.com/plevritis-lab/CELESTA.
+All credit for CELESTA goes to the Plevritis Lab. For more details, see https://github.com/plevritis-lab/CELESTA.
 
 ## Testing `celesta` environment
 
-See `README_celesta_env.md` for details on activating/setting up the `celesta` conda environment.
+See `README_celesta_env.md` for details on setting up and activating the `celesta` conda environment.
 
 You can test this with:
 
@@ -20,13 +20,9 @@ library(CELESTA)
 
 ## CELESTA inputs
 
-CELESTA requires two main inputs in CSV format: **prior marker information** and **imaging data**. 
-
 ### 1. Prior marker info
 
-Contains a matrix of cell types (rows) by name, lineage level, and expected expression probability (0/1) per biomarker (columns).
-    
-Sometimes it is easier to visualize it as a flowchart first:
+Matrix of cell types (rows) by name, lineage level, and expected expression probability per marker (columns). Sometimes it is easier to visualize as a flowchart:
 
 ![image](img/prior_marker_info_flowchart.png)
 
@@ -40,43 +36,47 @@ Contains X/Y coordinates and raw expression levels per marker. Each row should c
 
 ![image](img/imaging_data.png)
 
-### 3. Thresholds
-
-CELESTA requires high and low marker expression probability thresholds for anchor and iteration cells. Default thresholds may be used at first, but tuning high thresholds is recommended.
-
 ## Running CELESTA step-by-step 
+
+### 1. Clone repository
 
 Clone the `CC_codeximaging` repo and navigate to `bash_scripts`. Note that whenever you run a bash script, there are arguments you will need to edit according to your needs.
 
-### 1. Prepare inputs
+### 2. Prepare inputs
+
+Refer to https://github.com/plevritis-lab/CELESTA for more detailed information on preparing inputs.
 
 * **Prior marker info**
     
     Prepare in a separate spreadsheet and save as CSV ([example spreadsheet](https://docs.google.com/spreadsheets/d/1xc_mcczZ0B0EAhWt6SpMEdjmpPlIWInAd9OLzNKNgkI/edit?usp=sharing)).
 
+    Under each marker column, enter 0 for low expression probability, 1 for high expression probability, and NA if the marker is irrelevant for the given cell type.
+
 * **Imaging data**
+
+    Run this script:
     ```
     celesta_imaging_data_prep.sh
     ```
-* **Thresholds**
+    *Note: To edit paths and other specifics, you will need to edit `src/celesta/celesta_imaging_data_prep.py`. Imaging data CSV files will be outputted into the specified `imaging_data_path`.* 
 
+### 3. Create CELESTA object
 
+*Outputs a CELESTA RDS object along with a CSV file of marker expression probability.*
 
+First open this script:
 
-### 2. Create CELESTA object
 ```
 celesta_create_obj.sh
 ```
 
-This will also output a CSV file of marker expression probability.
-
 You will need to edit these arguments:
 
 ```bash
---project_title "cervical_10103_raw_arcsinh" \
---prior_marker_info "/gpfs/data/proteomics/home/yb2612/data/celesta/cervical/prior_marker_info_cervical.csv" \
---imaging_data "/gpfs/data/proteomics/home/yb2612/data/celesta/cervical/imaging_data_10103_raw.csv" \
---results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
+--project_title "cervical_${sample}_raw_arcsinh" \
+--prior_marker_info "/path/to/prior_marker_info.csv" \
+--imaging_data "path/to/imaging_data_${sample}_raw.csv" \
+--results_dir "path/to/celesta_results" \
 --transform_type 1
 ```
 
@@ -85,26 +85,63 @@ You will need to edit these arguments:
 * `imaging_data`: Path to imaging data CSV.
 * `results_dir`: Path to directory where you want *all* of your CELESTA results to go. The script will automatically create a subfolder named after `project_title` here.
 
-### 3. Plot expression probability
+After editing arguments, run the script for all specified samples in parallel using:
+
+```
+submit_samples_array.sh
+```
+
+In the script above, make sure to set:
+
+```bash
+script_name="celesta_assign_cells"
+```
+
+Update the sample list and node configuration as needed.
+
+
+### 4. Plot expression probability
+
+*Outputs expression probability plots for each sample that will help you choose thresholds when assigning cell types.*
+
+First open this script:
+
 ```
 celesta_plot_exp_prob.sh
 ```
 
-This will help you choose thresholds when assigning cell types.
-
 You will need to edit these arguments:
 
 ```bash
---project_title "cervical_10103_raw_arcsinh" \
---results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta"
+--project_title "cervical_${sample}_raw_arcsinh" \
+--results_dir "path/to/celesta_results"
 ```
 
 * `project_title:` Use same value as in `celesta_create_obj.sh`. This should be the name of the subfolder containing all results.
 * `results_dir`: Use same value as in `celesta_create_obj.sh`. This should be the parent directory of the `project_title` subdir.
 
+After editing arguments, run the script for all specified samples in parallel using:
+
+```
+submit_samples_array.sh
+```
+
+In the script above, make sure to set:
+
+```bash
+script_name="celesta_plot_exp_prob"
+```
+
+Update the sample list and node configuration as needed.
+
+Example plot:
 <img src="img/plot_exp_prob.png" height="600"/>
 
-### 4. Assign cell types
+
+### 5. Assign cell types
+*Outputs an updated CELESTA RDS object with cell type assignments along with a CSV file. Output filenames will contain the full lists of `high_anchor` and `high_iter` thresholds, so results from every unique run will be saved.*
+
+First open this script:
 ```
 celesta_assign_cells.sh
 ```
@@ -112,41 +149,56 @@ celesta_assign_cells.sh
 You will need to edit these arguments:
 
 ```bash
---project_title "cervical_10103_raw_arcsinh" \
---results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
---high_anchor 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 \
---high_iter 0.8 0.8 0.8 0.8 0.8 0.8 0.8 0.8 0.8 0.8 \
---low_anchor 1 1 1 1 1 1 1 1 1 1 \
---low_iter 1 1 1 1 1 1 1 1 1 1
+--project_title "cervical_${sample}_raw_arcsinh" \
+--results_dir "path/to/celesta_results" \
+--high_anchor 0.7 0.7 0.9 0.7 0.7 0.7 0.7 0.7 0.7 0.7 0.7 0.7 0.7 0.7 \
+--high_iter 0.5 0.5 0.6 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 \
+--low_anchor 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 \
+--low_iter 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
 ```
 
 * `project_title:` Use same value as in `celesta_create_obj.sh`. This should be the name of the subfolder containing all results.
 * `results_dir`: Use same value as in `celesta_create_obj.sh`. This should be the parent directory of the `project_title` subdir.
-* `high_anchor`: Series of space-separated thresholds for high expression probability in anchor cells, in order of cell types listed in `prior_marker_info`. Can leave blank for CELESTA defaults (0.7 for all cell types).
-* `high_iter`: Same as above, but for iteration cells. Default is 0.5 for all cell types.
-* `low_anchor`: Same as above, but defines low expression probability for anchor cells. Default is 0.9 for all cell types.
-* `low_iter`: Same as above, but for iteration cells. Default is 1 for all cell types.
+* `high_anchor`: Series of space-separated thresholds for high expression probability in anchor cells, in order of cell types listed in `prior_marker_info`. Can leave blank for CELESTA defaults (0.7 for all cell types).*
+* `high_iter`: Same as above, but for iteration cells. Default is 0.5 for all cell types.*
+* `low_anchor`: Same as above, but defines low expression probability for anchor cells. Default is 0.9 for all cell types.*
+* `low_iter`: Same as above, but for iteration cells. Default is 1 for all cell types.*
+
+After editing arguments, run the script for all specified samples in parallel using:
+
+```
+submit_samples_array.sh
+```
+
+In the script above, make sure to set:
+
+```bash
+script_name="celesta_assign_cells"
+```
+
+Update the sample list and node configuration as needed.
+
+### *Note on choosing threhsolds
+*CELESTA requires high and low marker expression probability thresholds for anchor and iteration cells. Default thresholds may be used at first, but tuning high thresholds is recommended. Low thresholds typically do not need to be tuned.*
 
 For `high_anchor` and `high_iter`, you can use this [example spreadsheet](https://docs.google.com/spreadsheets/d/1xc_mcczZ0B0EAhWt6SpMEdjmpPlIWInAd9OLzNKNgkI/edit?usp=sharing) to edit thresholds and output them into the correct format for CELESTA. 
 
 ![image](img/high_thresholds.png)
 
-*Note: You can use this script to test a bunch of different thresholds. Output filenames will contain the full lists of `high_anchor` and `high_iter` thresholds.*
+### 6. Plot results
+*Generates stacked bar plots of cell type proportions and static/interactive spatial plots of cell type assignments for each `final_cell_type_assignment.csv` file generated by the previous step.*
 
-### 5. Plot results
+First open these scripts:
+
 ```
 celesta_plot_results.sh
-```
-This script generates a stacked bar plot of cell type proportions and a spatial plot of cell type assignments *for each* `final_cell_type_assignment.csv` file generated by the previous step. 
-```
 celesta_plot_interactive_assignments.sh
 ```
-This script generates interactive spatial plots of cell type assignments.
 
 For both scripts, you will need to edit these arguments:
 
 ```bash
---project_title "cervical_10103_raw_arcsinh" \
+--project_title "cervical_${sample}_raw_arcsinh" \
 --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta"
 ```
 
@@ -160,7 +212,7 @@ Example plots:
   <img src="img/plot_cell_assignments.png" alt="Cell Assignments" height="600" style="vertical-align: top;"/>
 </p>
 
-### 6. Upload results to OMERO.
+### 7. Upload results to OMERO.
 ```
 celesta_to_omero_prep.sh
 ```
@@ -194,10 +246,10 @@ You will need to edit these arguments:
 --imaging_data "/gpfs/data/proteomics/home/yb2612/data/celesta/cervical/imaging_data_10103_raw.csv" \
 --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
 --transform_type 1 \
---high_anchor 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 \
---high_iter 0.8 0.8 0.8 0.8 0.8 0.8 0.8 0.8 0.8 0.8 \
---low_anchor 1 1 1 1 1 1 1 1 1 1 \
---low_iter 1 1 1 1 1 1 1 1 1 1
+--high_anchor 0.7 0.7 0.9 0.7 0.7 0.7 0.7 0.7 0.7 0.7 0.7 0.7 0.7 0.7 \
+--high_iter 0.5 0.5 0.6 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 \
+--low_anchor 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 \
+--low_iter 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
 ```
 
 * `project_title:` This will be the name of the subfolder containing all results, as well as the prefix for filenames.
