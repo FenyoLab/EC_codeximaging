@@ -1,50 +1,20 @@
 #!/bin/bash
 #SBATCH --partition=cpu_short
 #SBATCH --nodes=1
-#SBATCH --job-name=celesta_plot_results
-#SBATCH --output=/gpfs/data/proteomics/home/yb2612/results/logs/%x_%j.out  # EDIT PATH TO LOGS DIR
-#SBATCH --error=/gpfs/data/proteomics/home/yb2612/results/logs/%x_%j.err   # EDIT PATH TO LOGS DIR
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=10GB
+#SBATCH --mem-per-cpu=5GB
 #SBATCH --time=12:00:00
+
+sample=$1
 
 source set_up_conda.sh
 conda activate celesta
 
-# make sure you run this script from /path/to/bash_scripts
-cd /gpfs/home/yb2612/yb2612_fenyo/CC_codeximaging/bash_scripts
 cd ../src/celesta/
 
-### ---------- SAMPLES TO RUN -------------
-### add sample IDs to the array below
+echo "Running sample: $sample"
 
-samples=(
-  "10103"
-  "28873"
-  "34933"
-  "49411"
-  "39367"
-  "08153"
-  "09002"
-  "02433"
-  "07688"
-  "00438"
-  "04738"
-  "07291"
-  "00862"
-  "10285"
-)
-
-### ---------- LOOP THROUGH SAMPLES -------------
-### execute script for each sample chosen above
-### edit arguments as needed
-
-for sample in "${samples[@]}"; do
-  echo "Running sample: $sample"
-  python -u celesta_plot_results.py \
-    --project_title "cervical_${sample}_raw_arcsinh" \
-    --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types"
-done
-
-wait
-echo "All jobs completed."
+# edit arguments
+python -u celesta_plot_results.py \
+  --project_title "cervical_${sample}_raw_arcsinh" \
+  --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types"

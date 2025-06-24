@@ -14,7 +14,7 @@ set.seed(9)
 parser <- ArgumentParser(description = "Run CELESTA with specified inputs and thresholds")
 
 parser$add_argument("--project_title", help = "Same title as in create_celesta_obj.sh, name of subdirectory in results_dir.")
-# parser$add_argument("--celesta_obj_path", help = "Path to unassigned CELESTA object (RDS file)")
+
 parser$add_argument("--results_dir", help = "Path to results directory created by create_celesta_obj.sh", default = "/gpfs/data/proteomics/home/yb2612/results/celesta")
 
 parser$add_argument("--high_anchor", nargs = "+", type = "double",

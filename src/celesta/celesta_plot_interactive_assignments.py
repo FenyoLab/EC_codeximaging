@@ -93,35 +93,6 @@ cell_type_colors_path = "../../config/color_palettes/celesta_cell_type_colors_da
 with open(cell_type_colors_path, "r") as f:
     cell_type_colors = json.load(f)
 
-# cell_type_colors = {
-#     'Unknown': '#808080',                       # gray
-#     'Stromal_Undefined': '#A9A9A9',             # dark gray
-#     'Stromal cells (undefined)': '#A9A9A9',     # dark gray
-#     'Tumor': '#A42A2A',                         # crimson
-#     'Tumor cells': '#A42A2A',                   # crimson
-#     'Endothelial': '#33FD02',                   # green
-#     'Endothelial cells': '#33FD02',             # green
-#     'Neutrophil': '#34FEFF',                    # cyan
-#     'Neutrophils': '#34FEFF',                   # cyan
-#     'Macrophage': '#FB22FF',                    # magenta
-#     'Macrophage (CD163-)': '#FB22FF',           # magenta
-#     'Macrophages (CD163-)': '#FB22FF',          # magenta
-#     'Macrophage (CD163+)': '#FF80FF',           # light magenta
-#     'Macrophages (CD163+)': '#FF80FF',          # light magenta
-#     'CD8_T': '#FFFE04',                         # yellow
-#     'Cytotoxic T cells': '#FFFE04',             # yellow
-#     'T': '#008B8B',                             # dark cyan
-#     'T cells (other)': '#008B8B',               # dark cyan
-#     'CD4_T': '#FC8001',                         # orange
-#     'Helper T cells': '#FC8001',                # orange
-#     'B': '#FFFFFF',                             # white
-#     'B cells': '#FFFFFF',                       # white
-#     'Cytotoxic NK': '#B7FFFA',                  # pastel cyan
-#     'Exhausted CD8': '#FFC1CB',                 # pastel pink
-#     'Treg': '#FFC067',                          # pastel orange
-#     'Th1': '#FFEE8C',                           # pastel yellow
-# }
-
 if __name__ == "__main__":
     print("------------------------------------")
     print("Project title:", project_title)
