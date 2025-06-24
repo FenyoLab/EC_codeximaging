@@ -9,9 +9,9 @@
 #SBATCH --time=12:00:00
 
 source set_up_conda.sh
-conda activate celesta
+conda activate omero
 
-cd ../src/celesta/
+cd ../src/omero_tables/
 
 python -u celesta_to_omero_prep.py
 

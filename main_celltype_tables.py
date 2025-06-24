@@ -2,6 +2,7 @@ import os
 import numpy as np
 from types import SimpleNamespace
 from utils import helper
+import yaml
 
 #import config
 config_yaml= 'config/config_cellsegmentation.yaml'
@@ -20,8 +21,13 @@ out_suffix = os.path.basename(config.out_dir)
 # table_name_celltypes = config.celltypes_table_name
 
 # read celltype_table names
-with open("config/celltype_tables.txt", "r") as f:
-    table_names = [line.strip() for line in f if line.strip()]
+with open("config/config_celesta_to_omero.yaml", "r") as f:
+    celesta_to_omero_config = yaml.safe_load(f)
+
+table_names = celesta_to_omero_config["tables_to_upload"]
+
+# with open("config/celltype_tables.txt", "r") as f:
+#     table_names = [line.strip() for line in f if line.strip()]
 
 for table_name_celltypes in table_names:
     print(f"Uploading table: {table_name_celltypes}")

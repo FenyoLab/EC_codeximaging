@@ -3,7 +3,7 @@ import os
 import glob
 import yaml
 
-with open("../../config/config_celesta_to_omero_prep.yaml", "r") as f:
+with open("../../config/config_celesta_to_omero.yaml", "r") as f:
     config = yaml.safe_load(f)
 
 phenotype_clusters_path = config["paths"]["phenotype_clusters"]
