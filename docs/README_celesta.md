@@ -4,7 +4,7 @@ All credit goes to the Plevritis Lab for this wonderful library! For more detail
 
 ## Testing `celesta` environment
 
-See `README_celesta_env.md` for details on activating/setting up the `celesta` conda environment. Hopefully the one I've created on the shared lab miniconda works for everyone.
+See `README_celesta_env.md` for details on activating/setting up the `celesta` conda environment.
 
 You can test this with:
 
@@ -18,37 +18,48 @@ And in R,
 library(CELESTA)
 ```
 
-## Preparing CELESTA inputs
+## CELESTA inputs
 
-CELESTA requires two main inputs in CSV format: **prior marker information** ([example spreadsheet](https://docs.google.com/spreadsheets/d/1xc_mcczZ0B0EAhWt6SpMEdjmpPlIWInAd9OLzNKNgkI/edit?usp=sharing)) and **imaging data** (`notebooks/celesta_data_prep_cervical.ipynb`). 
+CELESTA requires two main inputs in CSV format: **prior marker information** and **imaging data**. 
 
-1. **Prior marker info (CSV):** Contains cell type name, lineage levels, and marker expression probability 0/1 per cell type. Each row should correspond to a cell type.
+### 1. Prior marker info
+
+Contains a matrix of cell types (rows) by name, lineage level, and expected expression probability (0/1) per biomarker (columns).
     
-    Sometimes it is easier to visualize it as a flowchart first:
+Sometimes it is easier to visualize it as a flowchart first:
 
-    ![image](img/prior_marker_info_flowchart.png)
+![image](img/prior_marker_info_flowchart.png)
 
-    This is how it translates into tabular form:
+This is how it translates into tabular form:
 
-    ![image](img/prior_marker_info.png)
+![image](img/prior_marker_info.png)
     
-2. **Imaging data (CSV):** Contains X/Y coordinates and raw expression levels per marker. Each row should correspond to an individual cell.
+### 2. Imaging data
 
-    ![image](img/imaging_data.png)
+Contains X/Y coordinates and raw expression levels per marker. Each row should correspond to an individual cell.
 
-Aside from these, you will also need to input high and low marker expression probability thresholds for anchor and iteration cells. Low thresholds can be set to 1 for all cells, but high thresholds need to be tuned. 
+![image](img/imaging_data.png)
 
-This [example spreadsheet](https://docs.google.com/spreadsheets/d/1xc_mcczZ0B0EAhWt6SpMEdjmpPlIWInAd9OLzNKNgkI/edit?usp=sharing) also contains `high_thresholds` sheets where you can easily edit thresholds per cell type and output it into a format that CELESTA will accept:
+### 3. Thresholds
+
+CELESTA requires high and low marker expression probability thresholds for anchor and iteration cells. Default thresholds may be used at first, but tuning high thresholds is recommended.
 
 ![image](img/high_thresholds.png)
 
 ## Running CELESTA step-by-step 
 
-*Note: This gives you more control over each step. It also allows you to test a bunch of thresholds on an existing CELESTA object rather than having to build the object from scratch every time.*
-
 Clone the `CC_codeximaging` repo and navigate to `bash_scripts`. Note that whenever you run a bash script, there are arguments you will need to edit according to your needs.
 
-### 1. Run `celesta_create_obj.sh` to create a CELESTA object.
+### 1. Prepare inputs.
+
+Prepare in a separate spreadsheet and save as CSV ([example spreadsheet](https://docs.google.com/spreadsheets/d/1xc_mcczZ0B0EAhWt6SpMEdjmpPlIWInAd9OLzNKNgkI/edit?usp=sharing)).
+
+Prepare by running `celesta_imaging_data_prep.sh`.
+
+Prepare thresholds using this [example spreadsheet](https://docs.google.com/spreadsheets/d/1xc_mcczZ0B0EAhWt6SpMEdjmpPlIWInAd9OLzNKNgkI/edit?usp=sharing) also contains `high_thresholds` sheets where you can easily edit thresholds per cell type and output it into a format that CELESTA will accept:
+
+
+### 2. Run `celesta_create_obj.sh` to create a CELESTA object.
 
 This will also output a CSV file of marker expression probability.
 
@@ -67,7 +78,7 @@ You will need to edit these arguments:
 * `imaging_data`: Path to imaging data CSV.
 * `results_dir`: Path to directory where you want *all* of your CELESTA results to go. The script will automatically create a subfolder named after `project_title` here.
 
-### 2. Plot expression probability with `celesta_plot_exp_prob.sh`.
+### 3. Plot expression probability with `celesta_plot_exp_prob.sh`.
 
 This will help you choose thresholds when assigning cell types.
 
@@ -81,17 +92,9 @@ You will need to edit these arguments:
 * `project_title:` Use same value as in `celesta_create_obj.sh`. This should be the name of the subfolder containing all results.
 * `results_dir`: Use same value as in `celesta_create_obj.sh`. This should be the parent directory of the `project_title` subdir.
 
-I've made my own script to plot expression probability because I think it looks better than CELESTA's plots. Case in point:
+<img src="img/plot_exp_prob.png" height="600"/>
 
-<img src="img/celesta_CD3e_exp_prob.png" alt="CELESTA CD3e" width="600"/>
-
-*CELESTA's expression probability plot for CD3e in one of our samples. Notice that points are large and overlapping, making it hard to select an appropriate threshold.*
-
-<img src="img/yumi_CD3e_exp_prob.png" alt="Yumi CD3e" width="600"/>
-
-*Yumi's expression probability plot for the same marker and sample. The points are smaller with less overlap, and points with higher probability are plotted on top.*
-
-### 3. Assign cell types with `celesta_assign_cells.sh`.
+### 4. Assign cell types with `celesta_assign_cells.sh`.
 
 You will need to edit these arguments:
 
@@ -115,7 +118,7 @@ For `high_anchor` and `high_iter`, you can use this [example spreadsheet](https:
 
 *Note: Output filenames will contain the full lists of `high_anchor` and `high_iter` thresholds. There is probably a better way to do this, but this is how it is for now.*
 
-### 4. Plot results with `celesta_plot_results.sh` and `celesta_plot_interactive_assignments.sh`.
+### 5. Plot results with `celesta_plot_results.sh` and `celesta_plot_interactive_assignments.sh`.
 
 `celesta_plot_results.sh` generates a stacked bar plot of cell type proportions and a spatial plot of cell type assignments *for each* `final_cell_type_assignment.csv` file generated by the previous step. `celesta_plot_interactive_assignments.sh` generates interactive spatial plots of cell type assignments.
 
@@ -136,7 +139,9 @@ Example plots:
   <img src="img/plot_cell_assignments.png" alt="Cell Assignments" height="600" style="vertical-align: top;"/>
 </p>
 
-## Running full CELESTA pipeline
+### 6. Upload results to OMERO.
+
+## Running full native CELESTA pipeline (not recommended)
 
 This creates a CELESTA object, assigns cells, plots expression probability, and plots cell assignments using built-in CELESTA functions. 
 
@@ -169,29 +174,29 @@ You will need to edit these arguments:
 
 ## CELESTA outputs
 
-Outputs will be saved to `results_dir/project_title/` as specified in the bash script you ran (any in the above section).
+Outputs will be saved to `results_dir/project_title/` as specified in the bash script.
 
 1. `celesta_full_pipeline.sh` outputs:
     * CELESTA object without cell type assignments (RDS)
     * CELESTA object with cell type assignments (RDS)
     * Final cell assignments (CSV)
-    * Cell assignment plot
-    * Marker expression probability plots
+    * Cell assignment plot (PNG)
+    * Marker expression probability plots (PNG)
 
 2. `celesta_create_obj.sh` outputs:
     * CELESTA object without cell type assignments (RDS)
     * Marker expression probability (CSV)
 
 3. `celesta_create_obj.sh` outputs:
-    * Marker expression probability plots
+    * Marker expression probability plots (PNG)
 
 4. `celesta_assign_cells.sh` outputs:
     * CELESTA object with cell type assignments (RDS)
     * Final cell assignments (CSV)
 
 5. `celesta_plot_results.sh` outputs:
-    * Cell type proportions stacked bar plot for each `final_cell_type_assignment.csv` file
-    * Spatial plot of cell type assignments for each `final_cell_type_assignment.csv` file
+    * Cell type proportions stacked bar plot for each `final_cell_type_assignment.csv` file (PNG)
+    * Spatial plot of cell type assignments for each `final_cell_type_assignment.csv` file (PNG)
 
 6. `celesta_plot_interactive_assignments.sh` outputs:
     * Interactive spatial plot of cell type assignments for each `final_cell_type_assignment.csv` file (HTML)
