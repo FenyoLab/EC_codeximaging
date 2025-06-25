@@ -5,16 +5,22 @@ import matplotlib.patches as mpatches
 import argparse
 import os
 import json
+import yaml
 
 #  arg parsing
-parser = argparse.ArgumentParser(description='Plot expression probability.')
-parser.add_argument('--project_title', type=str, default="celesta_test", help='Same title as in create_celesta_obj.sh, name of subdirectory in results_dir.')
-parser.add_argument('--results_dir', type=str, default="/gpfs/data/proteomics/home/yb2612/results/celesta", help='Path to results directory created by create_celesta_obj.sh')
+parser = argparse.ArgumentParser()
+parser.add_argument('--sample', type=str, required=True, help='Sample name (used to construct paths)')
 args = parser.parse_args()
 
-project_title = args.project_title
+# load config
+with open("../../config/config_celesta_pipeline.yaml", "r") as f:
+    config = yaml.safe_load(f)
 
-save_path = f"{args.results_dir}/{project_title}"
+project_title_prefix = config["project_title_prefix"]
+project_title = f"{project_title_prefix}_{args.sample}"
+results_dir = config["paths"]["results_dir"]
+
+save_path = f"{results_dir}/{project_title}"
 if not os.path.exists(save_path):
     os.makedirs(save_path)
 
@@ -173,7 +179,7 @@ with open(cell_type_colors_path, "r") as f:
 if __name__ == "__main__":
     print("------------------------------------")
     print("Project title:", project_title)
-    print("Plotting cell proportions and assignments for:", args.project_title)
+    print("Plotting cell proportions and assignments for:", project_title)
     print("------------------------------------")
 
     for file in os.listdir(save_path):

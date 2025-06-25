@@ -1,0 +1,16 @@
+# paths to relevant files
+paths:
+  prior_marker_info: "/gpfs/data/proteomics/home/yb2612/data/celesta/cervical/prior_marker_info_cervical_detailed.csv"
+  imaging_data_dir: "/gpfs/data/proteomics/home/yb2612/data/celesta/cervical"
+  results_dir: "/gpfs/data/proteomics/home/yb2612/results/celesta/config_test"
+
+# for celesta_create_obj
+project_title_prefix: "cervical"
+transform_type: 1
+
+# for celesta_assign_cells
+thresholds:
+  high_anchor: [0.7, 0.7, 0.9, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7]
+  high_iter:   [0.5, 0.5, 0.6, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
+  low_anchor:  [0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9]
+  low_iter:    [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]

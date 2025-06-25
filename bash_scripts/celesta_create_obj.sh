@@ -14,10 +14,4 @@ cd ../src/celesta/
 
 echo "Running sample: $sample"
 
-# edit arguments
-Rscript celesta_create_obj.R \
-    --project_title "cervical_${sample}_raw_arcsinh" \
-    --prior_marker_info "/gpfs/data/proteomics/home/yb2612/data/celesta/cervical/prior_marker_info_cervical_detailed.csv" \
-    --imaging_data "/gpfs/data/proteomics/home/yb2612/data/celesta/cervical/imaging_data_${sample}_raw.csv" \
-    --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types" \
-    --transform_type 1 
+Rscript celesta_create_obj.R "$sample"

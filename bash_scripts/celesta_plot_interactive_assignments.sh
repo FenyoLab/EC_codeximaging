@@ -14,7 +14,4 @@ cd ../src/celesta/
 
 echo "Running sample: $sample"
 
-# edit arguments
-python -u celesta_plot_interactive_assignments.py \
-  --project_title "cervical_${sample}_raw_arcsinh" \
-  --results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta/detailed_cell_types"
+python -u celesta_plot_interactive_assignments.py --sample "$sample"

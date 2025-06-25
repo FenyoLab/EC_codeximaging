@@ -38,6 +38,8 @@ Contains X/Y coordinates and raw expression levels per marker. Each row should c
 
 ## Running CELESTA step-by-step 
 
+TODO: Refactor so that scripts can pull from a YAML file instead of being reliant on 
+
 ### 1. Clone repository
 
 Clone the `CC_codeximaging` repo and navigate to `bash_scripts`. Note that whenever you run a bash script, there are arguments you will need to edit according to your needs.
@@ -47,10 +49,8 @@ Clone the `CC_codeximaging` repo and navigate to `bash_scripts`. Note that whene
 Refer to https://github.com/plevritis-lab/CELESTA for more detailed information on preparing inputs.
 
 * **Prior marker info**
-    
-    Prepare in a separate spreadsheet and save as CSV ([example spreadsheet](https://docs.google.com/spreadsheets/d/1xc_mcczZ0B0EAhWt6SpMEdjmpPlIWInAd9OLzNKNgkI/edit?usp=sharing)).
 
-    Under each marker column, enter 0 for low expression probability, 1 for high expression probability, and NA if the marker is irrelevant for the given cell type.
+    Prepare in a separate spreadsheet and save as CSV ([example spreadsheet](https://docs.google.com/spreadsheets/d/1xc_mcczZ0B0EAhWt6SpMEdjmpPlIWInAd9OLzNKNgkI/edit?usp=sharing)). Under each marker column, enter 0 for low expression probability, 1 for high expression probability, and NA if the marker is irrelevant for the given cell type.
 
 * **Imaging data**
 
@@ -135,6 +135,7 @@ script_name="celesta_plot_exp_prob"
 Update the sample list and node configuration as needed.
 
 Example plot:
+
 <img src="img/plot_exp_prob.png" height="600"/>
 
 
@@ -212,7 +213,15 @@ Example plots:
   <img src="img/plot_cell_assignments.png" alt="Cell Assignments" height="600" style="vertical-align: top;"/>
 </p>
 
-### 7. Upload results to OMERO.
+### 7. Upload results to OMERO
+*Formats tables from CELESTA results and uploads to OMERO.*
+
+First edit this config file:
+```
+config_celesta_to_omero.yaml
+```
+
+Run this script
 ```
 celesta_to_omero_prep.sh
 ```

@@ -4,46 +4,23 @@ library(spdep)
 library(ggplot2)
 library(reshape2)
 library(zeallot)
-library(argparse)
+library(yaml)
 
 set.seed(9)
 
-# -------------------------------------------
-# # Parse command-line arguments
+# Parse command-line arguments
+args <- commandArgs(trailingOnly = TRUE)
+config <- yaml.load_file("../../config/config_celesta_pipeline.yaml")
+sample <- args[1]
 
-parser <- ArgumentParser(description = "Run CELESTA with specified inputs and thresholds")
+project_title <- paste0(config$project_title_prefix, "_", sample)
+results_dir <- config$paths$results_dir
+celesta_obj_path <- paste0(results_dir, "/", project_title, "/", project_title, "_unassigned_CelestaObj.rds")
 
-parser$add_argument("--project_title", help = "Same title as in create_celesta_obj.sh, name of subdirectory in results_dir.")
-
-parser$add_argument("--results_dir", help = "Path to results directory created by create_celesta_obj.sh", default = "/gpfs/data/proteomics/home/yb2612/results/celesta")
-
-parser$add_argument("--high_anchor", nargs = "+", type = "double",
-                    help = "High marker thresholds for anchor round (space-separated)", 
-                    required = FALSE, default = NULL)
-
-parser$add_argument("--high_iter", nargs = "+", type = "double",
-                    help = "High marker thresholds for iteration rounds (space-separated)", 
-                    required = FALSE, default = NULL)
-
-parser$add_argument("--low_anchor", nargs = "+", type = "double",
-                    help = "Low marker thresholds for anchor round (space-separated)", 
-                    required = FALSE, default = NULL)
-
-parser$add_argument("--low_iter", nargs = "+", type = "double",
-                    help = "Low marker thresholds for iteration rounds (space-separated)", 
-                    required = FALSE, default = NULL)
-
-args <- parser$parse_args()
-
-project_title <- args$project_title
-celesta_obj_path <- paste0(args$results_dir, "/", project_title, "/", project_title, "_unassigned_CelestaObj.rds")
-
-results_dir <- args$results_dir
-
-high_marker_threshold_anchor <- if (!is.null(args$high_anchor)) args$high_anchor else rep(0.7, 50)
-high_marker_threshold_iteration <- if (!is.null(args$high_iter)) args$high_iter else rep(0.5, 50)
-low_marker_threshold_anchor <- if (!is.null(args$low_anchor)) args$low_anchor else rep(0.9, 50)
-low_marker_threshold_iteration <- if (!is.null(args$low_iter)) args$low_iter else rep(1.0, 50)
+high_marker_threshold_anchor <- if (!is.null(config$thresholds$high_anchor)) config$thresholds$high_anchor else rep(0.7, 50)
+high_marker_threshold_iteration <- if (!is.null(config$thresholds$high_iter)) config$thresholds$high_iter else rep(0.5, 50)
+low_marker_threshold_anchor <- if (!is.null(config$thresholds$low_anchor)) config$thresholds$low_anchor else rep(0.9, 50)
+low_marker_threshold_iteration <- if (!is.null(config$thresholds$low_iter)) config$thresholds$low_iter else rep(1.0, 50)
 
 cat("\n-------------------------------\n")
 cat("Project title:", project_title, "\n")
@@ -88,8 +65,8 @@ is_default <- function(arg, default_val) {
 }
 
 # Label for each threshold group
-high_anchor_label <- if (is_default(args$high_anchor, 0.7)) "high_anchor_default" else paste0("high_anchor_", paste(high_marker_threshold_anchor, collapse = "_"))
-high_iter_label  <- if (is_default(args$high_iter, 0.5)) "high_iter_default" else paste0("high_iter_", paste(high_marker_threshold_iteration, collapse = "_"))
+high_anchor_label <- if (is_default(config$thresholds$high_anchor, 0.7)) "high_anchor_default" else paste0("high_anchor_", paste(high_marker_threshold_anchor, collapse = "_"))
+high_iter_label  <- if (is_default(config$thresholds$high_iter, 0.5)) "high_iter_default" else paste0("high_iter_", paste(high_marker_threshold_iteration, collapse = "_"))
 
 cat("\n[Saving CELESTA object...]\n")
 
@@ -122,20 +99,5 @@ output_path <- file.path(
 write.csv(combined_df, file = output_path, row.names = FALSE)
 
 cat("Saved final cell type assignments CSV to:\n", output_path, "\n")
-
-cat("\n[Saving CELESTA object...]\n")
-
-saveRDS(
-  CelestaObj,
-  file = file.path(
-    output_folder,
-    paste0(
-      project_title, "_",
-      high_anchor_label, "_",
-      high_iter_label,
-      "_CelestaObj.rds"
-    )
-  )
-)
 
 cat("\n[Finished!]\n")

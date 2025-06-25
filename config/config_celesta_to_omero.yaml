@@ -1,8 +1,11 @@
+# paths to relevant files
 paths:
   phenotype_clusters: "/gpfs/home/yb2612/proteomics/data/Cervical_mIF/output/initial_run/clustering/27_clusters/phenotype_clusters.csv"
   celesta_results_dir: "/gpfs/home/yb2612/yb2612_fenyo/results/celesta/detailed_cell_types"
   output_dir: "/gpfs/home/yb2612/proteomics/data/Cervical_mIF/output/initial_run/celltypes/27_clusters"
 
+# key: name of table to be uploaded to OMERO
+# value: string containing thresholds from final_cell_type_assignment.csv filename
 thresholds_dict:
   default: "high_anchor_default_high_iter_default"
   Tumor_0.9_0.7_B_0.8_0.6: "high_anchor_0.7_0.7_0.9_0.7_0.7_0.7_0.8_0.7_0.7_0.7_0.7_0.7_0.7_0.7_high_iter_0.5_0.5_0.7_0.5_0.5_0.5_0.6_0.5_0.5_0.5_0.5_0.5_0.5_0.5"
@@ -11,6 +14,8 @@ thresholds_dict:
   Tumor_0.9_0.7: "high_anchor_0.7_0.7_0.9_0.7_0.7_0.7_0.7_0.7_0.7_0.7_0.7_0.7_0.7_0.7_high_iter_0.5_0.5_0.7_0.5_0.5_0.5_0.5_0.5_0.5_0.5_0.5_0.5_0.5_0.5"
   Tumor_0.9_0.6: "high_anchor_0.7_0.7_0.9_0.7_0.7_0.7_0.7_0.7_0.7_0.7_0.7_0.7_0.7_0.7_high_iter_0.5_0.5_0.6_0.5_0.5_0.5_0.5_0.5_0.5_0.5_0.5_0.5_0.5_0.5"
 
+# names of tables to upload to OMERO
+# these names should match the keys in thresholds_dict
 tables_to_upload:
   - celesta_Tumor_0.9_0.7_B_0.8_0.6
   - celesta_Tumor_0.9_0.7

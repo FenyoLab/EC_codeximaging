@@ -18,15 +18,13 @@ samples=(
   "10285"
 )
 
-# enter name of shell script to run (no .sh extension)
-script_name="celesta_assign_cells"
+# enter name of script to run (no .sh extension)
+script_name="celesta_plot_interactive_assignments"
 
-# enter log directory
+# enter path to log directory
 logdir="/gpfs/data/proteomics/home/yb2612/results/logs"
 mkdir -p "$logdir"
 
-# if running celesta script, make sure to change arguments in original script first!
-# no need to change arguments here
 for sample in "${samples[@]}"; do
   echo "Submitting job for sample: $sample"
   sbatch --job-name="${sample}_${script_name}" \
