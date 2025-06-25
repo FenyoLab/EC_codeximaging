@@ -14,7 +14,7 @@ config <- yaml.load_file("../../config/config_celesta_pipeline.yaml")
 sample <- args[1]
 
 project_title <- paste0(config$project_title_prefix, "_", sample)
-imaging_data_path <- file.path(config$paths$imaging_data_dir, paste0("imaging_data_", sample, "_raw.csv"))
+imaging_data_path <- file.path(config$paths$imaging_data_dir, paste0("imaging_data_", sample, ".csv"))
 prior_marker_info_path <- config$paths$prior_marker_info
 transform_type <- config$transform_type
 

@@ -198,8 +198,8 @@ if __name__ == "__main__":
 
             plot_cell_assignments(
                 df,
-                x_col='Y',
-                y_col='X',
+                x_col='X',
+                y_col='Y',
                 cell_type_col='Final cell type',
                 cell_type_colors=cell_type_colors,
                 base_layer='Stromal_Undefined',

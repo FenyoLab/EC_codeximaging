@@ -29,7 +29,7 @@ for table_name, threshold in thresholds_dict.items():
     
     # process each sample
     for short_id in pc_copy["short_id"].unique():
-        folder_name = f"cervical_{short_id}_raw_arcsinh"
+        folder_name = f"cervical_{short_id}"
         folder_path = os.path.join(celesta_results_dir, folder_name)
     
         if not os.path.isdir(folder_path):

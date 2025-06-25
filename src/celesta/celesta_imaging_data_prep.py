@@ -12,8 +12,8 @@ def prep_imaging_data(raw_means_csv, metadata_csv, markers, sample_name):
     # load metadata, filter to abs x, y
     metadata = pd.read_csv(metadata_csv)
     metadata.drop(columns=["absolute_x","absolute_y"], inplace=True)
-    metadata["absolute_x"] = metadata["centroid_x"] + metadata["tile_h"]  # FIXED COORDS
-    metadata["absolute_y"] = metadata["centroid_y"] + metadata["tile_w"]  # FIXED COORDS
+    metadata["absolute_x"] = metadata["centroid_y"] + metadata["tile_w"]  # FIXED COORDS
+    metadata["absolute_y"] = metadata["centroid_x"] + metadata["tile_h"]  # FIXED COORDS
     
     # join xy, raw means
     metadata_xy = metadata[["absolute_x", "absolute_y"]].copy()
@@ -55,7 +55,7 @@ for folder in os.listdir():
             
             # save
             metadata_xy_path = os.path.join(folder_path, f"{folder}_metadata_fixed.csv")
-            imaging_data_path = f"/gpfs/data/proteomics/home/yb2612/data/celesta/cervical/TEST_imaging_data_{sample_id}.csv"
+            imaging_data_path = f"/gpfs/data/proteomics/home/yb2612/data/celesta/cervical/imaging_data_{sample_id}.csv"
 
             metadata_xy.to_csv(metadata_xy_path, index=False)
             imaging_data.to_csv(imaging_data_path, index=False)

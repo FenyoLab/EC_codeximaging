@@ -122,6 +122,6 @@ if __name__ == "__main__":
     print("------------------------------------")
 
     df = pd.read_csv(exp_prob_csv_path)
-    plot_exp_prob(df, x_col='Y', y_col='X', save_path=save_path)
+    plot_exp_prob(df, x_col='X', y_col='Y', save_path=save_path)
 
     print("Done. Plots saved to:", save_path)
