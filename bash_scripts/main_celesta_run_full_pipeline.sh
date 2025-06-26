@@ -29,7 +29,7 @@ scripts=(
 )
 
 # enter path to log directory
-logdir="/gpfs/data/proteomics/home/yb2612/results/logs"
+logdir="../logs/"
 mkdir -p "$logdir"
 
 # run all samples in parallel

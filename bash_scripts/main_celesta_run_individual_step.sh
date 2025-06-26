@@ -23,7 +23,7 @@ samples=(
 script_name="celesta_assign_cells"
 
 # enter path to log directory
-logdir="/gpfs/data/proteomics/home/yb2612/results/logs"
+logdir="../logs/"
 mkdir -p "$logdir"
 
 for sample in "${samples[@]}"; do

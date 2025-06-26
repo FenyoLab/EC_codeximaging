@@ -3,7 +3,10 @@ import os
 
 markers = ["CD31", "E-cadherin", "CD68", "CD163", "MPO", "CD20", "CD3e", "CD8", "Granzyme B", "TOX", "CD4", "FOXP3", "TIM3", "CD45RO"]
 metadata_dir = "/gpfs/data/proteomics/home/yb2612/data/cervical_samples"
-imaging_data_dir = "/gpfs/data/proteomics/home/yb2612/data/celesta/cervical"
+imaging_data_dir = "/gpfs/data/proteomics/home/yb2612/data/celesta/cervical/test_imaging_data"
+
+if not os.path.exists(imaging_data_dir):
+    os.makedirs(imaging_data_dir)
 
 def prep_imaging_data(raw_means_csv, metadata_csv, markers, sample_name):
     # load raw biomarker means, filter to markers of interest
@@ -56,7 +59,7 @@ for folder in os.listdir():
             
             # save
             metadata_xy_path = os.path.join(folder_path, f"{folder}_metadata_fixed.csv")
-            imaging_data_path = f"{imaging_data_dir}/imaging_data_{sample_id}.csv"
+            imaging_data_path = os.path.join(imaging_data_dir, f"imaging_data_{sample_id}.csv")
 
             metadata_xy.to_csv(metadata_xy_path, index=False)
             imaging_data.to_csv(imaging_data_path, index=False)

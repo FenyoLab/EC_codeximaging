@@ -8,4 +8,3 @@ Clone the `CC_codeximaging` repo and navigate to `bash_scripts`. You will have t
 ## Cell phenotyping 
 
 We use CELESTA from the Plevritis Lab (https://github.com/plevritis-lab/CELESTA) for cell typing. See [docs/README_celesta.md](https://github.com/lp2700/CC_codeximaging/blob/feature/celesta_phenotyping/docs/README_celesta.md) for a complete guide.
-
