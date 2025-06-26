@@ -8,13 +8,13 @@ This is a guide to running CELESTA as an integrated part of the `CC_codeximaging
 
 1. Instructions for running full pipeline
     
-    a. Step 1: Prepare inputs
+    a. Prepare inputs
 
-    b. Step 2: Run full pipeline (or individual steps)
+    b. Run full pipeline (or individual steps)
 
-    c. Step 3: Prepare OMERO tables
+    c. Prepare OMERO tables
 
-    d. Step 4: Upload to OMERO
+    d. Upload to OMERO
 
 2. Details on each step
 
@@ -109,8 +109,12 @@ Edit this file in `CC_codeximaging/configs/`:
 ```
 config_celesta_to_omero.yaml
 ```
-* `prior_marker_info`: Path to prior marker info CSV.
-* `results_dir`: Path to directory where you want *all* of your CELESTA results to go. The script will automatically create a subfolder named after `project_title` here.
+* `paths`:
+    * `phenotype_clusters`: Path to CSV containing phenotype clusters, with all cells in the correct order for uploading.
+    * `celesta_results_dir`: Path to directory where all CELESTA results are located.
+    * `output_dir`: Path to directory where you want OMERO tables to go.
+* `thresholds_dict`
+* `tables_to_upload`: Names of tables (keys from `thresholds_dict`) to be uploaded to OMERO.
 
 Then run:
 ```
@@ -119,9 +123,14 @@ sbatch celesta_to_omero_prep.sh
 
 ## Step 4: Upload to OMERO
 
+Create a `.env` file in `CC_codeximaging/bash_scripts/` containing your `PASSWORD` and `KERBEROSID`. You may also have to add these environment variables to your `~/.bashrc` for this to work.
+
+Then run:
+
 ```
 sbatch main_celltype_tables.sh
 ```
+* Uploads all tables specified in `tables_to_upload` above.
 
 # Details on full pipeline
 

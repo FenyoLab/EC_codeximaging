@@ -8,7 +8,7 @@
 #SBATCH --time=01:00:00
 #SBATCH --partition=fn_short
 
-# source ~/.bashrc
+source ~/.bashrc
 source set_up_conda.sh
 conda activate omero
 
