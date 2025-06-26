@@ -9,7 +9,7 @@ cat("Setting random seed for reproducibility...\n")
 set.seed(9)
 
 cat("Loading total_metadata...\n")
-total_metadata <- read.csv("/gpfs/home/yb2612/yb2612_fenyo/data/seurat_objects/Cervical_v5_obj_metadata_total_metadata_radial_distances_kmeans_fixed.csv")
+total_metadata <- read.csv("/gpfs/home/yb2612/yb2612_fenyo/data/seurat_objects/Cervical_v5_obj_metadata_total_metadata_radial_distances_kmeans_parent.csv")
 
 # Pad sample names with 0s to width 5
 total_metadata$orig.ident <- str_pad(total_metadata$orig.ident, 5, pad = "0")
@@ -20,7 +20,7 @@ cat("Samples to be plotted: ", paste(samples_chosen, collapse = ", "), "\n")
 # Define colors for kmeans categories
 dist_colors <- c(
   Near = "#3B0F70",              # deep purple
-  Moderately_near = "#B63640",   # rich red
+  Peri = "#B63640",   # rich red
   Far = "#F6C141"                # warm yellow
 )
 
@@ -64,7 +64,7 @@ cell_type_colors <- c(
 )
 
 # Output directory
-output_dir <- "/gpfs/home/yb2612/yb2612_fenyo/data/seurat_objects/plots/"
+output_dir <- "/gpfs/home/yb2612/yb2612_fenyo/data/seurat_objects/plots"
 dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
 
 # Loop over samples
@@ -82,7 +82,7 @@ for (sam in samples_chosen) {
       message("  >> Skipping rdist plot: column ", rdist_col, " not found.")
       next
     }
-    rdist_plot <- ggplot(chosen_sample, aes(x = x, y = y, color = !!sym(rdist_col))) +
+    rdist_plot <- ggplot(chosen_sample, aes(x = absolute_x, y = absolute_y, color = !!sym(rdist_col))) +
       geom_point(size = 0.3) +
       scale_color_viridis_c(option = "magma") +
       scale_y_reverse() +
@@ -102,7 +102,7 @@ for (sam in samples_chosen) {
     }
 
     # K-means distance plot
-    kmeans_plot <- ggplot(chosen_sample, aes(x = x, y = y, color = !!sym(kmeans_col))) +
+    kmeans_plot <- ggplot(chosen_sample, aes(x = absolute_x, y = absolute_y, color = !!sym(kmeans_col))) +
       geom_point(size = 0.3) +
       scale_y_reverse() +
       theme_classic() +
@@ -127,7 +127,7 @@ for (sam in samples_chosen) {
     # Reorder levels so the cell type appears first
     gplot_mat$KmeansCluster <- factor(
       gplot_mat$KmeansCluster,
-      levels = c(cell_type, "Near", "Moderately_near", "Far")
+      levels = c(cell_type, "Near", "Peri", "Far")
     )
 
     # Plot

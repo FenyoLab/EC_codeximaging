@@ -2,7 +2,7 @@
 paths:
   prior_marker_info: "/gpfs/data/proteomics/home/yb2612/data/celesta/cervical/prior_marker_info_cervical_broad.csv"
   imaging_data_dir: "/gpfs/data/proteomics/home/yb2612/data/celesta/cervical"
-  results_dir: "/gpfs/data/proteomics/home/yb2612/results/celesta/broad_cell_types"
+  results_dir: "/gpfs/data/proteomics/home/yb2612/results/celesta/full_pipeline_test"
 
 # for celesta_create_obj
 project_title_prefix: "cervical"
