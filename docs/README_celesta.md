@@ -102,7 +102,7 @@ The pipeline consists of the following steps:
 4. `celesta_plot_results.sh`
 5. `celesta_plot_interactive_assignments.sh`
 
-See section "Details on individual steps" for more information.
+See section [Details on individual steps](#details-on-individual-steps) for more information.
 
 To run an individual step for each sample in parallel:
 ```
