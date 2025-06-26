@@ -8,19 +8,17 @@ This is a guide to running CELESTA as an integrated part of the `CC_codeximaging
 
 1. CELESTA inputs
 
-2. Instructions for running full workflow
+2. Instructions for full workflow
     
     a. Prepare inputs
 
     b. Run CELESTA pipeline (or individual steps)
-    
-    c. Summary of outputs for CELESTA pipeline
 
     c. Prepare OMERO tables
 
     d. Upload to OMERO
 
-3. Details on individual steps
+3. Details on individual steps of CELESTA pipeline (and summary of outputs)
 
 4. Evaluating CELESTA performance
 
@@ -44,7 +42,7 @@ Contains X/Y coordinates and raw expression levels per marker. Each row should c
 
 ![image](img/imaging_data.png)
 
-# Instructions for running full workflow
+# Instructions for full workflow
 
 Before you begin, make sure you have done the following:
 
@@ -86,7 +84,7 @@ This file determines all parameters to be used when running the full pipeline. B
     * `low_anchor`: Same as above, but defines low expression probability for anchor cells. Default is 0.9 for all cell types.*
     * `low_iter`: Same as above, but for iteration cells. Default is 1 for all cell types.*
 
-## Step 2a: Run CELESTA pipeline (or individual steps)
+## Step 2: Run CELESTA pipeline (or individual steps)
 
 To run the CELESTA pipeline for each sample in parallel:
 ```
@@ -102,7 +100,7 @@ The pipeline consists of the following steps:
 4. `celesta_plot_results.sh`
 5. `celesta_plot_interactive_assignments.sh`
 
-See section "Details on individual steps" for more information.
+See section "Details on individual steps of CELESTA pipeline" for more information.
 
 To run an individual step from the pipeline for each sample in parallel:
 ```
@@ -112,28 +110,6 @@ source main_celesta_run_individual_step.sh
 * Input the individual step to run as `script_name`.
 
 It is recommended to first run the CELESTA pipeline using default thresholds. Afterwards, tune thresholds by running `celesta_assign_cells` as an individual step with many different threshold configurations.
-
-## Step 2b: Summary of outputs for CELESTA pipeline
-
-Outputs will be saved to `results_dir/project_title/` as specified in `config_celesta_pipeline.yaml`.
-
-1. `celesta_create_obj.sh` outputs:
-    * CELESTA object without cell type assignments (RDS)
-    * Marker expression probability (CSV)
-
-2. `celesta_create_obj.sh` outputs:
-    * Marker expression probability plots (PNG)
-
-3. `celesta_assign_cells.sh` outputs:
-    * CELESTA object with cell type assignments (RDS)
-    * Final cell assignments (CSV)
-
-4. `celesta_plot_results.sh` outputs:
-    * Cell type proportions stacked bar plot for each `final_cell_type_assignment.csv` file (PNG)
-    * Spatial plot of cell type assignments for each `final_cell_type_assignment.csv` file (PNG)
-
-5. `celesta_plot_interactive_assignments.sh` outputs:
-    * Interactive spatial plot of cell type assignments for each `final_cell_type_assignment.csv` file (HTML)
 
 ## Step 3: Prepare OMERO tables
 
@@ -164,7 +140,7 @@ sbatch main_celltype_tables.sh
 ```
 * Uploads all tables specified in `tables_to_upload` above.
 
-# Details on individual steps
+# Details on individual steps of CELESTA pipeline
 
 ## 1. Create CELESTA object
 
@@ -195,6 +171,29 @@ Example plots:
   <img src="img/plot_cell_proportions.png" alt="Cell Proportions" height="600" style="vertical-align: top;"/>
   <img src="img/plot_cell_assignments.png" alt="Cell Assignments" height="600" style="vertical-align: top;"/>
 </p>
+
+
+## Summary of outputs
+
+Outputs will be saved to `results_dir/project_title/` as specified in `config_celesta_pipeline.yaml`.
+
+1. `celesta_create_obj.sh` outputs:
+    * CELESTA object without cell type assignments (RDS)
+    * Marker expression probability (CSV)
+
+2. `celesta_create_obj.sh` outputs:
+    * Marker expression probability plots (PNG)
+
+3. `celesta_assign_cells.sh` outputs:
+    * CELESTA object with cell type assignments (RDS)
+    * Final cell assignments (CSV)
+
+4. `celesta_plot_results.sh` outputs:
+    * Cell type proportions stacked bar plot for each `final_cell_type_assignment.csv` file (PNG)
+    * Spatial plot of cell type assignments for each `final_cell_type_assignment.csv` file (PNG)
+
+5. `celesta_plot_interactive_assignments.sh` outputs:
+    * Interactive spatial plot of cell type assignments for each `final_cell_type_assignment.csv` file (HTML)
 
 # Evaluating CELESTA performance
 
