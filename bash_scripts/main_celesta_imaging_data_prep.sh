@@ -11,7 +11,7 @@
 source set_up_conda.sh
 conda activate celesta
 
-cd ../src/celesta/
+cd ../
 
 python -u celesta_imaging_data_prep.py
 

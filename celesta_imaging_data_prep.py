@@ -2,6 +2,8 @@ import pandas as pd
 import os
 
 markers = ["CD31", "E-cadherin", "CD68", "CD163", "MPO", "CD20", "CD3e", "CD8", "Granzyme B", "TOX", "CD4", "FOXP3", "TIM3", "CD45RO"]
+metadata_dir = "/gpfs/data/proteomics/home/yb2612/data/cervical_samples"
+imaging_data_dir = "/gpfs/data/proteomics/home/yb2612/data/celesta/cervical"
 
 def prep_imaging_data(raw_means_csv, metadata_csv, markers, sample_name):
     # load raw biomarker means, filter to markers of interest
@@ -22,11 +24,10 @@ def prep_imaging_data(raw_means_csv, metadata_csv, markers, sample_name):
 
     return metadata, imaging_data
   
-data_dir = "/gpfs/data/proteomics/home/yb2612/data/cervical_samples"
-os.chdir(data_dir)
+os.chdir(metadata_dir)
 
 for folder in os.listdir():
-    folder_path = os.path.join(data_dir, folder)
+    folder_path = os.path.join(metadata_dir, folder)
     if os.path.isdir(folder_path):
         # folder name is like 20250225-Jharna-02433-A1_Scan1.er
         try:
@@ -55,7 +56,7 @@ for folder in os.listdir():
             
             # save
             metadata_xy_path = os.path.join(folder_path, f"{folder}_metadata_fixed.csv")
-            imaging_data_path = f"/gpfs/data/proteomics/home/yb2612/data/celesta/cervical/imaging_data_{sample_id}.csv"
+            imaging_data_path = f"{imaging_data_dir}/imaging_data_{sample_id}.csv"
 
             metadata_xy.to_csv(metadata_xy_path, index=False)
             imaging_data.to_csv(imaging_data_path, index=False)

@@ -2,10 +2,12 @@
 
 *This README focuses on the `celesta` environment only. See `README_celesta.md` for the complete guide to the CELESTA workflow.*
 
+Make sure you clone the repo and run all scripts from `CC_codeximaging/bash_scripts`.
+
 ## Activate existing environment
 
 ```bash
-source bash_scripts/set_up_conda.sh
+source set_up_conda.sh
 conda activate celesta
 ```
 
@@ -31,7 +33,7 @@ Now you can proceed with setting up the environment.
 ### Create environment from YAML
 
 ```bash
-source bash_scripts/set_up_conda.sh
+source set_up_conda.sh
 conda env create -f config/celesta_env.yaml --prefix=/gpfs/data/proteomics/projects/miniconda3/envs/celesta
 ```
 
