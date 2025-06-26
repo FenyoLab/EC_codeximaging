@@ -57,8 +57,8 @@ Before you begin, make sure you have done the following:
 Prepare in a separate spreadsheet and save as CSV ([example spreadsheet](https://docs.google.com/spreadsheets/d/1xc_mcczZ0B0EAhWt6SpMEdjmpPlIWInAd9OLzNKNgkI/edit?usp=sharing)). Under each marker column, enter 0 for low expression probability, 1 for high expression probability, and NA if the marker is irrelevant for the given cell type.
     
 ### B. Imaging data
-```
-sbatch celesta_imaging_data_prep.sh
+```bash
+$ sbatch celesta_imaging_data_prep.sh
 ```
 * You can directly edit `celesta_imaging_data_prep.py` to specify the following:
     * `markers`: list of markers to include
@@ -89,8 +89,8 @@ This file determines all parameters to be used when running the full pipeline. B
 ## Step 2: Run CELESTA pipeline (or individual steps)
 
 To run the CELESTA pipeline for each sample in parallel:
-```
-source main_celesta_run_full_pipeline.sh
+```bash
+$ source main_celesta_run_full_pipeline.sh
 ```
 * Edit the sample list and log directory as desired.
 
@@ -105,8 +105,8 @@ The pipeline consists of the following steps:
 See section [Details on individual steps](#details-on-individual-steps) for more information.
 
 To run an individual step for each sample in parallel:
-```
-source main_celesta_run_individual_step.sh
+```bash
+$ source main_celesta_run_individual_step.sh
 ```
 * Edit the sample list and log directory as desired.
 * Input the individual step to run as `script_name`.
@@ -127,8 +127,8 @@ config_celesta_to_omero.yaml
 * `tables_to_upload`: Names of tables (keys from `thresholds_dict`) to be uploaded to OMERO.
 
 Then run:
-```
-sbatch celesta_to_omero_prep.sh
+```bash
+$ sbatch celesta_to_omero_prep.sh
 ```
 
 ## Step 4: Upload to OMERO
@@ -137,8 +137,8 @@ Create a `.env` file in `CC_codeximaging/bash_scripts/` containing your `PASSWOR
 
 Then run:
 
-```
-sbatch main_celltype_tables.sh
+```bash
+$ sbatch main_celltype_tables.sh
 ```
 * Uploads all tables specified in `tables_to_upload` above.
 
