@@ -6,23 +6,25 @@ This is a guide to running CELESTA as an integrated part of the `CC_codeximaging
 
 ## Contents
 
-1. CELESTA inputs
+1. [CELESTA inputs](#celesta-inputs)
 
-2. Instructions for full workflow
+2. [Full workflow instructions](#full-workflow-instructions)
     
-    a. Prepare inputs
+    a. [Prepare inputs](#step-1-prepare-inputs)
 
-    b. Run CELESTA pipeline (or individual steps)
+    b. [Run CELESTA pipeline (or individual steps)](#step-2-run-celesta-pipeline-or-individual-steps)
 
-    c. Prepare OMERO tables
+    c. [Prepare OMERO tables](#step-3-prepare-omero-tables)
 
-    d. Upload to OMERO
+    d. [Upload to OMERO](#step-4-upload-to-omero)
 
-3. Details on individual steps of CELESTA pipeline (and summary of outputs)
+3. [Details on individual steps](#details-on-individual-steps)
 
-4. Evaluating CELESTA performance
+4. [Summary of outputs](#summary-of-outputs)
 
-# CELESTA inputs
+4. [Evaluation](#evaluation)
+
+## CELESTA inputs
 
 CELESTA requires two main inputs: a prior marker info matrix and an imaging data matrix. Refer to the [CELESTA GitHub](https://github.com/plevritis-lab/CELESTA?tab=readme-ov-file#inputs) for more detailed information.
 
@@ -42,7 +44,7 @@ Contains X/Y coordinates and raw expression levels per marker. Each row should c
 
 ![image](img/imaging_data.png)
 
-# Instructions for full workflow
+## Full workflow instructions
 
 Before you begin, make sure you have done the following:
 
@@ -140,7 +142,7 @@ sbatch main_celltype_tables.sh
 ```
 * Uploads all tables specified in `tables_to_upload` above.
 
-# Details on individual steps of CELESTA pipeline
+# Details on individual steps
 
 ## 1. Create CELESTA object
 
@@ -195,7 +197,7 @@ Outputs will be saved to `results_dir/project_title/` as specified in `config_ce
 5. `celesta_plot_interactive_assignments.sh` outputs:
     * Interactive spatial plot of cell type assignments for each `final_cell_type_assignment.csv` file (HTML)
 
-# Evaluating CELESTA performance
+# Evaluation
 
 You can evaluate CELESTA results using `notebooks/celesta_evaluate_results_cervical.ipynb`. This contains the following code blocks:
 
@@ -210,3 +212,18 @@ You can evaluate CELESTA results using `notebooks/celesta_evaluate_results_cervi
     * Confusion matrix
     * Plot of cell type proportions from  manual pipeline vs. CELESTA
     * Spatial plot of cell type assignments
+
+# Citations
+
+```bibtex
+@article{zhang2022identification,
+  title={Identification of cell types in multiplexed in situ images by combining protein expression and spatial information using CELESTA},
+  author={Zhang, Weiruo and Li, Irene and Reticker-Flynn, Nathan E and Good, Zinaida and Chang, Serena and Samusik, Nikolay and Saumyaa, Saumyaa and Li, Yuanyuan and Zhou, Xin and Liang, Rachel and others},
+  journal={Nature methods},
+  volume={19},
+  number={6},
+  pages={759--769},
+  year={2022},
+  publisher={Nature Publishing Group US New York}
+}
+```
