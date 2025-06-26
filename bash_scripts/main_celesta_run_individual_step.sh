@@ -1,4 +1,5 @@
 #!/bin/bash
+cd ../
 
 # enter samples to run in parallel
 samples=(
