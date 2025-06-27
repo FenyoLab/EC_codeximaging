@@ -7,7 +7,7 @@ Before you begin, make sure you have done the following:
 
 * Clone the `CC_codeximaging` repository and navigate to `bash_scripts`. You will have to run all scripts from within this directory for the relative paths to work.
 * Have working `seurat_v5` (R) and `celesta` (python) environments. 
-  * You can set these up from `config/celesta_env.yaml` and `config/seurat_v5_env.yaml`.
+  * You can set these up with `config/celesta_env.yaml` and `config/seurat_v5_env.yaml`.
 * Have a total metadata file containing all samples with barcoded cells. This is usually generated from Seurat analysis.
 
 ## Steps
