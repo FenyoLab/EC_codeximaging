@@ -1,12 +1,14 @@
 library(semla)
 
+total_metadata_path = "/gpfs/home/yb2612/yb2612_fenyo/data/seurat_objects/Cervical_srtv4_total_metadata.csv"
+output_csv_path = "/gpfs/home/yb2612/yb2612_fenyo/data/seurat_objects/Cervical_srtv4_total_metadata_radial_distances.csv"
+
 # total metadata
 cat("Loading total metadata...\n")
-total_metadata <- read.csv("/gpfs/home/yb2612/yb2612_fenyo/data/seurat_objects/Cervical_srtv4_total_metadata.csv", row.names = 1)
+total_metadata <- read.csv(total_metadata_path, row.names = 1)
 
 # choose samples
-# samples_chosen<-unique(total_metadata$orig.ident)
-samples_chosen<-unique(total_metadata$orig.ident)[c(1:5,7)]
+samples_chosen<-unique(total_metadata$orig.ident)
 cat("Samples for distance analysis: ", paste(samples_chosen, collapse = ", "), "\n")
 
 # coords list
@@ -34,4 +36,4 @@ for(x in unique(total_metadata$Fine.cell.type[total_metadata$orig.ident==sam])){
 }
 
 cat("Saving metadata...\n")
-write.csv(total_metadata, "/gpfs/home/yb2612/yb2612_fenyo/data/seurat_objects/Cervical_srtv4_total_metadata_radial_distances_samples_1-5_7.csv")
+write.csv(total_metadata, output_csv_path)

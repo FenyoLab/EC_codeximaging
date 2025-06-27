@@ -8,17 +8,70 @@ from scipy.stats import ttest_ind, mannwhitneyu
 from collections import defaultdict
 
 # paths
-all_proportion_dfs_path = "/gpfs/home/yb2612/yb2612_fenyo/data/seurat_objects/plots/cell_proportion_plots/all_proportion_dfs.json"
-sigdiff_output_dir = "/gpfs/home/yb2612/yb2612_fenyo/data/seurat_objects/plots/cell_proportion_plots/wilcoxon_csv"
-plots_output_dir = "/gpfs/home/yb2612/yb2612_fenyo/data/seurat_objects/plots/cell_proportion_plots/"
+all_proportion_dfs_path = "/gpfs/data/proteomics/data/Cervical_mIF/output/seurat_objects/plots/cell_proportion_plots/all_proportion_dfs.json"
+sigdiff_output_dir = "/gpfs/data/proteomics/data/Cervical_mIF/output/seurat_objects/plots/cell_proportion_plots/wilcoxon_csv"
+plots_output_dir = "/gpfs/data/proteomics/data/Cervical_mIF/output/seurat_objects/plots/cell_proportion_plots/"
+
+if not os.path.exists(sigdiff_output_dir):
+    os.makedirs(sigdiff_output_dir)
+
+if not os.path.exists(plots_output_dir):
+    os.makedirs(plots_output_dir)
 
 print(f"All significance testing dfs saved to {sigdiff_output_dir}")
 print(f"All plots saved to {plots_output_dir}\n")
+
+# variables
+normalize_cols = ["dist_group"]
+celltype_cols = ["Fine.cell.type", "Final.cell.type", "Parent.cell.type", "Grandparent.cell.type"]
 
 # colors
 cell_type_colors_path = "../../config/color_palettes/fine_cell_type_colors.json"
 with open(cell_type_colors_path, "r") as f:
     cell_type_colors = json.load(f)
+
+# significance testing
+def compare_proportions_sig(proportion_df, celltype_col, method="wilcoxon"):
+    """
+    Compare slope distributions between 'Yes' and 'No' responses for each Fine.cell.type.
+    
+    Parameters:
+    - slope_df: DataFrame with columns ['Fine.cell.type', 'Response', 'slope']
+    - method: "ttest" or "wilcoxon"
+
+    Returns:
+    - result_df: DataFrame with columns:
+        ['Fine.cell.type', 'n_Yes', 'n_No', 'mean_Yes', 'mean_No', 'pval']
+    """
+    results = []
+
+    for cell_type, group in proportion_df.groupby(celltype_col):
+        # group proportions by response
+        pct_yes = group[group["Response"] == "Yes"]["pct"].dropna()
+        pct_no = group[group["Response"] == "No"]["pct"].dropna()
+
+        # skip if not enough samples
+        if len(pct_yes) < 2 or len(pct_no) < 2:
+            pval = None
+        elif method == "ttest":
+            _, pval = ttest_ind(pct_yes, pct_no, equal_var=False)
+        elif method == "wilcoxon":
+            _, pval = mannwhitneyu(pct_yes, pct_no, alternative="two-sided")
+        else:
+            raise ValueError(f"Unsupported method: {method}")
+            stat, pval = ttest_ind(pct_yes, pct_no, equal_var=False)
+
+        results.append({
+            celltype_col: cell_type,
+            "n_Yes": len(pct_yes),
+            "n_No": len(pct_no),
+            "mean_Yes": pct_yes.mean() if len(pct_yes) > 0 else None,
+            "mean_No": pct_no.mean() if len(pct_no) > 0 else None,
+            "pval": pval
+        })
+
+    sig_df = pd.DataFrame(results)
+    return sig_df
 
 # stacked bar plot
 def plot_stacked_proportions_by_response(proportion_df, celltype_col, cell_type_colors, output_dir=None, filename_suffix=""):
@@ -202,53 +255,7 @@ def plot_proportion_boxplot(
     plt.savefig(output_path)
     plt.close()
 
-# significance testing for cell type proportions
-def compare_proportions_sig(proportion_df, celltype_col, method="wilcoxon"):
-    """
-    Compare slope distributions between 'Yes' and 'No' responses for each Fine.cell.type.
-    
-    Parameters:
-    - slope_df: DataFrame with columns ['Fine.cell.type', 'Response', 'slope']
-    - method: "ttest" or "wilcoxon"
-
-    Returns:
-    - result_df: DataFrame with columns:
-        ['Fine.cell.type', 'n_Yes', 'n_No', 'mean_Yes', 'mean_No', 'pval']
-    """
-    results = []
-
-    for cell_type, group in proportion_df.groupby(celltype_col):
-        # group proportions by response
-        pct_yes = group[group["Response"] == "Yes"]["pct"].dropna()
-        pct_no = group[group["Response"] == "No"]["pct"].dropna()
-
-        # skip if not enough samples
-        if len(pct_yes) < 2 or len(pct_no) < 2:
-            pval = None
-        elif method == "ttest":
-            _, pval = ttest_ind(pct_yes, pct_no, equal_var=False)
-        elif method == "wilcoxon":
-            _, pval = mannwhitneyu(pct_yes, pct_no, alternative="two-sided")
-        else:
-            raise ValueError(f"Unsupported method: {method}")
-            stat, pval = ttest_ind(pct_yes, pct_no, equal_var=False)
-
-        results.append({
-            celltype_col: cell_type,
-            "n_Yes": len(pct_yes),
-            "n_No": len(pct_no),
-            "mean_Yes": pct_yes.mean() if len(pct_yes) > 0 else None,
-            "mean_No": pct_no.mean() if len(pct_no) > 0 else None,
-            "pval": pval
-        })
-
-    result_df = pd.DataFrame(results)
-    return result_df
-
 if __name__ == "__main__":
-
-    normalize_cols = ["dist_group"]
-    celltype_cols = ["Fine.cell.type", "Final.cell.type", "Parent.cell.type", "Grandparent.cell.type"]
 
     #--------------------------------
     # LOAD JSON
@@ -273,6 +280,7 @@ if __name__ == "__main__":
     proportion_sig_results = {}
     method="wilcoxon"
 
+    print()
     print(f"\nPerforming significance testing using {method}...")
     for celltype_col in celltype_cols:
         print(f"\n{celltype_col}")
@@ -291,11 +299,12 @@ if __name__ == "__main__":
         proportion_sig_results[celltype_col].to_csv(sigdiff_output_csv_path, index=False)
 
     #--------------------------------
-    # BAR PLOTS
+    # PLOTTING
     #--------------------------------
-    print(f"\nPlotting stacked bar plots...")
     for celltype_col in celltype_cols:
-        print(f" > {celltype_col}")
+        print(celltype_col)
+        # bar plot
+        print(" > Plotting stacked bar plot")
         plot_stacked_proportions_by_response(
             all_proportion_dfs[celltype_col],
             celltype_col,
@@ -303,13 +312,8 @@ if __name__ == "__main__":
             output_dir=plots_output_dir,
             filename_suffix=method
         )
-
-    #--------------------------------
-    # BOX PLOTS
-    #--------------------------------
-    print(f"\nPlotting boxplots...")
-    for celltype_col in celltype_cols:
-        print(f" > {celltype_col}")
+        # bar plot
+        print(" > Plotting box plot")
         plot_proportion_boxplot(
             all_proportion_dfs,
             proportion_sig_results,

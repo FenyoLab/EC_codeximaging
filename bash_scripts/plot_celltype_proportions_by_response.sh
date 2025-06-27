@@ -11,7 +11,6 @@
 source set_up_conda.sh
 conda activate celesta
 
-# make sure you run this script from /path/to/bash_scripts
 cd ../src/distance_analysis/
 
 python -u plot_celltype_proportions_by_response.py

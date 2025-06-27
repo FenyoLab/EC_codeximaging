@@ -11,12 +11,6 @@
 source set_up_conda.sh
 conda activate seurat_v5
 
-# make sure you run this script from /path/to/bash_scripts
 cd ../src/distance_analysis/
 
-# EDIT ARGUMENTS
 Rscript semla_plot_distances.R
-
-wait
-
-echo "All jobs completed."

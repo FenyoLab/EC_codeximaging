@@ -1,11 +1,11 @@
-cat("Loading required libraries...\n")
+# TODO: clean up code, remove hardcoded paths
+
 library(ggplot2)
 library(stringr)
 library(rlang)
 library(dplyr)
 library(reshape2)
 
-cat("Setting random seed for reproducibility...\n")
 set.seed(9)
 
 cat("Loading total_metadata...\n")
