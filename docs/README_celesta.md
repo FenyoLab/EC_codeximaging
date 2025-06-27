@@ -111,7 +111,7 @@ $ source main_celesta_run_individual_step.sh
 * Edit the sample list and log directory as desired.
 * Input the individual step to run as `script_name`.
 
-It is recommended to first run the CELESTA pipeline using default thresholds. Afterwards, tune thresholds by running `celesta_assign_cells` as an individual step with many different threshold configurations.
+It is recommended to first run the CELESTA pipeline using default thresholds. Afterwards, tune thresholds by running `celesta_assign_cells` as an individual step with many different threshold configurations (see [Note on choosing thresholds](#note-on-choosing-thresholds)).
 
 ## Step 3: Prepare OMERO tables
 
