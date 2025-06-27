@@ -14,7 +14,3 @@ conda activate celesta
 cd ../
 
 python -u celesta_imaging_data_prep.py
-
-wait
-
-echo "All jobs completed."

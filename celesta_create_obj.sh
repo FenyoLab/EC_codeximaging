@@ -7,10 +7,7 @@
 
 sample=$1
 
-source set_up_conda.sh
-conda activate celesta
-
-cd /src/celesta/
+cd src/celesta/
 
 echo "Running sample: $sample"
 

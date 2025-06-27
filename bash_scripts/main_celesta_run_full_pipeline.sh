@@ -1,5 +1,4 @@
 #!/bin/bash
-cd ../
 
 # enter samples to run in parallel
 samples=(
@@ -28,8 +27,14 @@ scripts=(
   "celesta_plot_interactive_assignments"
 )
 
+source set_up_conda.sh
+conda activate celesta
+wait
+
+cd ../
+
 # enter path to log directory
-logdir="../logs/"
+logdir="logs/"
 mkdir -p "$logdir"
 
 # run all samples in parallel

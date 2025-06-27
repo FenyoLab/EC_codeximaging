@@ -14,7 +14,3 @@ conda activate omero
 cd ../src/omero_tables/
 
 python -u celesta_to_omero_prep.py
-
-wait
-
-echo "All jobs completed."
