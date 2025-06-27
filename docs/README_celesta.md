@@ -200,7 +200,7 @@ Outputs will be saved to `results_dir/project_title/` as specified in `config_ce
 
 ## Evaluation
 
-You can evaluate CELESTA results using `notebooks/celesta_evaluate_results_cervical.ipynb`. This contains the following code blocks:
+You can evaluate CELESTA results using `notebooks/celesta_evaluate_results.ipynb`. This contains the following code blocks:
 
 * **Violin plots:** For visual comparison of raw biomarker means and marker expression probability.
 
