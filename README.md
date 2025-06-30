@@ -8,15 +8,15 @@ All necessary conda environments have been set up on UltraViolet, NYU Langone's 
 
 Also make sure you have access to the [NYU Langone OMERO](https://omero.nyumc.org/), as all images are hosted there.
 
-## Full pipeline
+## Overview
 
-The pipeline consists of four main steps:
+The pipeline consists of five main steps:
 
-1. Cell segmentation
-2. Label images
-3. Calculate biomarker means
-4. Cell phenotyping
-5. Spatial analysis
+1. [Cell segmentation](#cell-segmentation)
+2. [Label images](#label-images)
+3. [Calculate biomarker means](#calculate-biomarker-means)
+4. [Cell phenotyping](#cell-phenotyping)
+5. [Spatial analysis](#spatial-analysis)
 
 ## Cell segmentation
 
@@ -62,7 +62,7 @@ $ sbatch main_celesta_run_full_pipeline.sh
 * Further cell phenotyping can be done after this step (e.g., by k-means clustering on marker expression in Seurat). 
 * See [docs/README_celesta.md](https://github.com/lp2700/CC_codeximaging/blob/feature/celesta_phenotyping/docs/README_celesta.md) for detailed instructions.
 
-## Distance analysis
+## Spatial analysis
 
 Finally, we conduct spatial analysis using [Semla](https://github.com/ludvigla/semla):
 
