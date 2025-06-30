@@ -36,3 +36,18 @@ $ sbatch plot_dist_group_slope_by_response.sh
 
 ## Notes
 * To define paths and other specifics, directly edit the appropriate source code in `src/distance_analysis`. Each source code script will have the same name as its corresponding bash script.
+
+## Citations
+
+```bibtex
+@article{larsson2023semla,
+  title={Semla: a versatile toolkit for spatially resolved transcriptomics analysis and visualization},
+  author={Larsson, Ludvig and Franz{\'e}n, Lovisa and St{\aa}hl, Patrik L and Lundeberg, Joakim},
+  journal={Bioinformatics},
+  volume={39},
+  number={10},
+  pages={btad626},
+  year={2023},
+  publisher={Oxford University Press}
+}
+```

@@ -65,6 +65,12 @@ $ sbatch celesta_imaging_data_prep.sh
     * `metadata_dir`: directory containing metadata files used to construct imaging data (the script will loop over all subfolders here)
     * `imaging_data_dir`: directory to output all imaging data files
 * Imaging data files will be named `imaging_data_{sample}.csv`.
+* IMPORTANT NOTE: If the cell segmentation step outputs `centroid_x`, `centroid_y`, `tile_h`, and `tile_w`, this is how absolute X and Y coordinates should be calculated: 
+
+    ```python
+    X = centroid_y + tile_w
+    Y = centoid_x + tile_h
+    ```
 
 ### C. Configuration file
 
@@ -227,6 +233,19 @@ You can evaluate CELESTA results using `notebooks/celesta_evaluate_results.ipynb
   number={6},
   pages={759--769},
   year={2022},
+  publisher={Nature Publishing Group US New York}
+}
+```
+
+```bibtex
+@article{allan2012omero,
+  title={OMERO: flexible, model-driven data management for experimental biology},
+  author={Allan, Chris and Burel, Jean-Marie and Moore, Josh and Blackburn, Colin and Linkert, Melissa and Loynton, Scott and MacDonald, Donald and Moore, William J and Neves, Carlos and Patterson, Andrew and others},
+  journal={Nature methods},
+  volume={9},
+  number={3},
+  pages={245--253},
+  year={2012},
   publisher={Nature Publishing Group US New York}
 }
 ```
