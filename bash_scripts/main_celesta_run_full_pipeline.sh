@@ -27,6 +27,7 @@ scripts=(
   "celesta_plot_interactive_assignments"
 )
 
+# set up conda environment
 source set_up_conda.sh
 conda activate celesta
 wait
