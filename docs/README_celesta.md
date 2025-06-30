@@ -54,7 +54,7 @@ Before you begin, make sure you have done the following:
 ## Step 1: Prepare inputs
 
 ### A. Prior marker info
-Prepare in a separate spreadsheet and save as CSV ([example spreadsheet](https://docs.google.com/spreadsheets/d/1xc_mcczZ0B0EAhWt6SpMEdjmpPlIWInAd9OLzNKNgkI/edit?usp=sharing)). Under each marker column, enter 0 for low expression probability, 1 for high expression probability, and NA if the marker is irrelevant for the given cell type.
+Prepare in a separate spreadsheet and save as CSV ([example spreadsheet](https://docs.google.com/spreadsheets/d/1cNkYYzrkLKg2qZfmlBMpJLM-QEo1YzmP-5JH9yQewyw/edit?usp=sharing)). Under each marker column, enter 0 for low expression probability, 1 for high expression probability, and NA if the marker is irrelevant for the given cell type.
     
 ### B. Imaging data
 ```bash
@@ -168,7 +168,7 @@ Outputs an updated CELESTA RDS object with cell type assignments along with a CS
 
 CELESTA requires high and low marker expression probability thresholds for anchor and iteration cells. Default thresholds may be used at first, but tuning high thresholds is recommended. Low thresholds typically do not need to be tuned.
 
-For `high_anchor` and `high_iter`, you can use this [example spreadsheet](https://docs.google.com/spreadsheets/d/1xc_mcczZ0B0EAhWt6SpMEdjmpPlIWInAd9OLzNKNgkI/edit?usp=sharing) to edit thresholds and output them into the correct format for CELESTA. 
+For `high_anchor` and `high_iter`, you can use this [example spreadsheet](https://docs.google.com/spreadsheets/d/1cNkYYzrkLKg2qZfmlBMpJLM-QEo1YzmP-5JH9yQewyw/edit?usp=sharing) to edit thresholds and output them into the correct format for CELESTA. 
 
 ![image](img/high_thresholds.png)
 
