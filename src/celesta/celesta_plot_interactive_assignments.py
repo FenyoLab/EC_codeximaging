@@ -41,11 +41,11 @@ def plot_interactive_cell_assignments(
 ):
     df[cell_type_col] = df[cell_type_col].astype('category')
 
-    # Compute cell type counts
+    # compute cell type counts
     counts = df[cell_type_col].value_counts().sort_values()
     cell_types = counts.index.tolist()
 
-    # Filter based on inclusion/exclusion
+    # filter based on inclusion/exclusion
     if include_cell_types is not None:
         cell_types = [ct for ct in cell_types if ct in include_cell_types]
         df = df[df[cell_type_col].isin(include_cell_types)]
@@ -53,19 +53,18 @@ def plot_interactive_cell_assignments(
         cell_types = [ct for ct in cell_types if ct not in exclude_cell_types]
         df = df[~df[cell_type_col].isin(exclude_cell_types)]
 
-    # Setup default color mapping if not provided
+    # color mapping
     if cell_type_colors is None:
-        cmap = plt.cm.get_cmap('tab20', len(cell_types))
         cell_type_colors = {cell_type: f'rgb{tuple(int(c*255) for c in cmap(i))}' for i, cell_type in enumerate(cell_types)}
     else:
         for ct in cell_types:
             if ct not in cell_type_colors:
                 cell_type_colors[ct] = '#FFFFFF'
 
-    # Plotly expects a discrete color map dict
+    # discrete color mapping for plotly
     color_discrete_map = {k: v for k, v in cell_type_colors.items() if k in df[cell_type_col].unique()}
 
-    # Create plot
+    # plot
     fig = px.scatter(
         df,
         x=x_col,
