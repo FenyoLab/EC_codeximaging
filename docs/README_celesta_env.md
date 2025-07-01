@@ -2,10 +2,12 @@
 
 *This README focuses on the `celesta` environment only. See `README_celesta.md` for the complete guide to the CELESTA workflow.*
 
+Make sure you clone the repo and run all scripts from `CC_codeximaging/bash_scripts`.
+
 ## Activate existing environment
 
 ```bash
-source bash_scripts/set_up_conda.sh
+source set_up_conda.sh
 conda activate celesta
 ```
 
@@ -31,7 +33,7 @@ Now you can proceed with setting up the environment.
 ### Create environment from YAML
 
 ```bash
-source bash_scripts/set_up_conda.sh
+source set_up_conda.sh
 conda env create -f config/celesta_env.yaml --prefix=/gpfs/data/proteomics/projects/miniconda3/envs/celesta
 ```
 
@@ -97,3 +99,18 @@ library(CELESTA)
 * I don't know what caused this issue, but my `r-base=4.4.2` broke and I had to upgrade it to `r-base=4.4.3`. This did not cause any problems with running CELESTA.
 
 * The `CreateCelestaObj()` function, specifically `GetNeighborInfo()`, takes almost twice as long with this environment setup as in my personal R installation. I am not sure why. It probably has something to do with the `spdep` version.
+
+## Citations
+
+```bibtex
+@article{zhang2022identification,
+  title={Identification of cell types in multiplexed in situ images by combining protein expression and spatial information using CELESTA},
+  author={Zhang, Weiruo and Li, Irene and Reticker-Flynn, Nathan E and Good, Zinaida and Chang, Serena and Samusik, Nikolay and Saumyaa, Saumyaa and Li, Yuanyuan and Zhou, Xin and Liang, Rachel and others},
+  journal={Nature methods},
+  volume={19},
+  number={6},
+  pages={759--769},
+  year={2022},
+  publisher={Nature Publishing Group US New York}
+}
+```

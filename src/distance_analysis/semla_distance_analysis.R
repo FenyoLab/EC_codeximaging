@@ -1,8 +1,11 @@
 library(semla)
 
+total_metadata_path = "/gpfs/home/yb2612/yb2612_fenyo/data/seurat_objects/Cervical_srtv4_total_metadata.csv"
+output_csv_path = "/gpfs/home/yb2612/yb2612_fenyo/data/seurat_objects/Cervical_srtv4_total_metadata_radial_distances.csv"
+
 # total metadata
 cat("Loading total metadata...\n")
-total_metadata <- read.csv("/gpfs/home/yb2612/yb2612_fenyo/data/seurat_objects/Cervical_v5_obj_metadata_noUnknown.csv", row.names = 1)
+total_metadata <- read.csv(total_metadata_path, row.names = 1)
 
 # choose samples
 samples_chosen<-unique(total_metadata$orig.ident)
@@ -13,8 +16,8 @@ coords_list<-list()
 for( sam in samples_chosen){
 coords_list[[sam]] <- data.frame(
   barcode = rownames(total_metadata)[total_metadata$orig.ident==sam],
-  x = total_metadata$x[total_metadata$orig.ident==sam],
-  y = total_metadata$y[total_metadata$orig.ident==sam],
+  x = total_metadata$absolute_x[total_metadata$orig.ident==sam],
+  y = total_metadata$absolute_y[total_metadata$orig.ident==sam],
   sampleID = rep(1,times = sum(total_metadata$orig.ident==sam)),
   stringsAsFactors = FALSE
 )
@@ -33,4 +36,4 @@ for(x in unique(total_metadata$Fine.cell.type[total_metadata$orig.ident==sam])){
 }
 
 cat("Saving metadata...\n")
-write.csv(total_metadata, "/gpfs/home/yb2612/yb2612_fenyo/data/seurat_objects/Cervical_v5_obj_metadata_radial_distances.csv")
+write.csv(total_metadata, output_csv_path)

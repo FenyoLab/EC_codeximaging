@@ -2,6 +2,7 @@ import os
 import numpy as np
 from types import SimpleNamespace
 from utils import helper
+import yaml
 
 #import config
 config_yaml= 'config/config_cellsegmentation.yaml'
@@ -17,14 +18,24 @@ omero_table_dir = os.path.join(config.out_dir, config.omero_table_dir)
 out_suffix = os.path.basename(config.out_dir)
 # date = "_".join(out_suffix.split("_")[1:])
 # table_name_celltypes = f'celltypes_{config.celltypes_table_name}'
-table_name_celltypes = config.celltypes_table_name
-print('Table name:', table_name_celltypes)
+# table_name_celltypes = config.celltypes_table_name
 
-celltype_tables.celltype_tables(cell_types_path = cell_types_path, save_path = omero_table_dir, 
-                                omero_dict = config.omero_image_dict, n_clusters = config.n_clusters_celltypes,
-                                table_name = table_name_celltypes, samples_to_remove=config.samples_to_remove)
+# read celltype_table names
+with open("config/config_celesta_to_omero.yaml", "r") as f:
+    celesta_to_omero_config = yaml.safe_load(f)
 
-#upload celltype cluster tables to omero
-upload_omero_table.upload_omero_table(table_dir = omero_table_dir, table_name = table_name_celltypes, 
-                            omero_dict = config.omero_image_dict, 
-                            server="omero.nyumc.org", port=4064)
+table_names = celesta_to_omero_config["tables_to_upload"]
+
+# with open("config/celltype_tables.txt", "r") as f:
+#     table_names = [line.strip() for line in f if line.strip()]
+
+for table_name_celltypes in table_names:
+    print(f"Uploading table: {table_name_celltypes}")
+    celltype_tables.celltype_tables(cell_types_path = cell_types_path, save_path = omero_table_dir, 
+                                    omero_dict = config.omero_image_dict, n_clusters = config.n_clusters_celltypes,
+                                    table_name = table_name_celltypes, samples_to_remove=config.samples_to_remove)
+
+    #upload celltype cluster tables to omero
+    upload_omero_table.upload_omero_table(table_dir = omero_table_dir, table_name = table_name_celltypes, 
+                                omero_dict = config.omero_image_dict, 
+                                server="omero.nyumc.org", port=4064)

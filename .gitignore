@@ -218,3 +218,4 @@ config/config_cellphenotyping.yaml
 main_biomarker_tables_mh.py
 main_cell_phenotyping_analysis.py
 src/spatial_analysis/
+notebooks/ignore/

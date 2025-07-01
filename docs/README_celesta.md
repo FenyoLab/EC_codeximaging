@@ -1,218 +1,228 @@
 # Guide to CELESTA
 
-All credit goes to the Plevritis Lab for this wonderful library! For more details, see https://github.com/plevritis-lab/CELESTA.
+*All credit for CELESTA goes to the Plevritis Lab. For more details, see https://github.com/plevritis-lab/CELESTA.*
 
-## Testing `celesta` environment
+This is a guide to running CELESTA as an integrated part of the `CC_codeximaging` pipeline.
 
-See `README_celesta_env.md` for details on activating/setting up the `celesta` conda environment. Hopefully the one I've created on the shared lab miniconda works for everyone.
+## Contents
 
-You can test this with:
+1. [CELESTA inputs](#celesta-inputs)
+
+2. [Full workflow instructions](#full-workflow-instructions)
+    
+    a. [Prepare inputs](#step-1-prepare-inputs)
+
+    b. [Run CELESTA pipeline (or individual steps)](#step-2-run-celesta-pipeline-or-individual-steps)
+
+    c. [Prepare OMERO tables](#step-3-prepare-omero-tables)
+
+    d. [Upload to OMERO](#step-4-upload-to-omero)
+
+3. [Details on individual steps](#details-on-individual-steps)
+
+4. [Summary of outputs](#summary-of-outputs)
+
+4. [Evaluation](#evaluation)
+
+## CELESTA inputs
+
+CELESTA requires two main inputs: a prior marker info matrix and an imaging data matrix. Refer to the [CELESTA GitHub](https://github.com/plevritis-lab/CELESTA?tab=readme-ov-file#inputs) for more detailed information.
+
+### A. Prior marker info
+
+Matrix of cell types (rows) by name, lineage level, and expected expression probability per marker (columns). Sometimes it is easier to visualize as a flowchart:
+
+![image](img/prior_marker_info_flowchart.png)
+
+This is how it translates into tabular form:
+
+![image](img/prior_marker_info.png)
+
+### B. Imaging data
+
+Contains X/Y coordinates and raw expression levels per marker. Each row should correspond to an individual cell.
+
+![image](img/imaging_data.png)
+
+## Full workflow instructions
+
+Before you begin, make sure you have done the following:
+
+* Clone the `CC_codeximaging` repository and navigate to `bash_scripts`. You will have to run all scripts from within this directory for the relative paths to work.
+* Have a working `celesta` environment (see `README_celesta_env.md` for details on setting up and activating the conda environment).
+
+## Step 1: Prepare inputs
+
+### A. Prior marker info
+Prepare in a separate spreadsheet and save as CSV ([example spreadsheet](https://docs.google.com/spreadsheets/d/1cNkYYzrkLKg2qZfmlBMpJLM-QEo1YzmP-5JH9yQewyw/edit?usp=sharing)). Under each marker column, enter 0 for low expression probability, 1 for high expression probability, and NA if the marker is irrelevant for the given cell type.
+    
+### B. Imaging data
+```bash
+$ sbatch celesta_imaging_data_prep.sh
+```
+* You can directly edit `celesta_imaging_data_prep.py` to specify the following:
+    * `markers`: list of markers to include
+    * `metadata_dir`: directory containing metadata files used to construct imaging data (the script will loop over all subfolders here)
+    * `imaging_data_dir`: directory to output all imaging data files
+* Imaging data files will be named `imaging_data_{sample}.csv`.
+* IMPORTANT NOTE: If the cell segmentation step outputs `centroid_x`, `centroid_y`, `tile_h`, and `tile_w`, this is how absolute X and Y coordinates should be calculated: 
+
+    ```python
+    X = centroid_y + tile_w
+    Y = centoid_x + tile_h
+    ```
+
+### C. Configuration file
+
+Edit this file in `CC_codeximaging/configs/`:
+```
+config_celesta_pipeline.yaml
+```
+This file determines all parameters to be used when running the full pipeline. Below are the parameters to edit:
+* `paths`:
+    * `prior_marker_info`: Path to prior marker info CSV.
+    * `imaging_data`: Path to imaging data directory (should contain files named `imaging_data_{sample}.csv` for all samples).
+    * `results_dir`: Path to directory where you want all CELESTA results to go.
+
+* `project_title_prefix`: Used to construct a project title for each sample, i.e., `{project_title_prefix}_{sample}`. A subfolder with this name will be made for each sample in `results_dir`.
+* `transform_type`: 1 for arcsinh normalization (recommended), 0 for no normalization.
+    * Sometimes CELESTA will fail to calculate expression probability if arcsinh is not applied. 
+    * CELESTA [recommends](https://github.com/plevritis-lab/CELESTA/issues/19) inputting raw biomarker means and applying their built-in normalization. Any pre-normalization outside of CELESTA may interfere with their Gaussian mixture modeling assumptions.
+* `thresholds:`
+    * `high_anchor`: Series of comma-separated thresholds for high expression probability in anchor cells, in order of cell types listed in prior marker info CSV. Can leave blank for CELESTA defaults (0.7 for all cell types).*
+    * `high_iter`: Same as above, but for iteration cells. Default is 0.5 for all cell types.*
+    * `low_anchor`: Same as above, but defines low expression probability for anchor cells. Default is 0.9 for all cell types.*
+    * `low_iter`: Same as above, but for iteration cells. Default is 1 for all cell types.*
+
+## Step 2: Run CELESTA pipeline (or individual steps)
+
+To run the CELESTA pipeline for each sample in parallel:
+```bash
+$ source main_celesta_run_full_pipeline.sh
+```
+* Edit the sample list and log directory as desired.
+
+The pipeline consists of the following steps:
+
+1. `celesta_create_obj.sh`
+2. `celesta_plot_exp_prob.sh`
+3. `celesta_assign_cells.sh`
+4. `celesta_plot_results.sh`
+5. `celesta_plot_interactive_assignments.sh`
+
+See section [Details on individual steps](#details-on-individual-steps) for more information.
+
+To run an individual step for each sample in parallel:
+```bash
+$ source main_celesta_run_individual_step.sh
+```
+* Edit the sample list and log directory as desired.
+* Input the individual step to run as `script_name`.
+
+It is recommended to first run the CELESTA pipeline using default thresholds. Afterwards, tune thresholds by running `celesta_assign_cells` as an individual step with many different threshold configurations (see [Note on choosing thresholds](#note-on-choosing-thresholds)).
+
+## Step 3: Prepare OMERO tables
+
+Edit this file in `CC_codeximaging/configs/`:
+```
+config_celesta_to_omero.yaml
+```
+* `paths`:
+    * `phenotype_clusters`: Path to CSV containing phenotype clusters, with all cells in the correct order for uploading.
+    * `celesta_results_dir`: Path to directory where all CELESTA results are located.
+    * `output_dir`: Path to directory where you want OMERO tables to go.
+* `thresholds_dict`
+* `tables_to_upload`: Names of tables (keys from `thresholds_dict`) to be uploaded to OMERO.
+
+Then run:
+```bash
+$ sbatch celesta_to_omero_prep.sh
+```
+
+## Step 4: Upload to OMERO
+
+Create a `.env` file in `CC_codeximaging/bash_scripts/` containing your `PASSWORD` and `KERBEROSID`. You may also have to add these environment variables to your `~/.bashrc` for this to work.
+
+Then run:
 
 ```bash
-source bash_scripts/set_up_conda.sh
-conda activate celesta
+$ sbatch main_celltype_tables.sh
 ```
+* Uploads all tables specified in `tables_to_upload` above.
 
-And in R,
-```R
-library(CELESTA)
-```
+## Details on individual steps
 
-## Preparing CELESTA inputs
+### 1. Create CELESTA object
 
-CELESTA requires two main inputs in CSV format: **prior marker information** ([example spreadsheet](https://docs.google.com/spreadsheets/d/1xc_mcczZ0B0EAhWt6SpMEdjmpPlIWInAd9OLzNKNgkI/edit?usp=sharing)) and **imaging data** (`notebooks/celesta_data_prep_cervical.ipynb`). 
+Outputs a CELESTA RDS object along with a CSV file of marker expression probability.
 
-1. **Prior marker info (CSV):** Contains cell type name, lineage levels, and marker expression probability 0/1 per cell type. Each row should correspond to a cell type.
-    
-    Sometimes it is easier to visualize it as a flowchart first:
+### 2. Plot expression probability
 
-    ![image](img/prior_marker_info_flowchart.png)
+Outputs expression probability plots for each sample that will help you choose thresholds when assigning cell types.
 
-    This is how it translates into tabular form:
+<img src="img/plot_exp_prob.png" height="600"/>
 
-    ![image](img/prior_marker_info.png)
-    
-2. **Imaging data (CSV):** Contains X/Y coordinates and raw expression levels per marker. Each row should correspond to an individual cell.
+### 3. Assign cell types
 
-    ![image](img/imaging_data.png)
+Outputs an updated CELESTA RDS object with cell type assignments along with a CSV file. Output filenames will contain the full lists of `high_anchor` and `high_iter` thresholds, so results from every unique run will be saved.
 
-Aside from these, you will also need to input high and low marker expression probability thresholds for anchor and iteration cells. Low thresholds can be set to 1 for all cells, but high thresholds need to be tuned. 
+#### Understanding thresholds
 
-This [example spreadsheet](https://docs.google.com/spreadsheets/d/1xc_mcczZ0B0EAhWt6SpMEdjmpPlIWInAd9OLzNKNgkI/edit?usp=sharing) also contains `high_thresholds` sheets where you can easily edit thresholds per cell type and output it into a format that CELESTA will accept:
+Let's say we are trying to identify anchor tumor cells.
+
+* In our `prior_marker_info` matrix, we have set `Ecad=1` and all other markers = 0 for tumor cells. 
+* We have also set thresholds as `high_anchor = 0.7` and `low_anchor = 0.3`. 
+* This means that for a cell to be considered an anchor tumor cell:
+    * It must have Ecad expression probability $\geq$ 0.7.
+    * All other markers must have expression probability $\leq$ 0.3.
+
+#### Note on choosing thresholds
+
+CELESTA requires high and low marker expression probability thresholds for anchor and iteration cells. Default thresholds may be used at first, but tuning high thresholds is recommended. Low thresholds typically do not need to be tuned.
+
+For `high_anchor` and `high_iter`, you can use this [example spreadsheet](https://docs.google.com/spreadsheets/d/1cNkYYzrkLKg2qZfmlBMpJLM-QEo1YzmP-5JH9yQewyw/edit?usp=sharing) to edit thresholds and output them into the correct format for CELESTA. 
 
 ![image](img/high_thresholds.png)
 
-## Running CELESTA step-by-step 
+You can also use `notebooks/celesta_adjust_thresholds.ipynb` to output plots that may help you decide which thresholds to choose.
 
-*Note: This gives you more control over each step. It also allows you to test a bunch of thresholds on an existing CELESTA object rather than having to build the object from scratch every time.*
+### 4. Plot results
 
-Clone the `CC_codeximaging` repo and navigate to `bash_scripts`. Note that whenever you run a bash script, there are arguments you will need to edit according to your needs.
-
-### 1. Run `celesta_create_obj.sh` to create a CELESTA object.
-
-This will also output a CSV file of marker expression probability.
-
-You will need to edit these arguments:
-
-```bash
---project_title "cervical_10103_raw_arcsinh" \
---prior_marker_info "/gpfs/data/proteomics/home/yb2612/data/celesta/cervical/prior_marker_info_cervical.csv" \
---imaging_data "/gpfs/data/proteomics/home/yb2612/data/celesta/cervical/imaging_data_10103_raw.csv" \
---results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
---transform_type 1
-```
-
-* `project_title:` This will be the name of the subfolder containing all results, as well as the prefix for filenames.
-* `prior_marker_info`: Path to prior marker info CSV.
-* `imaging_data`: Path to imaging data CSV.
-* `results_dir`: Path to directory where you want *all* of your CELESTA results to go. The script will automatically create a subfolder named after `project_title` here.
-
-### 2. Plot expression probability with `celesta_plot_exp_prob.sh`.
-
-This will help you choose thresholds when assigning cell types.
-
-You will need to edit these arguments:
-
-```bash
---project_title "cervical_10103_raw_arcsinh" \
---results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta"
-```
-
-* `project_title:` Use same value as in `celesta_create_obj.sh`. This should be the name of the subfolder containing all results.
-* `results_dir`: Use same value as in `celesta_create_obj.sh`. This should be the parent directory of the `project_title` subdir.
-
-I've made my own script to plot expression probability because I think it looks better than CELESTA's plots. Case in point:
-
-<img src="img/celesta_CD3e_exp_prob.png" alt="CELESTA CD3e" width="600"/>
-
-*CELESTA's expression probability plot for CD3e in one of our samples. Notice that points are large and overlapping, making it hard to select an appropriate threshold.*
-
-<img src="img/yumi_CD3e_exp_prob.png" alt="Yumi CD3e" width="600"/>
-
-*Yumi's expression probability plot for the same marker and sample. The points are smaller with less overlap, and points with higher probability are plotted on top.*
-
-### 3. Assign cell types with `celesta_assign_cells.sh`.
-
-You will need to edit these arguments:
-
-```bash
---project_title "cervical_10103_raw_arcsinh" \
---results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
---high_anchor 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 \
---high_iter 0.8 0.8 0.8 0.8 0.8 0.8 0.8 0.8 0.8 0.8 \
---low_anchor 1 1 1 1 1 1 1 1 1 1 \
---low_iter 1 1 1 1 1 1 1 1 1 1
-```
-
-* `project_title:` Use same value as in `celesta_create_obj.sh`. This should be the name of the subfolder containing all results.
-* `results_dir`: Use same value as in `celesta_create_obj.sh`. This should be the parent directory of the `project_title` subdir.
-* `high_anchor`: Series of space-separated thresholds for high expression probability in anchor cells, in order of cell types listed in `prior_marker_info`. Can leave blank for CELESTA defaults (0.7 for all cell types).
-* `high_iter`: Same as above, but for iteration cells. Default is 0.5 for all cell types.
-* `low_anchor`: Same as above, but defines low expression probability for anchor cells. Default is 0.9 for all cell types.
-* `low_iter`: Same as above, but for iteration cells. Default is 1 for all cell types.
-
-For `high_anchor` and `high_iter`, you can use this [example spreadsheet](https://docs.google.com/spreadsheets/d/1xc_mcczZ0B0EAhWt6SpMEdjmpPlIWInAd9OLzNKNgkI/edit?usp=sharing) to edit thresholds and output them into the correct format for CELESTA. You can use this script to test a bunch of different thresholds, and all results will be saved with a unique filename.
-
-*Note: Output filenames will contain the full lists of `high_anchor` and `high_iter` thresholds. There is probably a better way to do this, but this is how it is for now.*
-
-### 4. Plot results with `celesta_plot_results.sh` and `celesta_plot_interactive_assignments.sh`.
-
-`celesta_plot_results.sh` generates a stacked bar plot of cell type proportions and a spatial plot of cell type assignments *for each* `final_cell_type_assignment.csv` file generated by the previous step. `celesta_plot_interactive_assignments.sh` generates interactive spatial plots of cell type assignments.
-
-For both scripts, you will need to edit these arguments:
-
-```bash
---project_title "cervical_10103_raw_arcsinh" \
---results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta"
-```
-
-* `project_title:` Use same value as in `celesta_create_obj.sh`. This should be the name of the subfolder containing all results.
-* `results_dir`: Use same value as in `celesta_create_obj.sh`. This should be the parent directory of the `project_title` subdir.
-
-Example plots: 
+Generates stacked bar plots of cell type proportions and static/interactive spatial plots of cell type assignments for each `final_cell_type_assignment.csv` file generated by the previous step.
 
 <p>
   <img src="img/plot_cell_proportions.png" alt="Cell Proportions" height="600" style="vertical-align: top;"/>
   <img src="img/plot_cell_assignments.png" alt="Cell Assignments" height="600" style="vertical-align: top;"/>
 </p>
 
-## Running full CELESTA pipeline
 
-This creates a CELESTA object, assigns cells, plots expression probability, and plots cell assignments using built-in CELESTA functions. 
+### Summary of outputs
 
-*Note: While this is the simplest option, it isn't the fastest. It entails building the object from scratch, and only one set of thresholds can be tested at a time. Furthermore, the plots outputted by CELESTA don't always look the best.*
+Outputs will be saved to `results_dir/project_title/` as specified in `config_celesta_pipeline.yaml`.
 
-### Run `celesta_full_pipeline.sh`.
-
-You will need to edit these arguments:
-
-```bash
---project_title "cervical_10103_raw_arcsinh" \
---prior_marker_info "/gpfs/data/proteomics/home/yb2612/data/celesta/cervical/prior_marker_info_cervical.csv" \
---imaging_data "/gpfs/data/proteomics/home/yb2612/data/celesta/cervical/imaging_data_10103_raw.csv" \
---results_dir "/gpfs/data/proteomics/home/yb2612/results/celesta" \
---transform_type 1 \
---high_anchor 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 \
---high_iter 0.8 0.8 0.8 0.8 0.8 0.8 0.8 0.8 0.8 0.8 \
---low_anchor 1 1 1 1 1 1 1 1 1 1 \
---low_iter 1 1 1 1 1 1 1 1 1 1
-```
-
-* `project_title:` This will be the name of the subfolder containing all results, as well as the prefix for filenames.
-* `prior_marker_info`: Path to prior marker info CSV.
-* `imaging_data`: Path to imaging data CSV.
-* `results_dir`: Path to directory where you want *all* of your CELESTA results to go. The script will automatically create a subfolder named after `project_title` here.
-* `high_anchor`: Series of space-separated expression thresholds for anchor cells, in order of cell types listed in `prior_marker_info`. Can leave blank for CELESTA defaults (0.7 for all cell types).
-* `high_iter`: Series of space-separated expression thresholds for iteration cells, in order of cell types listed in `prior_marker_info`. Can leave blank for CELESTA defaults (0.5 for all cell types).
-* `low_anchor`: Series of space-separated expression thresholds for anchor cells, in order of cell types listed in `prior_marker_info`. Can leave blank for CELESTA defaults (0.9 for all cell types).
-* `low_iter`: Series of space-separated expression thresholds for anchor cells, in order of cell types listed in `prior_marker_info`. Can leave blank for CELESTA defaults (1 for all cell types).
-
-## CELESTA outputs
-
-Outputs will be saved to `results_dir/project_title/` as specified in the bash script you ran (any in the above section).
-
-1. `celesta_full_pipeline.sh` outputs:
-    * CELESTA object without cell type assignments (RDS)
-    * CELESTA object with cell type assignments (RDS)
-    * Final cell assignments (CSV)
-    * Cell assignment plot
-    * Marker expression probability plots
-
-2. `celesta_create_obj.sh` outputs:
+1. `celesta_create_obj.sh` outputs:
     * CELESTA object without cell type assignments (RDS)
     * Marker expression probability (CSV)
 
-3. `celesta_create_obj.sh` outputs:
-    * Marker expression probability plots
+2. `celesta_create_obj.sh` outputs:
+    * Marker expression probability plots (PNG)
 
-4. `celesta_assign_cells.sh` outputs:
+3. `celesta_assign_cells.sh` outputs:
     * CELESTA object with cell type assignments (RDS)
     * Final cell assignments (CSV)
 
-5. `celesta_plot_results.sh` outputs:
-    * Cell type proportions stacked bar plot for each `final_cell_type_assignment.csv` file
-    * Spatial plot of cell type assignments for each `final_cell_type_assignment.csv` file
+4. `celesta_plot_results.sh` outputs:
+    * Cell type proportions stacked bar plot for each `final_cell_type_assignment.csv` file (PNG)
+    * Spatial plot of cell type assignments for each `final_cell_type_assignment.csv` file (PNG)
 
-6. `celesta_plot_interactive_assignments.sh` outputs:
+5. `celesta_plot_interactive_assignments.sh` outputs:
     * Interactive spatial plot of cell type assignments for each `final_cell_type_assignment.csv` file (HTML)
 
-## Evaluating CELESTA performance
+## Evaluation
 
-### Visual evaluation with OMERO
-All CELESTA results should be uploaded to OMERO (https://omero.nyumc.org/) after completion. This will allow you to use the PathViewer tool to overlay assigned cell types onto the CODEX image and visually evaluate how well they overlap with marker expression. To upload results, follow these steps:
+You can evaluate CELESTA results using `notebooks/celesta_evaluate_results.ipynb`. This contains the following code blocks:
 
-1. Open [notebooks/celesta_data_prep_cervical.ipynb](https://github.com/lp2700/CC_codeximaging/blob/feature/celesta_phenotyping/notebooks/celesta_data_prep_cervical.ipynb) and run the code blocks under "Upload cell types to OMERO". Adjust file names and paths as necessary.
-2. Open `config/config_cellsegmentation.yaml` and set `celltypes_table_name` to the file name of the cell types table you exported in the previous step.
-3. Create a `.env` file in `bash_scripts` directory. Enter your PASSWORD and KERBEROSID.
-4. Run `main_celltype_tables.sh`.
-5. The tables should now appear on OMERO.
-
-### Computational evaluation with Jupyter notebook
-You can also evaluate CELESTA results using `notebooks/celesta_evaluate_results_cervical.ipynb`. This contains the following code blocks:
-
-* **arcsinh_exp_prob:** Plots expression probability, in the same way that `celesta_plot_exp_prob.sh` does. This is so you can see all plots at once, which can help when selecting thresholds. 
-
-* **Violin plots and Spatial plots:** For visual comparison of raw biomarker means and marker expression probability.
+* **Violin plots:** For visual comparison of raw biomarker means and marker expression probability.
 
 * **Threshold search (mean of conf matrix diagonal):** If you have ground truth labels, you can evaluate threshold performance using the mean of the diagonal of the confusion matrix. This is best for making sure CELESTA has balanced performance across all classes. Make sure you have run `celesta_assign_cells.sh` with all of the different thresholds you want to test. 
 
@@ -224,16 +234,30 @@ You can also evaluate CELESTA results using `notebooks/celesta_evaluate_results_
     * Plot of cell type proportions from  manual pipeline vs. CELESTA
     * Spatial plot of cell type assignments
 
-There is also a notebook `notebooks/celesta_broad_vs_detailed_cervical.ipynb` to compare results from broad cell types to detailed cell types.
+## Citations
 
-# Notes
+```bibtex
+@article{zhang2022identification,
+  title={Identification of cell types in multiplexed in situ images by combining protein expression and spatial information using CELESTA},
+  author={Zhang, Weiruo and Li, Irene and Reticker-Flynn, Nathan E and Good, Zinaida and Chang, Serena and Samusik, Nikolay and Saumyaa, Saumyaa and Li, Yuanyuan and Zhou, Xin and Liang, Rachel and others},
+  journal={Nature methods},
+  volume={19},
+  number={6},
+  pages={759--769},
+  year={2022},
+  publisher={Nature Publishing Group US New York}
+}
+```
 
-1. I first ran CELESTA on two endometrial cancer samples: 1T (22k cells) and 3P (1M cells). 
-    * For the imaging data, I used raw biomarker means with no further transformation. 
-    * Both samples had manual annotations, which were treated as ground truth labels. 
-    * I tested multiple thresholds and used `notebooks/celesta_evaluate_results_cervical.ipynb` to select the best thresholds (see "Evaluating CELESTA performance" section above).
-3. I then ran the full CELESTA pipeline on all 14 cervical cancer samples. 
-    * For the imaging data, I used raw biomarker means with CELESTA's built-in arcsinh transformation. 
-    * Initially, default thresholds were used for all samples.
-    * Thresholds will be tuned as described in the "Evaluating CELESTA performance" section above.
-    * Three samples (10103, 34933, and 29973) had manual annotations, which were used for evaluation.
+```bibtex
+@article{allan2012omero,
+  title={OMERO: flexible, model-driven data management for experimental biology},
+  author={Allan, Chris and Burel, Jean-Marie and Moore, Josh and Blackburn, Colin and Linkert, Melissa and Loynton, Scott and MacDonald, Donald and Moore, William J and Neves, Carlos and Patterson, Andrew and others},
+  journal={Nature methods},
+  volume={9},
+  number={3},
+  pages={245--253},
+  year={2012},
+  publisher={Nature Publishing Group US New York}
+}
+```

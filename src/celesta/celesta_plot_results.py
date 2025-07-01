@@ -4,16 +4,23 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import argparse
 import os
+import json
+import yaml
 
 #  arg parsing
-parser = argparse.ArgumentParser(description='Plot expression probability.')
-parser.add_argument('--project_title', type=str, default="celesta_test", help='Same title as in create_celesta_obj.sh, name of subdirectory in results_dir.')
-parser.add_argument('--results_dir', type=str, default="/gpfs/data/proteomics/home/yb2612/results/celesta", help='Path to results directory created by create_celesta_obj.sh')
+parser = argparse.ArgumentParser()
+parser.add_argument('--sample', type=str, required=True, help='Sample name (used to construct paths)')
 args = parser.parse_args()
 
-project_title = args.project_title
+# load config
+with open("../../config/config_celesta_pipeline.yaml", "r") as f:
+    config = yaml.safe_load(f)
 
-save_path = f"{args.results_dir}/{project_title}"
+project_title_prefix = config["project_title_prefix"]
+project_title = f"{project_title_prefix}_{args.sample}"
+results_dir = config["paths"]["results_dir"]
+
+save_path = f"{results_dir}/{project_title}"
 if not os.path.exists(save_path):
     os.makedirs(save_path)
 
@@ -139,8 +146,6 @@ def plot_cell_assignments(
 
     # plot
     plt.title(title, color='white', fontsize=24)
-    plt.xlabel(x_col, color='white', fontsize=20)
-    plt.ylabel(y_col, color='white', fontsize=20)
     plt.tick_params(axis='both', colors='white', labelsize=16)
     plt.grid(False)
     for spine in ax.spines.values():
@@ -167,39 +172,14 @@ def plot_cell_assignments(
 #---------------------------------
 # DEFINE CELL TYPE COLORS
 #---------------------------------
-cell_type_colors = {
-    'Unknown': '#808080',                       # gray
-    'Stromal_Undefined': '#A9A9A9',             # dark gray
-    'Stromal cells (undefined)': '#A9A9A9',     # dark gray
-    'Tumor': '#A42A2A',                         # crimson
-    'Tumor cells': '#A42A2A',                   # crimson
-    'Endothelial': '#33FD02',                   # green
-    'Endothelial cells': '#33FD02',             # green
-    'Neutrophil': '#34FEFF',                    # cyan
-    'Neutrophils': '#34FEFF',                   # cyan
-    'Macrophage': '#FB22FF',                    # magenta
-    'Macrophage (CD163-)': '#FB22FF',           # magenta
-    'Macrophages (CD163-)': '#FB22FF',          # magenta
-    'Macrophage (CD163+)': '#FF80FF',           # light magenta
-    'Macrophages (CD163+)': '#FF80FF',          # light magenta
-    'CD8_T': '#FFFE04',                         # yellow
-    'Cytotoxic T cells': '#FFFE04',             # yellow
-    'T': '#008B8B',                             # dark cyan
-    'T cells (other)': '#008B8B',               # dark cyan
-    'CD4_T': '#FC8001',                         # orange
-    'Helper T cells': '#FC8001',                # orange
-    'B': '#FFFFFF',                             # white
-    'B cells': '#FFFFFF',                       # white
-    'Cytotoxic NK': '#B7FFFA',                  # pastel cyan
-    'Exhausted CD8': '#FFC1CB',                 # pastel pink
-    'Treg': '#FFC067',                          # pastel orange
-    'Th1': '#FFEE8C',                           # pastel yellow
-}
+cell_type_colors_path = "../../config/color_palettes/celesta_cell_type_colors_dark.json"
+with open(cell_type_colors_path, "r") as f:
+    cell_type_colors = json.load(f)
 
 if __name__ == "__main__":
     print("------------------------------------")
     print("Project title:", project_title)
-    print("Plotting cell proportions and assignments for:", args.project_title)
+    print("Plotting cell proportions and assignments for:", project_title)
     print("------------------------------------")
 
     for file in os.listdir(save_path):

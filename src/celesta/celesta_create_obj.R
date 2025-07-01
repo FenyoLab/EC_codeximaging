@@ -4,32 +4,24 @@ library(spdep)
 library(ggplot2)
 library(reshape2)
 library(zeallot)
-library(argparse)
+library(yaml)
 
 set.seed(9)
 
-# -------------------------------------------
-# # Parse command-line arguments
+# Parse command-line arguments
+args <- commandArgs(trailingOnly = TRUE)
+config <- yaml.load_file("../../config/config_celesta_pipeline.yaml")
+sample <- args[1]
 
-parser <- ArgumentParser(description = "Create CELESTA object with specified inputs")
+project_title <- paste0(config$project_title_prefix, "_", sample)
+imaging_data_path <- file.path(config$paths$imaging_data_dir, paste0("imaging_data_", sample, ".csv"))
+prior_marker_info_path <- config$paths$prior_marker_info
+transform_type <- config$transform_type
 
-parser$add_argument("--project_title", help = "Project title, will be name of subdirectory in results_dir.")
-parser$add_argument("--prior_marker_info", help = "CSV file with prior marker info")
-parser$add_argument("--imaging_data", help = "CSV file with imaging data")
-parser$add_argument("--results_dir", help = "Path to results directory", default = "/gpfs/data/proteomics/home/yb2612/results/celesta")
-parser$add_argument("--transform_type", type = "integer", help = "0 for pre-normalized, 1 for arcsinh normalization")
-
-args <- parser$parse_args()
-
-project_title <- args$project_title
-prior_marker_info_path <- args$prior_marker_info
-results_dir <- args$results_dir
+results_dir <- config$paths$results_dir
 if (!dir.exists(results_dir)) {
   dir.create(results_dir, recursive = TRUE)
 }
-imaging_data_path <- args$imaging_data
-transform_type <- args$transform_type
-
 
 cat("\n-------------------------------\n")
 cat("Project title:", project_title, "\n")
@@ -56,8 +48,12 @@ cat("All results saved to:", output_folder, "\n")
 # Create CELESTA object
 cat("\n[Creating CELESTA object...]\n")
 
-# set transform_type=1 for arcsinh normalization, otherwise 0 if imaging_data is already normalized
-CelestaObj <- CreateCelestaObject(project_title=project_title, prior_marker_info, imaging_data, transform_type=transform_type)
+# Set transform_type=1 for arcsinh normalization or 0 for none
+CelestaObj <- CreateCelestaObject(
+  project_title=project_title, 
+  prior_marker_info, 
+  imaging_data, 
+  transform_type=transform_type)
 
 # Save CELESTA object
 saveRDS(CelestaObj, file = file.path(output_folder, paste0(project_title, "_unassigned_CelestaObj.rds")))
