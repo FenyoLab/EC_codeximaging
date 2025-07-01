@@ -86,6 +86,8 @@ This file determines all parameters to be used when running the full pipeline. B
 
 * `project_title_prefix`: Used to construct a project title for each sample, i.e., `{project_title_prefix}_{sample}`. A subfolder with this name will be made for each sample in `results_dir`.
 * `transform_type`: 1 for arcsinh normalization (recommended), 0 for no normalization.
+    * Sometimes CELESTA will fail to calculate expression probability if arcsinh is not applied. 
+    * CELESTA [recommends](https://github.com/plevritis-lab/CELESTA/issues/19) inputting raw biomarker means and applying their built-in normalization. Any pre-normalization outside of CELESTA may interfere with their Gaussian mixture modeling assumptions.
 * `thresholds:`
     * `high_anchor`: Series of comma-separated thresholds for high expression probability in anchor cells, in order of cell types listed in prior marker info CSV. Can leave blank for CELESTA defaults (0.7 for all cell types).*
     * `high_iter`: Same as above, but for iteration cells. Default is 0.5 for all cell types.*
@@ -163,6 +165,16 @@ Outputs expression probability plots for each sample that will help you choose t
 ### 3. Assign cell types
 
 Outputs an updated CELESTA RDS object with cell type assignments along with a CSV file. Output filenames will contain the full lists of `high_anchor` and `high_iter` thresholds, so results from every unique run will be saved.
+
+#### Understanding thresholds
+
+Let's say we are trying to identify anchor tumor cells.
+
+* In our `prior_marker_info` matrix, we have set `Ecad=1` and all other markers = 0 for tumor cells. 
+* We have also set thresholds as `high_anchor = 0.7` and `low_anchor = 0.3`. 
+* This means that for a cell to be considered an anchor tumor cell:
+    * It must have Ecad expression probability $\geq$ 0.7.
+    * All other markers must have expression probability $\leq$ 0.3.
 
 #### Note on choosing thresholds
 
