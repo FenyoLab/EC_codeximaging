@@ -49,7 +49,7 @@ Contains X/Y coordinates and raw expression levels per marker. Each row should c
 Before you begin, make sure you have done the following:
 
 * Clone the `CC_codeximaging` repository and navigate to `bash_scripts`. You will have to run all scripts from within this directory for the relative paths to work.
-* Have a working `celesta` environment (see `README_celesta_env.md` for details on setting up and activating the conda environment).
+* Have a working `celesta` environment (see [README_celesta_env.md](https://github.com/lp2700/CC_codeximaging/blob/main/docs/README_celesta_env.md) for details on setting up and activating the conda environment).
 
 ## Step 1: Prepare inputs
 
