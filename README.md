@@ -60,7 +60,7 @@ $ sbatch main_celesta_run_full_pipeline.sh
 ```
 * Upload to OMERO with `main_celesta_to_omero_prep.sh` followed by `main_celltype_tables.sh`.
 * Further cell phenotyping can be done after this step (e.g., by k-means clustering on marker expression in Seurat). 
-* See [docs/README_celesta.md](https://github.com/lp2700/CC_codeximaging/blob/feature/celesta_phenotyping/docs/README_celesta.md) for detailed instructions.
+* See [docs/README_celesta.md](https://github.com/lp2700/CC_codeximaging/blob/main/docs/README_celesta.md) for detailed instructions.
 
 ## Spatial analysis
 
@@ -74,7 +74,7 @@ $ sbatch semla_distance_analysis.sh
     * `plot_celltype_proportions_by_response.sh`
     * `plot_dist_group_by_response.sh`
     * `plot_dist_group_slope_by_response.sh`  
-* See [docs/README_distance_analysis.md](https://github.com/lp2700/CC_codeximaging/blob/feature/celesta_phenotyping/docs/README_distance_analysis.md) for detailed instructions.
+* See [docs/README_distance_analysis.md](https://github.com/lp2700/CC_codeximaging/blob/main/docs/README_distance_analysis.md) for detailed instructions.
 
 ## Citations
 
