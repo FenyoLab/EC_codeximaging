@@ -198,13 +198,10 @@ To run the analysis pipeline on this test data, set in `analysis/config.py`: `RE
 
 ## Data Availability
 
-Multiplexed immunofluorescence images analyzed in this study contain patient-derived data and cannot be publicly shared due to privacy and institutional restrictions.
-
-Processed data and analysis outputs supporting the findings of the associated manuscript may be available from the corresponding author upon reasonable request.
+Multiplexed immunofluorescence images will available on the NYU Langone OMERO Public server. 
 
 ---
 
 ## Notes
 
-- Detailed documentation describing script functionality is available in **Script Info.pdf**.
-- The repository reflects the code used for analysis in the associated manuscript and may contain additional scripts used during method development.
+- Detailed documentation describing preprocessing, cell segmentation, and cell phenotyping is available in **Script Info.pdf**.
