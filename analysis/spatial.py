@@ -13,7 +13,7 @@ def gen_median_distance_summary_table(metadata, results_dir, clinical_df, cell_t
                                       artifact_cells, clinical_vars_list, basic_cell_types,
                                       cell_types_remove, samples_skip, self_interactions,
                                       add_plot_title, cell_types_rename, boxplot_shapes,
-                                      um_per_px, run_permutation_test, run_gen_boxplots,
+                                      um_per_px, run_gen_boxplots,
                                       sample_label, add_color_points_stage, title_font_size,
                                       subtitle_font_size, y_tick_font_size, x_tick_font_size,
                                       p_value_tick_font_size, x_tick_labels_dict):
@@ -108,10 +108,7 @@ def gen_median_distance_summary_table(metadata, results_dir, clinical_df, cell_t
                         if len(clinical_0) < 2 or len(clinical_1) < 2:
                             continue
 
-                        if run_permutation_test:
-                            pval_student_ttest, pval_welch_ttest, pval_mann_whitney, effect_size, pval_permutation_test, direction = run_stats_tests(clinical_0, clinical_1, clinical_var, run_permutation_test)
-                        else:
-                            pval_student_ttest, pval_welch_ttest, pval_mann_whitney, effect_size, direction = run_stats_tests(clinical_0, clinical_1, clinical_var, run_permutation_test)
+                        pval_student_ttest, pval_welch_ttest, pval_mann_whitney, effect_size, direction = run_stats_tests(clinical_0, clinical_1, clinical_var)
 
                         result_dict = {
                             'region': region, 'cell_type_anchor': cell_type_anchor,
@@ -120,9 +117,6 @@ def gen_median_distance_summary_table(metadata, results_dir, clinical_df, cell_t
                             'welch_ttest_pval': pval_welch_ttest, 'mann_whitney_pval': pval_mann_whitney,
                             'effect_size': effect_size,
                         }
-                        if run_permutation_test:
-                            result_dict['pval_permutation_test'] = pval_permutation_test
-
                         if run_gen_boxplots:
                             sig_dir = 'significant' if pval_mann_whitney < 0.052 else 'not_significant'
                             boxplot_output_dir = os.path.join(
@@ -166,7 +160,7 @@ def gen_scimap_interaction_summary_table(results_dir, metadata, cell_type_column
                                          x_tick_labels_dict, add_plot_title, interaction_type,
                                          anchor_cell_type, interacting_cell_type, region,
                                          cell_types_rename, boxplot_shapes, cell_types_remove,
-                                         gen_summary_csv, run_permutation_test):
+                                         gen_summary_csv):
     """
     Compute cell-cell spatial interaction metrics from scimap neighborhood analysis output
     and test for association with clinical variables.
@@ -334,18 +328,13 @@ def gen_scimap_interaction_summary_table(results_dir, metadata, cell_type_column
                             if len(group_0) < 2 or len(group_1) < 2:
                                 continue
 
-                            if run_permutation_test:
-                                pval_student_ttest, pval_welch_ttest, pval_mann_whitney, effect_size, pval_permutation_test, direction = run_stats_tests(group_0, group_1, clinical_var, run_permutation_test)
-                            else:
-                                pval_student_ttest, pval_welch_ttest, pval_mann_whitney, effect_size, direction = run_stats_tests(group_0, group_1, clinical_var, run_permutation_test)
+                            pval_student_ttest, pval_welch_ttest, pval_mann_whitney, effect_size, direction = run_stats_tests(group_0, group_1, clinical_var)
 
                             df_summary.loc[0, f'direction_{prop_col}'] = direction
                             df_summary.loc[0, f'student_ttest_pval_{prop_col}'] = float(pval_student_ttest)
                             df_summary.loc[0, f'welch_ttest_pval_{prop_col}'] = float(pval_welch_ttest)
                             df_summary.loc[0, f'mann_whitney_pval_{prop_col}'] = float(pval_mann_whitney)
                             df_summary.loc[0, f'effect_size_{prop_col}'] = effect_size
-                            if run_permutation_test:
-                                df_summary.loc[0, f'permutation_test_pval_{prop_col}'] = pval_permutation_test
 
                             if run_gen_boxplots:
                                 if prop_col == 'mean_proportion_interacting_cell_type':
@@ -394,88 +383,3 @@ def gen_scimap_interaction_summary_table(results_dir, metadata, cell_type_column
                 f'summarized_df_{interaction_radius_px}px.csv', index=False
             )
 
-
-def interactions_permutation_test(results_dir, metadata, cell_type_columns, artifact_cells,
-                                   clinical_vars_list, scimap_data_path, interaction_radius_px,
-                                   interaction_radius_um, cell_types_keep, clinical_dir,
-                                   out_scimap_interaction_summary_table, run_gen_boxplots,
-                                   sample_label, add_color_points_stage, clinical_df,
-                                   title_font_size, subtitle_font_size, y_tick_font_size,
-                                   x_tick_font_size, p_value_tick_font_size, x_tick_labels_dict,
-                                   interaction_type, anchor_cell_type, interacting_cell_type,
-                                   region, gen_interaction_summary_table, gen_null_distribution,
-                                   scimap_data_path_test, out_scimap_interaction_summary_table_test,
-                                   samples_skip, add_plot_title, boxplot_shapes, cell_types_remove,
-                                   gen_summary_csv, run_permutation_test, cell_types_rename):
-    """
-    Run a spatial interaction permutation test.
-
-    If gen_interaction_summary_table is True, generates interaction summary tables
-    for each permuted neighborhood analysis directory.
-
-    If gen_null_distribution is True, builds a per-sample null distribution from
-    permuted interaction proportions and computes an empirical p-value for each sample.
-    """
-    if gen_interaction_summary_table:
-        for permutation_dir in os.listdir(f'{results_dir}/{scimap_data_path}'):
-            scimap_path_perm = f'{scimap_data_path}/{permutation_dir}'
-            if not os.path.exists(f'{results_dir}/{scimap_path_perm}/adata_all_combos.h5ad'):
-                continue
-            out_perm = f'{out_scimap_interaction_summary_table}/{permutation_dir}'
-            output_file = f'{results_dir}/{out_perm}/interaction_proportion_counts_df_{interaction_radius_px}px.csv'
-            if not os.path.exists(output_file):
-                gen_scimap_interaction_summary_table(
-                    results_dir, metadata, cell_type_columns, artifact_cells, clinical_vars_list,
-                    scimap_path_perm, interaction_radius_px, interaction_radius_um, cell_types_keep,
-                    clinical_dir, out_perm, run_gen_boxplots, sample_label, add_color_points_stage,
-                    clinical_df, title_font_size, subtitle_font_size, y_tick_font_size, x_tick_font_size,
-                    p_value_tick_font_size, x_tick_labels_dict, add_plot_title, interaction_type,
-                    anchor_cell_type, interacting_cell_type, region, cell_types_rename, boxplot_shapes,
-                    cell_types_remove, gen_summary_csv, run_permutation_test
-                )
-                print(f'{permutation_dir} done')
-            else:
-                print(f'{permutation_dir} already done')
-
-    if gen_null_distribution:
-        interaction_table_test = pd.read_csv(
-            f'{results_dir}/{out_scimap_interaction_summary_table_test}/'
-            f'interaction_proportion_counts_df_{interaction_radius_px}px.csv'
-        )
-        interaction_table_test = interaction_table_test[~interaction_table_test['imageid'].isin(samples_skip)]
-        interaction_test_proportion = interaction_table_test.loc[
-            (interaction_table_test['anchor_cell_type'] == anchor_cell_type) &
-            (interaction_table_test['interacting_cell_type'] == interacting_cell_type) &
-            (interaction_table_test['region'] == region),
-            ['imageid', interaction_type]
-        ]
-
-        permutation_dir_list = os.listdir(f'{results_dir}/{out_scimap_interaction_summary_table}')
-
-        for sample in interaction_test_proportion['imageid']:
-            if sample in samples_skip:
-                continue
-            null_distribution = []
-            obs = interaction_test_proportion.loc[
-                interaction_test_proportion['imageid'] == sample, interaction_type
-            ].values[0]
-
-            for permutation_dir in permutation_dir_list:
-                perm_table = pd.read_csv(
-                    f'{results_dir}/{out_scimap_interaction_summary_table}/{permutation_dir}/'
-                    f'interaction_proportion_counts_df_{interaction_radius_px}px.csv'
-                )
-                perm_val = perm_table.loc[
-                    (perm_table['imageid'] == sample) &
-                    (perm_table['anchor_cell_type'] == anchor_cell_type) &
-                    (perm_table['interacting_cell_type'] == interacting_cell_type) &
-                    (perm_table['region'] == region),
-                    interaction_type
-                ].values[0]
-                null_distribution.append(perm_val)
-
-            p_value = (np.sum(np.array(null_distribution) >= obs) + 1) / (len(null_distribution) + 1)
-            print(
-                f'{sample} - Observed: {obs:.4f}, N permutations: {len(null_distribution)}, '
-                f'Mean perm: {np.mean(null_distribution):.4f}, p-value: {p_value:.4f}'
-            )

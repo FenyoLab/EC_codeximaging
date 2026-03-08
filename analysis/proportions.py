@@ -15,7 +15,7 @@ def gen_proportion_summary_table(metadata, results_dir, clinical_df, cell_type_c
                                   x_tick_font_size, p_value_tick_font_size, x_tick_labels_dict,
                                   cell_types_rename, add_plot_title,
                                   gen_new_marker_positivity_proportion, boxplot_shapes,
-                                  run_permutation_test):
+                                  ):
     """
     Compute per-sample cell type proportions and run statistical comparisons
     against clinical variables.
@@ -221,10 +221,7 @@ def gen_proportion_summary_table(metadata, results_dir, clinical_df, cell_type_c
                         if len(clinical_0) < 2 or len(clinical_1) < 2:
                             continue
 
-                        if run_permutation_test:
-                            pval_student_ttest, pval_welch_ttest, pval_mann_whitney, effect_size, pval_permutation_test, direction = run_stats_tests(clinical_0, clinical_1, clinical_var, run_permutation_test)
-                        else:
-                            pval_student_ttest, pval_welch_ttest, pval_mann_whitney, effect_size, direction = run_stats_tests(clinical_0, clinical_1, clinical_var, run_permutation_test)
+                        pval_student_ttest, pval_welch_ttest, pval_mann_whitney, effect_size, direction = run_stats_tests(clinical_0, clinical_1, clinical_var)
 
                         if run_gen_boxplots:
                             base_dir = os.path.join(
@@ -261,12 +258,6 @@ def gen_proportion_summary_table(metadata, results_dir, clinical_df, cell_type_c
                             f'effect_size_{proportion_type}': float(effect_size) if effect_size is not None and not pd.isna(effect_size) else None,
                             f'direction_{proportion_type}': direction
                         })
-                        if run_permutation_test:
-                            results_dict[f'permutation_test_pval_{proportion_type}'] = (
-                                float(pval_permutation_test)
-                                if pval_permutation_test is not None and not pd.isna(pval_permutation_test)
-                                else None
-                            )
 
                     summary_table_all = pd.concat(
                         [summary_table_all, pd.DataFrame([results_dict])], ignore_index=True
@@ -289,7 +280,7 @@ def gen_proportion_Tcells(metadata, results_dir, clinical_df, cell_type_columns,
                           x_tick_font_size, p_value_tick_font_size, x_tick_labels_dict,
                           cell_types_rename, add_plot_title,
                           gen_new_marker_positivity_proportion, boxplot_shapes,
-                          run_permutation_test):
+                          ):
     """
     Compute per-sample proportions of T cells and Macrophages out of all cells,
     per region, and run statistical comparisons against clinical variables.
@@ -446,10 +437,7 @@ def gen_proportion_Tcells(metadata, results_dir, clinical_df, cell_type_columns,
                     if len(clinical_0) < 2 or len(clinical_1) < 2:
                         continue
 
-                    if run_permutation_test:
-                        pval_student_ttest, pval_welch_ttest, pval_mann_whitney, effect_size, pval_permutation_test, direction = run_stats_tests(clinical_0, clinical_1, clinical_var, run_permutation_test)
-                    else:
-                        pval_student_ttest, pval_welch_ttest, pval_mann_whitney, effect_size, direction = run_stats_tests(clinical_0, clinical_1, clinical_var, run_permutation_test)
+                    pval_student_ttest, pval_welch_ttest, pval_mann_whitney, effect_size, direction = run_stats_tests(clinical_0, clinical_1, clinical_var)
 
                     print(f'{proportion_type} {region} {clinical_var} {pval_mann_whitney} {effect_size}')
 
@@ -488,12 +476,6 @@ def gen_proportion_Tcells(metadata, results_dir, clinical_df, cell_type_columns,
                         f'effect_size_{proportion_type}': float(effect_size) if effect_size is not None and not pd.isna(effect_size) else None,
                         f'direction_{proportion_type}': direction
                     })
-                    if run_permutation_test:
-                        results_dict[f'permutation_test_pval_{proportion_type}'] = (
-                            float(pval_permutation_test)
-                            if pval_permutation_test is not None and not pd.isna(pval_permutation_test)
-                            else None
-                        )
 
                 summary_table_all = pd.concat(
                     [summary_table_all, pd.DataFrame([results_dict])], ignore_index=True

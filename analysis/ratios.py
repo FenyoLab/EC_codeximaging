@@ -9,7 +9,7 @@ from analysis.proportions import gen_proportion_summary_table
 def gen_cell_type_ratio_summary_table(metadata, results_dir, clinical_df, cell_type_columns,
                                       artifact_cells, clinical_vars_list, basic_cell_types,
                                       cell_types_remove, samples_skip, RATIOS_TO_CHECK,
-                                      add_plot_title, boxplot_shapes, run_permutation_test,
+                                      add_plot_title, boxplot_shapes,
                                       gen_summary_csv, run_gen_boxplots, sample_label,
                                       add_color_points_stage, title_font_size, subtitle_font_size,
                                       y_tick_font_size, x_tick_font_size, p_value_tick_font_size,
@@ -34,7 +34,6 @@ def gen_cell_type_ratio_summary_table(metadata, results_dir, clinical_df, cell_t
                 title_font_size, subtitle_font_size, y_tick_font_size, x_tick_font_size,
                 p_value_tick_font_size, x_tick_labels_dict, cell_types_rename,
                 add_plot_title, gen_new_marker_positivity_proportion, boxplot_shapes,
-                run_permutation_test
             )
             metadata_summary = pd.read_csv(proportion_file)
 
@@ -92,18 +91,13 @@ def gen_cell_type_ratio_summary_table(metadata, results_dir, clinical_df, cell_t
                     samples_0 = results_ratio[results_ratio[clinical_var] == 0]['slide_id'].values
                     samples_1 = results_ratio[results_ratio[clinical_var] == 1]['slide_id'].values
 
-                    if run_permutation_test:
-                        pval_student_ttest, pval_welch_ttest, pval_mann_whitney, effect_size, pval_permutation_test, direction = run_stats_tests(clinical_0, clinical_1, clinical_var, run_permutation_test)
-                    else:
-                        pval_student_ttest, pval_welch_ttest, pval_mann_whitney, effect_size, direction = run_stats_tests(clinical_0, clinical_1, clinical_var, run_permutation_test)
+                    pval_student_ttest, pval_welch_ttest, pval_mann_whitney, effect_size, direction = run_stats_tests(clinical_0, clinical_1, clinical_var)
 
                     df_summary.loc[0, 'direction'] = direction
                     df_summary.loc[0, 'student_ttest_pval'] = pval_student_ttest
                     df_summary.loc[0, 'welch_ttest_pval'] = pval_welch_ttest
                     df_summary.loc[0, 'mann_whitney_pval'] = pval_mann_whitney
                     df_summary.loc[0, 'effect_size'] = effect_size
-                    if run_permutation_test:
-                        df_summary.loc[0, 'permutation_test_pval'] = pval_permutation_test
 
                     if run_gen_boxplots:
                         sig_dir = 'significant' if pval_mann_whitney < 0.052 else 'not_significant'

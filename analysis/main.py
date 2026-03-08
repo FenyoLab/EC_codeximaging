@@ -18,8 +18,7 @@ from analysis.ratios import gen_cell_type_ratio_summary_table
 from analysis.fraction_intra import gen_fraction_intra_summary_table
 from analysis.spatial import (
     gen_median_distance_summary_table,
-    gen_scimap_interaction_summary_table,
-    interactions_permutation_test
+    gen_scimap_interaction_summary_table
 )
 
 
@@ -52,7 +51,6 @@ def main():
         add_plot_title=config.ADD_PLOT_TITLE,
         gen_new_marker_positivity_proportion=config.GEN_NEW_MARKER_POSITIVITY_PROPORTION,
         boxplot_shapes=config.BOXPLOT_SHAPES,
-        run_permutation_test=config.RUN_PERMUTATION_TEST,
     )
 
     if config.RUN_GEN_PROPORTION_SUMMARY_TABLE:
@@ -147,48 +145,6 @@ def main():
             boxplot_shapes=config.BOXPLOT_SHAPES,
             cell_types_remove=config.CELL_TYPES_REMOVE,
             gen_summary_csv=config.GEN_SUMMARY_CSV,
-            run_permutation_test=config.RUN_PERMUTATION_TEST,
-        )
-
-    if config.RUN_INTERACTIONS_PERMUTATION_TEST:
-        print("Running: interaction permutation test...")
-        interactions_permutation_test(
-            results_dir=config.RESULTS_DIR,
-            metadata=metadata,
-            cell_type_columns=config.CELL_TYPE_COLUMNS,
-            artifact_cells=config.ARTIFACT_CELLS,
-            clinical_vars_list=config.CLINICAL_VARS_LIST,
-            scimap_data_path=config.SCIMAP_DATA_PATH,
-            interaction_radius_px=config.INTERACTION_RADIUS_PX,
-            interaction_radius_um=config.INTERACTION_RADIUS_UM,
-            cell_types_keep=config.CELL_TYPES_KEEP,
-            clinical_dir=config.CLINICAL_DIR,
-            out_scimap_interaction_summary_table=config.OUT_SCIMAP_INTERACTION_SUMMARY_TABLE,
-            run_gen_boxplots=config.RUN_GEN_BOXPLOTS,
-            sample_label=config.SAMPLE_LABEL,
-            add_color_points_stage=config.ADD_COLOR_POINTS_STAGE,
-            clinical_df=clinical_df,
-            title_font_size=config.TITLE_FONT_SIZE,
-            subtitle_font_size=config.SUBTITLE_FONT_SIZE,
-            y_tick_font_size=config.Y_TICK_FONT_SIZE,
-            x_tick_font_size=config.X_TICK_FONT_SIZE,
-            p_value_tick_font_size=config.P_VALUE_TICK_FONT_SIZE,
-            x_tick_labels_dict=config.X_TICK_LABELS_DICT,
-            interaction_type=config.INTERACTION_TYPE,
-            anchor_cell_type=config.ANCHOR_CELL_TYPE,
-            interacting_cell_type=config.INTERACTING_CELL_TYPE,
-            region=config.REGION,
-            gen_interaction_summary_table=config.GEN_INTERACTION_SUMMARY_TABLE,
-            gen_null_distribution=config.GEN_NULL_DISTRIBUTION,
-            scimap_data_path_test=config.SCIMAP_DATA_PATH_TEST,
-            out_scimap_interaction_summary_table_test=config.OUT_SCIMAP_INTERACTION_SUMMARY_TABLE_TEST,
-            samples_skip=config.SAMPLES_SKIP,
-            add_plot_title=config.ADD_PLOT_TITLE,
-            boxplot_shapes=config.BOXPLOT_SHAPES,
-            cell_types_remove=config.CELL_TYPES_REMOVE,
-            gen_summary_csv=config.GEN_SUMMARY_CSV,
-            run_permutation_test=config.RUN_PERMUTATION_TEST,
-            cell_types_rename=config.CELL_TYPES_RENAME,
         )
 
     print("Done.")

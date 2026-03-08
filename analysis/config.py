@@ -75,10 +75,8 @@ RUN_GEN_CELL_TYPE_RATIO_SUMMARY_TABLE = False
 RUN_GEN_FRACTION_INTRA_SUMMARY_TABLE = False
 RUN_GEN_MEDIAN_DISTANCE_SUMMARY_TABLE = False
 RUN_GEN_SCIMAP_INTERACTION_SUMMARY_TABLE = False
-RUN_INTERACTIONS_PERMUTATION_TEST = False
 
 # ---- Statistical testing ----
-RUN_PERMUTATION_TEST = False
 GEN_SUMMARY_CSV = True
 GEN_NEW_MARKER_POSITIVITY_PROPORTION = False
 
@@ -110,7 +108,7 @@ RATIOS_TO_CHECK = [
 ]
 
 # ---- Spatial interaction settings ----
-SCIMAP_DATA_PATH = "/scimap/Neighborhood_Analysis_marker_combos/cell_type_CD4_Macrophage_subsets/"
+SCIMAP_DATA_PATH = "/scimap/Neighborhood_Analysis_marker_combos/cell_type/"
 OUT_SCIMAP_INTERACTION_SUMMARY_TABLE = f"Summary_tables/{SCIMAP_DATA_PATH}"
 INTERACTION_RADIUS_PX = 30
 UM_PER_PX = 0.5
@@ -136,7 +134,7 @@ SELF_INTERACTIONS = True
 
 # ---- Input data (can share with above paths or point to separate files) ----
 MATRIX_RAW = "/path/to/matrix.npy"          # counts matrix (.npy or .feather)
-CELL_TYPE_COL_PARAM = 'cell_type_Macrophages_CD4_rm'  # column in metadata to use as phenotype
+CELL_TYPE_COL_PARAM = 'cell_type'  # column in metadata to use as phenotype
 
 # ---- Scimap output directory ----
 OUTPUT_DIR_SCIMAP = f"{RESULTS_DIR}/scimap/Neighborhood_Analysis"
