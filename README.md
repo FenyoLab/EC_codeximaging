@@ -163,9 +163,8 @@ All paths and which analyses to run are set in **`analysis/config.py`**. Update 
 | **Cell type ratios** | `RUN_GEN_CELL_TYPE_RATIO_SUMMARY_TABLE` | User-defined ratios (e.g. CD8⁺/CD4⁺ T cells) per sample and region, with clinical association tests. |
 | **Fraction intratumoral** | `RUN_GEN_FRACTION_INTRA_SUMMARY_TABLE` | Fraction of each cell type in intratumoral vs. peritumoral region and clinical associations. |
 | **Median distance** | `RUN_GEN_MEDIAN_DISTANCE_SUMMARY_TABLE` | Median nearest-neighbor distance (µm) between cell type pairs per sample/region; optional self-interactions. |
-| **Scimap neighborhoods** | `RUN_SCIMAP_NEIGHBORHOODS` | Spatial neighborhood analysis with [scimap](https://github.com/laminlabs/scimap): spatial counts/expression, k-means neighborhood clusters, barplots, boxplots, and optional OMERO tables. Must run before the interaction summary. |
+| **Scimap neighborhoods** | `RUN_SCIMAP_NEIGHBORHOODS` | Spatial neighborhood analysis with [scimap]([https://github.com/labsyspharm/scimap]): spatial counts/expression, k-means neighborhood clusters, barplots, boxplots, and optional OMERO tables. Must run before the interaction summary. |
 | **Scimap interactions** | `RUN_GEN_SCIMAP_INTERACTION_SUMMARY_TABLE` | Summary of cell–cell interactions (e.g. proportion of anchor cells near a target type within a radius) from scimap output. |
-| **Interaction permutation test** | `RUN_INTERACTIONS_PERMUTATION_TEST` | Permutation-based null distribution and tests for the chosen interaction metric. |
 
 Outputs are written under `RESULTS_DIR` (e.g. `Summary_tables/`, proportion and ratio CSVs, boxplots). When boxplots are enabled, results are compared to clinical variables (e.g. recurrence, stage) with configurable statistical tests.
 
