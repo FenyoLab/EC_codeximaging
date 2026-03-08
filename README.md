@@ -142,6 +142,61 @@ Additional dependencies may be required depending on the execution environment.
 
 ---
 
+## Downstream analysis (`analysis/`)
+
+The `analysis/` directory contains a config-driven pipeline for **downstream statistical and spatial analysis** of the cell-segmentation and phenotyping outputs. It expects per-cell metadata (e.g. `.feather`), a normalized counts matrix, and optional clinical data.
+
+### Running the analysis
+
+```bash
+python analysis/main.py
+```
+
+All paths and which analyses to run are set in **`analysis/config.py`**. Update `RESULTS_DIR`, `METADATA_PATH`, and `CLINICAL_DIR` to match your data, then set the relevant `RUN_*` flags to `True` or `False`.
+
+### Analysis modules
+
+| Module | Config flag | Description |
+|--------|-------------|-------------|
+| **Proportions** | `RUN_GEN_PROPORTION_SUMMARY_TABLE` | Per-sample cell type proportions (total, T-cell–normalized, parent-type–normalized) and statistical tests vs. clinical variables. |
+| **T cell / macrophage proportions** | `RUN_GEN_PROPORTION_TCELLS` | Proportion summaries focused on T cell and macrophage subsets. |
+| **Cell type ratios** | `RUN_GEN_CELL_TYPE_RATIO_SUMMARY_TABLE` | User-defined ratios (e.g. CD8⁺/CD4⁺ T cells) per sample and region, with clinical association tests. |
+| **Fraction intratumoral** | `RUN_GEN_FRACTION_INTRA_SUMMARY_TABLE` | Fraction of each cell type in intratumoral vs. peritumoral region and clinical associations. |
+| **Median distance** | `RUN_GEN_MEDIAN_DISTANCE_SUMMARY_TABLE` | Median nearest-neighbor distance (µm) between cell type pairs per sample/region; optional self-interactions. |
+| **Scimap neighborhoods** | `RUN_SCIMAP_NEIGHBORHOODS` | Spatial neighborhood analysis with [scimap](https://github.com/laminlabs/scimap): spatial counts/expression, k-means neighborhood clusters, barplots, boxplots, and optional OMERO tables. Must run before the interaction summary. |
+| **Scimap interactions** | `RUN_GEN_SCIMAP_INTERACTION_SUMMARY_TABLE` | Summary of cell–cell interactions (e.g. proportion of anchor cells near a target type within a radius) from scimap output. |
+| **Interaction permutation test** | `RUN_INTERACTIONS_PERMUTATION_TEST` | Permutation-based null distribution and tests for the chosen interaction metric. |
+
+Outputs are written under `RESULTS_DIR` (e.g. `Summary_tables/`, proportion and ratio CSVs, boxplots). When boxplots are enabled, results are compared to clinical variables (e.g. recurrence, stage) with configurable statistical tests.
+
+### Analysis dependencies
+
+From `analysis/requirements.txt`:
+
+- anndata  
+- matplotlib  
+- numpy  
+- pandas  
+- pyarrow  
+- scipy  
+- seaborn  
+
+The scimap-based steps require **scimap** and **plotly** (for optional interactive plots). The pipeline also expects a small amount of project-specific structure (e.g. `utils.io`, `stats.tests`, `visualization.boxplots`); see the repository layout and `analysis/main.py` for import paths.
+
+### Test data
+
+The repository includes minimal **test data** in `test_data/` so that the downstream analysis pipeline can be run without access to the full study dataset. Included files:
+
+| File | Description |
+|------|-------------|
+| `metadata.csv` | Per-cell metadata (cell type, centroid coordinates, slide ID, region `peri_intra_tumoral`, morphology, etc.) for a small number of cells across a few synthetic slides. |
+| `matrix_raw.csv` | Raw cell-by-marker intensity matrix matching the metadata rows. |
+| `EC_Clinical_Data.csv` | Slide-level clinical variables (e.g. `slide_id`, `Recurred`, `ICI response`) for the same slides. |
+
+To run the analysis pipeline on this test data, set in `analysis/config.py`: `RESULTS_DIR` to the path to your results directory (e.g. the repo root or a copy of `test_data/`), `METADATA_PATH` to the relative path to the metadata file, and `CLINICAL_DIR` to the full path to `test_data/EC_Clinical_Data.csv`. The pipeline loads metadata via `read_feather`, so convert `metadata.csv` to `.feather` first if needed (e.g. `pd.read_csv('test_data/metadata.csv').to_feather('test_data/metadata.feather')`). The test set is small and intended only for verifying the code and workflow.
+
+---
+
 ## Data Availability
 
 Multiplexed immunofluorescence images analyzed in this study contain patient-derived data and cannot be publicly shared due to privacy and institutional restrictions.
@@ -153,4 +208,4 @@ Processed data and analysis outputs supporting the findings of the associated ma
 ## Notes
 
 - Detailed documentation describing script functionality is available in **Script Info.pdf**.
-- The repository reflects the code used for analysis in the associated manuscript and may contain 
+- The repository reflects the code used for analysis in the associated manuscript and may contain additional scripts used during method development.

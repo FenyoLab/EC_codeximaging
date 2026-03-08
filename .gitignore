@@ -163,7 +163,6 @@ cython_debug/
 *.zarr
 *.pdf
 *.png
-*.csv
 *.txt
 *.npy
 *.pkl
