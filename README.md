@@ -20,7 +20,7 @@ The pipeline performs the following major steps:
 
 ### 1. Tile preprocessing and E-cadherin intensity extraction
 
-Whole-slide images are divided into tiles. For each tile, the mean intensity of the **top 5% of pixels in the E-cadherin channel** is calculated.
+Whole-slide images (downloaded from OMERO as QPTIFFs) are divided into tiles. For each tile, the mean intensity of the **top 5% of pixels in the E-cadherin channel** is calculated.
 
 ### 2. Tile clustering
 
