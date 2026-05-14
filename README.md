@@ -65,10 +65,10 @@ The marker matrix is then normalized per sample:
 
 ### 6. Dimensionality reduction and clustering
 
-Cell phenotypes are identified through:
+Lineage Cell phenotypes are identified through:
 
-- **UMAP embedding**
-- **k-means clustering**
+- **k-means clustering across all samples identifies main cell type groups**
+- **mixed cluster phenotyping**
 
 Clustering results are used to define cell populations based on marker expression.
 
