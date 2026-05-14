@@ -8,7 +8,7 @@ The pipeline enables large-scale single-cell analysis of multiplexed imaging dat
 
 This codebase was used for image preprocessing, cell segmentation, and cell phenotyping in the manuscript:
 
-**"The Spatial Immune Landscape of Mismatch Repair Deficient Endometrial Cancer: Implications for Clinical Outcomes"**, submitted to Modern Pathology.
+**"The Spatial Immune Landscape of Mismatch Repair Deficient Endometrial Cancer: Implications for Clinical Outcomes"**
 
 Additional implementation details describing the scripts and workflow are provided in **Script Info.pdf**.
 
